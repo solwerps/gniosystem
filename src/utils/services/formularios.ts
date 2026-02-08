@@ -11,11 +11,11 @@ export const crearIsrOpcional = async (
   resumenData: IResumenIsrOpcional
 ) => {
   return await fetchService({
-    url: `/api/gnio/empresas/${empresaId}/formularios/isr-opcional`,
+    url: `/api/formularios/isrOpcional`,
     method: "POST",
     body: JSON.stringify({
-      empresaId,
-      fechaTrabajo,
+      empresa_id: empresaId,
+      fecha: fechaTrabajo,
       resumenData,
     }),
   });
@@ -30,15 +30,18 @@ export const crearIvaMensual = async (
   resumenData: any
 ) => {
   return await fetchService({
-    url: `/api/gnio/empresas/${empresaId}/formularios/iva-general`,
+    url: `/api/formularios/ivaMensual`,
     method: "POST",
     body: JSON.stringify({
-      empresaId,
-      fechaTrabajo,
+      empresa_id: empresaId,
+      fecha: fechaTrabajo,
       resumenData,
     }),
   });
 };
+
+// Alias legacy para compatibilidad con imports antiguos
+export const crearIVAMensual = crearIvaMensual;
 
 /**
  * 🔹 Obtiene el formulario IVA General Mensual por empresa y mes
@@ -48,7 +51,10 @@ export const obtenerIvaMensual = async (
   fechaTrabajo: string
 ) => {
   return await fetchService({
-    url: `/api/gnio/empresas/${empresaId}/formularios/iva-general?fecha=${fechaTrabajo}`,
+    url: `/api/formularios/ivaMensual?empresa_id=${empresaId}&fecha=${fechaTrabajo}`,
     method: "GET",
   });
 };
+
+// Alias legacy para compatibilidad con imports antiguos
+export const getIVAMensual = obtenerIvaMensual;

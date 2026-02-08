@@ -13,12 +13,12 @@ export const NavButton: React.FC<Props> = ({ icon, title, action }) => {
     return (
         <li
             className={clsx(
-                'flex items-center p-2 text-base font-normal rounded-lg text-white hover:bg-gray-700 group cursor-pointer'
+                'group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-200/90 transition-colors duration-200 hover:bg-white/10 hover:text-white cursor-pointer'
             )}
             onClick={action}
         >
             {icon}
-            <span className="ml-3">{title}</span>
+            <span className="truncate">{title}</span>
         </li>
     );
 };

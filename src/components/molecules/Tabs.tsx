@@ -32,7 +32,7 @@ export const Tabs: React.FC<Props> = ({ list }) => {
       {/* Header de tabs */}
       <div
         role="tablist"
-        className="flex border-b border-gray-200 overflow-x-auto"
+        className="flex overflow-x-auto border-b border-slate-200/80"
       >
         {list.map((item, index) => {
           const isActive = index === activeIndex;
@@ -50,8 +50,8 @@ export const Tabs: React.FC<Props> = ({ list }) => {
                 'px-4 py-2 text-sm whitespace-nowrap border-b-2',
                 'transition-colors duration-150',
                 isActive
-                  ? 'bg-background text-white font-bold rounded-t-md border-background'
-                  : 'text-gray-600 border-transparent hover:text-gray-800 hover:bg-gray-100',
+                  ? 'bg-emerald-600 text-white font-semibold rounded-t-lg border-emerald-600 shadow-sm'
+                  : 'text-slate-600 border-transparent hover:text-slate-800 hover:bg-slate-100/80',
                 isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
               ].join(' ')}
             >

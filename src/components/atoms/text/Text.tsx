@@ -23,17 +23,17 @@ export const Text: React.FC<TextProps> = ({
     underline
 }) => {
     const baseClasses = {
-        title: 'text-4xl',
-        subtitle: 'text-2xl',
-        text: 'text-base',
-        paragraph: 'text-base my-2',
-        small: 'text-sm'
+        title: 'text-3xl md:text-4xl leading-tight tracking-[-0.02em] text-slate-900',
+        subtitle: 'text-xl md:text-2xl leading-snug tracking-[-0.01em] text-slate-800',
+        text: 'text-base leading-6 text-slate-700',
+        paragraph: 'text-base leading-7 text-slate-700 my-2',
+        small: 'text-sm leading-5 text-slate-600'
     };
 
     return (
         <div
             className={clsx(
-                'text-black',
+                'font-medium',
                 baseClasses[variant],
                 montserrat.className,
                 [

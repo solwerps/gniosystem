@@ -18,14 +18,15 @@ export const NavItem: React.FC<NavItemProps> = ({ href, icon, title }) => {
             <Link
                 href={href}
                 className={clsx(
-                    'flex items-center p-2 text-base font-normal rounded-lg text-white hover:bg-gray-700 group',
+                    'group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-200/90 transition-colors duration-200 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',
                     {
-                        'bg-gray-800 font-semibold': isActive
+                        'bg-white/15 text-white font-semibold shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]':
+                            isActive
                     }
                 )}
             >
                 {icon}
-                <span className="ml-3">{title}</span>
+                <span className="truncate">{title}</span>
             </Link>
         </li>
     );

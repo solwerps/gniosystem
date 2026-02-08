@@ -3,7 +3,7 @@ import React from 'react';
 export const UserIcon = () => {
     return (
         <svg
-            className="w-6 h-6 transition duration-75 text-gray-400 group-hover:text-white"
+            className="w-6 h-6 text-current opacity-70 transition-opacity duration-200 group-hover:opacity-100"
             fill="currentColor"
             viewBox="0 0 448 512"
         >

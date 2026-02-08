@@ -29,17 +29,18 @@ export const NavDropdown: React.FC<NavDropdownProps> = ({
             <button
                 type="button"
                 className={clsx(
-                    'flex items-center w-full p-2 text-base font-normal transition-all duration-500 rounded-lg group text-white hover:bg-gray-700',
-                    isOpen && 'bg-gray-800 !rounded-b-none'
+                    'group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-200/90 transition-colors duration-200 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',
+                    isOpen &&
+                        'bg-white/15 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)] !rounded-b-none'
                 )}
                 aria-expanded={isOpen}
                 onClick={toggleDropdown}
             >
                 {icon}
-                <span className="flex-1 ml-3 text-left">{title}</span>
+                <span className="flex-1 text-left">{title}</span>
                 <svg
                     className={clsx(
-                        'w-4 h-4 transition-transform duration-300 ease-in-out',
+                        'h-4 w-4 text-slate-300 transition-transform duration-300 ease-in-out',
                         isOpen ? 'rotate-180' : 'rotate-90'
                     )}
                     fill="none"
@@ -54,13 +55,13 @@ export const NavDropdown: React.FC<NavDropdownProps> = ({
             </button>
             <ul
                 style={{ maxHeight: maxHeight }}
-                className="overflow-hidden transition-max-height duration-300 ease-in-out bg-gray-800 rounded-b-lg"
+                className="overflow-hidden rounded-b-xl bg-slate-950/60 ring-1 ring-white/10 transition-[max-height] duration-300 ease-out"
             >
                 {items.map((item) => (
-                    <li key={item.key} className="hover:bg-gray-700 pl-8">
+                    <li key={item.key} className="pl-9 hover:bg-white/10">
                         <Link
                             href={item.href}
-                            className="block px-4 py-2 text-white"
+                            className="block px-4 py-2 text-sm text-slate-200"
                         >
                             {item.key}
                         </Link>

@@ -37,7 +37,20 @@ export const obtenerCuentasBancariasPorEmpresa = async (
   select: boolean = false
 ) => {
   return await fetchService({
-    url: `/api/gnio/empresas/${empresaId}/cuentas-bancarias?select=${select}`,
+    url: `/api/cuentasBancarias/id?id=${empresaId}&select=${select}`,
+    method: "GET",
+  });
+};
+
+/**
+ * 🔹 Alias estilo Conta Cox para obtener cuentas por empresaId.
+ */
+export const obtenerCuentasBancariasByEmpresaId = async (
+  id: number,
+  select: boolean = false
+) => {
+  return await fetchService({
+    url: `/api/cuentasBancarias/id?id=${id}&select=${select}`,
     method: "GET",
   });
 };
@@ -51,13 +64,13 @@ export const obtenerMovimientosBancarios = async (
   fechas: Date[]
 ) => {
   const queryParams = new URLSearchParams({
-    cuentaBancariaId: cuentaBancariaId.toString(),
-    fechaInicio: fechas[0].toISOString(),
-    fechaFin: fechas[1].toISOString(),
+    cuenta_bancaria_id: cuentaBancariaId.toString(),
+    fecha_inicio: fechas[0].toISOString(),
+    fecha_fin: (fechas[1] ?? fechas[0]).toISOString(),
   });
 
   return await fetchService({
-    url: `/api/gnio/cuentas-bancarias/movimientos?${queryParams.toString()}`,
+    url: `/api/cuentasBancarias/movimientos?${queryParams.toString()}`,
     method: "GET",
   });
 };

@@ -71,12 +71,49 @@ export default async function PerfilEmpresaPage({ params }: PageParams) {
     },
   });
 
+  // Tareas asignadas a esta empresa desde el contador (por nombre / NIT)
+  const empresaNames = new Set<string>();
+  if (dbUser.nit) {
+    const empresasByNit = await prisma.empresa.findMany({
+      where: { nit: dbUser.nit },
+      select: { nombre: true },
+    });
+    empresasByNit.forEach((e) => {
+      if (e.nombre?.trim()) empresaNames.add(e.nombre.trim());
+    });
+  }
+  if (dbUser.companyName?.trim()) {
+    empresaNames.add(dbUser.companyName.trim());
+  }
+
+  const tareasEmpresa =
+    empresaNames.size > 0
+      ? await prisma.tarea.findMany({
+          where: { empresa: { in: Array.from(empresaNames) } },
+          orderBy: [{ estado: "asc" }, { fecha: "asc" }, { id: "asc" }],
+          select: {
+            id: true,
+            titulo: true,
+            estado: true,
+            tipo: true,
+            fecha: true,
+            recordatorio: true,
+            empresa: true,
+          },
+        })
+      : [];
+
   const safeUser = {
     ...dbUser,
     appointmentDate: dbUser.appointmentDate ? dbUser.appointmentDate.toISOString() : null,
   };
 
   const safeTareas = tareas.map((t) => ({
+    ...t,
+    fecha: t.fecha ? t.fecha.toISOString() : null,
+  }));
+
+  const safeTareasEmpresa = tareasEmpresa.map((t) => ({
     ...t,
     fecha: t.fecha ? t.fecha.toISOString() : null,
   }));
@@ -89,6 +126,7 @@ export default async function PerfilEmpresaPage({ params }: PageParams) {
           usuarioSlug={dbUser.username}
           user={safeUser as any}
           tareas={safeTareas as any}
+          tareasEmpresa={safeTareasEmpresa as any}
         />
       </main>
     </div>

@@ -45,6 +45,92 @@ export async function POST(req: Request) {
     const fechaTrabajo = new Date(date);
 
     // ===============================
+    // VALIDAR NIT RETENIDO vs EMPRESA
+    // ===============================
+    const empresa = await prisma.empresa.findUnique({
+      where: { id: empresa_id },
+      select: { nit: true, nombre: true },
+    });
+
+    if (!empresa) {
+      return NextResponse.json({
+        status: 400,
+        message: "No se encontró la empresa para cargar las retenciones.",
+      });
+    }
+
+    const empresaNit = normalizeNit(empresa.nit);
+
+    if (!empresaNit) {
+      return NextResponse.json({
+        status: 400,
+        message: "La empresa no tiene NIT configurado.",
+      });
+    }
+
+    const missingNitRetenido = retenciones.find((r) => !getNitRetenido(r));
+    if (missingNitRetenido) {
+      return NextResponse.json({
+        status: 400,
+        message:
+          "El archivo debe incluir el campo NIT RETENIDO en todas las filas.",
+      });
+    }
+
+    const nitNoCoincide = retenciones.find((r) => {
+      const nitRetenido = getNitRetenido(r);
+      return normalizeNit(nitRetenido) !== empresaNit;
+    });
+
+    if (nitNoCoincide) {
+      return NextResponse.json({
+        status: 400,
+        message:
+          "El NIT RETENIDO no coincide con el NIT de la empresa. Revise el archivo.",
+      });
+    }
+
+    // ===============================
+    // VALIDAR CONSTANCIA DUPLICADA
+    // ===============================
+    const constancias = retenciones
+      .map((r) => normalizeConstancia(r["CONSTANCIA"]))
+      .filter(Boolean);
+
+    const duplicadasEnArchivo = findDuplicates(constancias);
+    if (duplicadasEnArchivo.length > 0) {
+      return NextResponse.json({
+        status: 400,
+        message: `Constancia duplicada en el archivo: ${duplicadasEnArchivo
+          .slice(0, 5)
+          .join(", ")}`,
+      });
+    }
+
+    if (constancias.length > 0) {
+      const existentes = await prisma.retencionIsr.findMany({
+        where: {
+          empresa_id,
+          constancia: { in: constancias },
+        },
+        select: { constancia: true },
+      });
+
+      if (existentes.length > 0) {
+        const duplicadas = existentes
+          .map((r) => r.constancia)
+          .filter(Boolean);
+
+        return NextResponse.json({
+          status: 400,
+          message: `La constancia ya está registrada: ${duplicadas
+            .slice(0, 5)
+            .join(", ")}`,
+        });
+      }
+    }
+
+    // ===============================
     // OBTENER CUENTAS CONTABLES GNIO
     // ===============================
     const cuentas = await prisma.nomenclaturaCuenta.findMany({
@@ -205,4 +291,40 @@ export async function POST(req: Request) {
 function parseFecha(fecha: string) {
   const [d, m, y] = fecha.split("/");
   return new Date(`${y}-${m}-${d}`);
+}
+
+function normalizeNit(value: string) {
+  return String(value ?? "")
+    .trim()
+    .replace(/[-\s]/g, "")
+    .toUpperCase();
+}
+
+function getNitRetenido(row: IUploadRetencionISR) {
+  const raw =
+    (row as any)["NIT RETENIDO"] ??
+    (row as any)["NIT RETENIDO:"] ??
+    "";
+  return String(raw ?? "").trim();
+}
+
+function normalizeConstancia(value: string) {
+  return String(value ?? "").trim();
+}
+
+function findDuplicates(values: string[]) {
+  const seen = new Set<string>();
+  const duplicates = new Set<string>();
+
+  values.forEach((value) => {
+    const key = value.trim();
+    if (!key) return;
+    if (seen.has(key)) {
+      duplicates.add(key);
+    } else {
+      seen.add(key);
+    }
+  });
+
+  return Array.from(duplicates);
 }

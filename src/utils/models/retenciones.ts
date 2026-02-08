@@ -24,6 +24,8 @@ export interface IRetencionIVA {
 // Representa una fila tal como viene del archivo (Excel/CSV) de la SAT
 // Se usan exactamente los encabezados de las columnas.
 export interface IUploadRetencionIVA {
+  'NIT RETENIDO'?: string;
+  'NIT RETENIDO:'?: string;
   'NIT RETENEDOR': string;
   'NOMBRE RETENEDOR': string;
   'ESTADO CONSTANCIA': string;
@@ -57,6 +59,8 @@ export interface IRetencionISR {
 
 // Igual que en IVA: formato crudo del archivo de la SAT para ISR
 export interface IUploadRetencionISR {
+  'NIT RETENIDO'?: string;
+  'NIT RETENIDO:'?: string;
   'NIT RETENEDOR': string;
   'NOMBRE RETENEDOR': string;
   'ESTADO CONSTANCIA': string;

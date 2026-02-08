@@ -3,7 +3,7 @@ import React from 'react';
 export const AlertIcon = () => {
     return (
         <svg
-            className="w-6 h-6 transition duration-75 text-basics-error group-hover:text-white"
+            className="w-6 h-6 text-rose-500/90 transition-colors duration-200 group-hover:text-rose-300"
             fill="currentColor"
             viewBox="0 0 512 512"
         >

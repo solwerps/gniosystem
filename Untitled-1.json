@@ -1,0 +1,4088 @@
+{
+	"knownSymbols": {
+		"obtenerUsuarios": [
+			{
+				"name": "obtenerUsuarios",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\usuarios.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerRetencionesIVA": [
+			{
+				"name": "obtenerRetencionesIVA",
+				"module": "@/utils/services/retenciones",
+				"isDefault": false
+			},
+			{
+				"name": "obtenerRetencionesIVA",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\retenciones.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"crearRetencionesIVA": [
+			{
+				"name": "crearRetencionesIVA",
+				"module": "@/utils",
+				"isDefault": false
+			},
+			{
+				"name": "crearRetencionesIVA",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\retenciones.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerRetencionesISR": [
+			{
+				"name": "obtenerRetencionesISR",
+				"module": "@/utils/services/retenciones",
+				"isDefault": false
+			},
+			{
+				"name": "obtenerRetencionesISR",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\retenciones.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"crearRetencionesISR": [
+			{
+				"name": "crearRetencionesISR",
+				"module": "@/utils",
+				"isDefault": false
+			},
+			{
+				"name": "crearRetencionesISR",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\retenciones.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"type { IUploadRetencionISR": [
+			{
+				"name": "type { IUploadRetencionISR",
+				"module": "@/utils",
+				"isDefault": true
+			},
+			{
+				"name": "type { IUploadRetencionISR",
+				"module": "..",
+				"isDefault": true
+			}
+		],
+		"IUploadRetencionIVA": [
+			{
+				"name": "IUploadRetencionIVA",
+				"module": "@/utils",
+				"isDefault": true
+			},
+			{
+				"name": "IUploadRetencionIVA",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\retenciones.ts",
+				"type": "interface",
+				"isDefault": false
+			},
+			{
+				"name": "IUploadRetencionIVA",
+				"module": "..",
+				"isDefault": true
+			}
+		],
+		"fetchService": [
+			{
+				"name": "fetchService",
+				"module": "@/utils/functions/fetchService",
+				"isDefault": false
+			},
+			{
+				"name": "fetchService",
+				"module": "..",
+				"isDefault": false
+			}
+		],
+		"obtenerDocumentosReportes": [
+			{
+				"name": "obtenerDocumentosReportes",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\reportes.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"type { SelectOption": [
+			{
+				"name": "type { SelectOption",
+				"module": "@/utils/models/nomenclaturas",
+				"isDefault": true
+			},
+			{
+				"name": "type { SelectOption",
+				"module": "@/utils",
+				"isDefault": true
+			}
+		],
+		"obtenerPolizas": [
+			{
+				"name": "obtenerPolizas",
+				"module": "@/utils/services/partidas",
+				"isDefault": false
+			},
+			{
+				"name": "obtenerPolizas",
+				"module": "@/utils",
+				"isDefault": false
+			},
+			{
+				"name": "obtenerPolizas",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\partidas.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerAsientosContables": [
+			{
+				"name": "obtenerAsientosContables",
+				"module": "@/utils",
+				"isDefault": false
+			},
+			{
+				"name": "obtenerAsientosContables",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\partidas.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"crearAsientoContable": [
+			{
+				"name": "crearAsientoContable",
+				"module": "@/utils/services/partidas",
+				"isDefault": false
+			},
+			{
+				"name": "crearAsientoContable",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\partidas.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerCuentas": [
+			{
+				"name": "obtenerCuentas",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\nomenclatura.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerCuentasByEmpresa": [
+			{
+				"name": "obtenerCuentasByEmpresa",
+				"module": "@/utils/services/nomenclatura",
+				"isDefault": false
+			},
+			{
+				"name": "obtenerCuentasByEmpresa",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\nomenclatura.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerCuentasByNit": [
+			{
+				"name": "obtenerCuentasByNit",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\nomenclatura.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"crearCuentas": [
+			{
+				"name": "crearCuentas",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\nomenclatura.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerNomenclaturaTipos": [
+			{
+				"name": "obtenerNomenclaturaTipos",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\nomenclatura.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerNomenclaturaById": [
+			{
+				"name": "obtenerNomenclaturaById",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\nomenclatura.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"crearNomenclatura": [
+			{
+				"name": "crearNomenclatura",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\nomenclatura.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"actualizarNomenclatura": [
+			{
+				"name": "actualizarNomenclatura",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\nomenclatura.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"type { Cuenta": [
+			{
+				"name": "type { Cuenta",
+				"module": "@/utils",
+				"isDefault": true
+			},
+			{
+				"name": "type { Cuenta",
+				"module": "@/utils/models/nomenclaturas",
+				"isDefault": true
+			},
+			{
+				"name": "type { Cuenta",
+				"module": "..",
+				"isDefault": true
+			}
+		],
+		"Nomenclatura": [
+			{
+				"name": "Nomenclatura",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\nomenclaturas.ts",
+				"type": "interface",
+				"isDefault": false
+			},
+			{
+				"name": "Nomenclatura",
+				"module": "..",
+				"isDefault": true
+			}
+		],
+		"obtenerDocumentosLibrosCompras": [
+			{
+				"name": "obtenerDocumentosLibrosCompras",
+				"module": "@/utils/services/libros",
+				"isDefault": false
+			},
+			{
+				"name": "obtenerDocumentosLibrosCompras",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\libros.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerLibroVentas": [
+			{
+				"name": "obtenerLibroVentas",
+				"module": "@/utils/services/libros",
+				"isDefault": false
+			},
+			{
+				"name": "obtenerLibroVentas",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\libros.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerLibroDiario": [
+			{
+				"name": "obtenerLibroDiario",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\libros.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerPartidasLibroDiario": [
+			{
+				"name": "obtenerPartidasLibroDiario",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\libros.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerAsientosLDiario": [
+			{
+				"name": "obtenerAsientosLDiario",
+				"module": "@/utils/services/libros",
+				"isDefault": false
+			},
+			{
+				"name": "obtenerAsientosLDiario",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\libros.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerAsientosBalanceGeneral": [
+			{
+				"name": "obtenerAsientosBalanceGeneral",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\libros.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerDocumentosBalanceGeneral": [
+			{
+				"name": "obtenerDocumentosBalanceGeneral",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\libros.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerPartidasLibroMayor": [
+			{
+				"name": "obtenerPartidasLibroMayor",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\libros.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"crearIsrOpcional": [
+			{
+				"name": "crearIsrOpcional",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\formularios.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"crearIvaMensual": [
+			{
+				"name": "crearIvaMensual",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\formularios.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerIvaMensual": [
+			{
+				"name": "obtenerIvaMensual",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\formularios.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerFoliosByNit": [
+			{
+				"name": "obtenerFoliosByNit",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\folios.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"actualizarFoliosHabilitados": [
+			{
+				"name": "actualizarFoliosHabilitados",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\folios.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"reiniciarContadorFolios": [
+			{
+				"name": "reiniciarContadorFolios",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\folios.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerFolioByLibro": [
+			{
+				"name": "obtenerFolioByLibro",
+				"module": "@/utils",
+				"isDefault": false
+			},
+			{
+				"name": "obtenerFolioByLibro",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\folios.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"updateContadorFolios": [
+			{
+				"name": "updateContadorFolios",
+				"module": "@/utils",
+				"isDefault": false
+			},
+			{
+				"name": "updateContadorFolios",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\folios.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerEmpresas": [
+			{
+				"name": "obtenerEmpresas",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\empresas.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerEmpresa": [
+			{
+				"name": "obtenerEmpresa",
+				"module": "@/utils/services/empresas",
+				"isDefault": false
+			},
+			{
+				"name": "obtenerEmpresa",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\empresas.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerEmpresaPorNit": [
+			{
+				"name": "obtenerEmpresaPorNit",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\empresas.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerEstablecimientosPorNit": [
+			{
+				"name": "obtenerEstablecimientosPorNit",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\empresas.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerRegimenes": [
+			{
+				"name": "obtenerRegimenes",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\empresas.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"crearEmpresa": [
+			{
+				"name": "crearEmpresa",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\empresas.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"actualizarEmpresa": [
+			{
+				"name": "actualizarEmpresa",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\empresas.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"crearEmpresasMasivo": [
+			{
+				"name": "crearEmpresasMasivo",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\empresas.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"crearEstablecimiento": [
+			{
+				"name": "crearEstablecimiento",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\empresas.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"actualizarEstablecimiento": [
+			{
+				"name": "actualizarEstablecimiento",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\empresas.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"eliminarEstablecimiento": [
+			{
+				"name": "eliminarEstablecimiento",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\empresas.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"actualizarConfiguracionCuentasContables": [
+			{
+				"name": "actualizarConfiguracionCuentasContables",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\empresas.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerDocumentos": [
+			{
+				"name": "obtenerDocumentos",
+				"module": "@/utils/services/documentos",
+				"isDefault": false
+			},
+			{
+				"name": "obtenerDocumentos",
+				"module": "@/utils/services",
+				"isDefault": false
+			},
+			{
+				"name": "obtenerDocumentos",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\documentos.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerDocumentoByuuid": [
+			{
+				"name": "obtenerDocumentoByuuid",
+				"module": "@/utils/services",
+				"isDefault": false
+			},
+			{
+				"name": "obtenerDocumentoByuuid",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\documentos.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"crearDocumentos": [
+			{
+				"name": "crearDocumentos",
+				"module": "@/utils/services/documentos",
+				"isDefault": false
+			},
+			{
+				"name": "crearDocumentos",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\documentos.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"crearFacturasXML": [
+			{
+				"name": "crearFacturasXML",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\documentos.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"crearFactura": [
+			{
+				"name": "crearFactura",
+				"module": "@/utils",
+				"isDefault": false
+			},
+			{
+				"name": "crearFactura",
+				"module": "@/utils/services/documentos",
+				"isDefault": false
+			},
+			{
+				"name": "crearFactura",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\documentos.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"rectificarFacturas": [
+			{
+				"name": "rectificarFacturas",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\documentos.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerCuentasBancariasPorNit": [
+			{
+				"name": "obtenerCuentasBancariasPorNit",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\cuentasBancarias.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"crearCuentaBancaria": [
+			{
+				"name": "crearCuentaBancaria",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\cuentasBancarias.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerCuentasBancariasPorEmpresa": [
+			{
+				"name": "obtenerCuentasBancariasPorEmpresa",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\cuentasBancarias.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"obtenerMovimientosBancarios": [
+			{
+				"name": "obtenerMovimientosBancarios",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\services\\cuentasBancarias.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"usuarioSchema": [
+			{
+				"name": "usuarioSchema",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\schemas\\usuarioSchema.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"z": [
+			{
+				"name": "z",
+				"module": "zod",
+				"isDefault": false
+			}
+		],
+		"type ZodSchema": [
+			{
+				"name": "type ZodSchema",
+				"module": "zod",
+				"isDefault": false
+			}
+		],
+		"partidaSchema": [
+			{
+				"name": "partidaSchema",
+				"module": "@/utils",
+				"isDefault": false
+			},
+			{
+				"name": "partidaSchema",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\schemas\\partidaSchema.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"asientoContableSchema": [
+			{
+				"name": "asientoContableSchema",
+				"module": "@/utils",
+				"isDefault": false
+			},
+			{
+				"name": "asientoContableSchema",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\schemas\\partidaSchema.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"nomenclaturaContableSchema": [
+			{
+				"name": "nomenclaturaContableSchema",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\schemas\\nomenclaturaContableSchema.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"empresaSchema": [
+			{
+				"name": "empresaSchema",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\schemas\\empresaSchema.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"establecimientoSchema": [
+			{
+				"name": "establecimientoSchema",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\schemas\\empresaSchema.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"contadorSchema": [
+			{
+				"name": "contadorSchema",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\schemas\\empresaSchema.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"representanteSchema": [
+			{
+				"name": "representanteSchema",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\schemas\\empresaSchema.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"documentoSchema": [
+			{
+				"name": "documentoSchema",
+				"module": "@/utils",
+				"isDefault": false
+			},
+			{
+				"name": "documentoSchema",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\schemas\\documentosSchemas.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"cuentaContableSchema": [
+			{
+				"name": "cuentaContableSchema",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\schemas\\cuentaContableSchema.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"ZodSchema": [
+			{
+				"name": "ZodSchema",
+				"module": "zod",
+				"isDefault": false
+			}
+		],
+		"cuentaBancariaSchema": [
+			{
+				"name": "cuentaBancariaSchema",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\schemas\\cuentaBancariaSchema.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"OptionType": [
+			{
+				"name": "OptionType",
+				"module": "@/utils",
+				"isDefault": true
+			},
+			{
+				"name": "OptionType",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\variety.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IUsuario": [
+			{
+				"name": "IUsuario",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\usuarios.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IUsuarioForm": [
+			{
+				"name": "IUsuarioForm",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\usuarios.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IRoles": [
+			{
+				"name": "IRoles",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\usuarios.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IRetencionIVA": [
+			{
+				"name": "IRetencionIVA",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\retenciones.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IRetencionISR": [
+			{
+				"name": "IRetencionISR",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\retenciones.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IUploadRetencionISR": [
+			{
+				"name": "IUploadRetencionISR",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\retenciones.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IPartida": [
+			{
+				"name": "IPartida",
+				"module": "@/utils",
+				"isDefault": true
+			},
+			{
+				"name": "IPartida",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\partida.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IPartidaForm": [
+			{
+				"name": "IPartidaForm",
+				"module": "@/utils",
+				"isDefault": true
+			},
+			{
+				"name": "IPartidaForm",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\partida.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IAsientoContableForm": [
+			{
+				"name": "IAsientoContableForm",
+				"module": "@/utils",
+				"isDefault": true
+			},
+			{
+				"name": "IAsientoContableForm",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\partida.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IGetAsientoContable": [
+			{
+				"name": "IGetAsientoContable",
+				"module": "@/utils",
+				"isDefault": true
+			},
+			{
+				"name": "IGetAsientoContable",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\partida.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"PartidaAsiento": [
+			{
+				"name": "PartidaAsiento",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\partida.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"Cuenta": [
+			{
+				"name": "Cuenta",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\nomenclaturas.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"SelectOption": [
+			{
+				"name": "SelectOption",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\nomenclaturas.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"CuentaTipo": [
+			{
+				"name": "CuentaTipo",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\nomenclaturas.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"IResumenIsrOpcional": [
+			{
+				"name": "IResumenIsrOpcional",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\formularios.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IResumenIVAMensual": [
+			{
+				"name": "IResumenIVAMensual",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\formularios.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IGetFolio": [
+			{
+				"name": "IGetFolio",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\folios.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IFolioBody": [
+			{
+				"name": "IFolioBody",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\folios.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IFolioPutBody": [
+			{
+				"name": "IFolioPutBody",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\folios.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IEmpresaForm": [
+			{
+				"name": "IEmpresaForm",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\empresa.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IEstablecimientoForm": [
+			{
+				"name": "IEstablecimientoForm",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\empresa.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IEmpresa": [
+			{
+				"name": "IEmpresa",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\empresa.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IEstablecimiento": [
+			{
+				"name": "IEstablecimiento",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\empresa.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IContador": [
+			{
+				"name": "IContador",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\empresa.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IRepresentante": [
+			{
+				"name": "IRepresentante",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\empresa.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IDocumento": [
+			{
+				"name": "IDocumento",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\documentos.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IFactura": [
+			{
+				"name": "IFactura",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\documentos.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IGetDocumento": [
+			{
+				"name": "IGetDocumento",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\documentos.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IFact": [
+			{
+				"name": "IFact",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\documentos.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"TipoFactura": [
+			{
+				"name": "TipoFactura",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\documentos.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"TipoDTE": [
+			{
+				"name": "TipoDTE",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\documentos.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"IUploadDocumento": [
+			{
+				"name": "IUploadDocumento",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\documentos.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"tipo_impuesto": [
+			{
+				"name": "tipo_impuesto",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\documentos.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"DocData": [
+			{
+				"name": "DocData",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\documentos.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IDocUpload": [
+			{
+				"name": "IDocUpload",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\documentos.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IGetCuentaBancaria": [
+			{
+				"name": "IGetCuentaBancaria",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\cuentasBancarias.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"ICuentaBancariaForm": [
+			{
+				"name": "ICuentaBancariaForm",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\cuentasBancarias.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"IMovimientoBancario": [
+			{
+				"name": "IMovimientoBancario",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\models\\cuentasBancarias.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"validateFields": [
+			{
+				"name": "validateFields",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\functions\\validateFields.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"isValueUnique": [
+			{
+				"name": "isValueUnique",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\functions\\validateData.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"prisma": [
+			{
+				"name": "prisma",
+				"module": "@/lib/prisma",
+				"isDefault": true
+			},
+			{
+				"name": "prisma",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\lib\\prisma.ts",
+				"type": "const",
+				"isDefault": true
+			}
+		],
+		"parseMonto": [
+			{
+				"name": "parseMonto",
+				"module": "@/utils",
+				"isDefault": false
+			},
+			{
+				"name": "parseMonto",
+				"module": "@/utils/functions/parseMonto",
+				"isDefault": false
+			},
+			{
+				"name": "parseMonto",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\functions\\parseMonto.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"parseDate": [
+			{
+				"name": "parseDate",
+				"module": "@/utils",
+				"isDefault": false
+			},
+			{
+				"name": "parseDate",
+				"module": "@/utils/functions/parseDate",
+				"isDefault": false
+			},
+			{
+				"name": "parseDate",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\functions\\parseDate.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"omitColumn": [
+			{
+				"name": "omitColumn",
+				"module": "@/utils/functions/omitColumn",
+				"isDefault": false
+			},
+			{
+				"name": "omitColumn",
+				"module": "@/utils",
+				"isDefault": false
+			},
+			{
+				"name": "omitColumn",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\functions\\omitColumn.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"type { IDocumento": [
+			{
+				"name": "type { IDocumento",
+				"module": "@/utils/models",
+				"isDefault": true
+			}
+		],
+		"hasAuthorized": [
+			{
+				"name": "hasAuthorized",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\functions\\hasAuthorized.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"NextURL": [
+			{
+				"name": "NextURL",
+				"module": "next/dist/server/web/next-url",
+				"isDefault": false
+			}
+		],
+		"formatDate": [
+			{
+				"name": "formatDate",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\functions\\formatDate.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"downloadDocs": [
+			{
+				"name": "downloadDocs",
+				"module": "@/utils",
+				"isDefault": false
+			},
+			{
+				"name": "downloadDocs",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\functions\\downloadDocs.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"type { IFactura": [
+			{
+				"name": "type { IFactura",
+				"module": "@/utils/models/documentos",
+				"isDefault": true
+			},
+			{
+				"name": "type { IFactura",
+				"module": "@/utils",
+				"isDefault": true
+			}
+		],
+		"XLSX": [
+			{
+				"name": "XLSX",
+				"module": "xlsx",
+				"isDefault": true,
+				"asDefinition": "* as XLSX"
+			}
+		],
+		"montserrat": [
+			{
+				"name": "montserrat",
+				"module": "@/utils/fonts",
+				"isDefault": false
+			},
+			{
+				"name": "montserrat",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\fonts.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"roboto": [
+			{
+				"name": "roboto",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\fonts.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"inter": [
+			{
+				"name": "inter",
+				"module": "@/utils/fonts",
+				"isDefault": false
+			},
+			{
+				"name": "inter",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\fonts.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"merriweather": [
+			{
+				"name": "merriweather",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\fonts.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"Inter": [
+			{
+				"name": "Inter",
+				"module": "next/font/google",
+				"isDefault": false
+			}
+		],
+		"Montserrat": [
+			{
+				"name": "Montserrat",
+				"module": "next/font/google",
+				"isDefault": false
+			}
+		],
+		"Roboto": [
+			{
+				"name": "Roboto",
+				"module": "next/font/google",
+				"isDefault": false
+			}
+		],
+		"Merriweather": [
+			{
+				"name": "Merriweather",
+				"module": "next/font/google",
+				"isDefault": false
+			}
+		],
+		"TipoDocumento": [
+			{
+				"name": "TipoDocumento",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\data\\documentosData.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"tiposDocumento": [
+			{
+				"name": "tiposDocumento",
+				"module": "@/utils",
+				"isDefault": false
+			},
+			{
+				"name": "tiposDocumento",
+				"module": "@/utils/data/documentosData",
+				"isDefault": false
+			},
+			{
+				"name": "tiposDocumento",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\data\\documentosData.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"tiposDocumentoVenta": [
+			{
+				"name": "tiposDocumentoVenta",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\data\\documentosData.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"tiposDocumentoCompra": [
+			{
+				"name": "tiposDocumentoCompra",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\data\\documentosData.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"Divisa": [
+			{
+				"name": "Divisa",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\data\\divisas.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"divisas": [
+			{
+				"name": "divisas",
+				"module": "@/utils/data/divisas",
+				"isDefault": false
+			},
+			{
+				"name": "divisas",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\utils\\data\\divisas.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"SiNo": [
+			{
+				"name": "SiNo",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\regimen-isr.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"Periodo": [
+			{
+				"name": "Periodo",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\regimen-isr.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"RegimenIvaFila": [
+			{
+				"name": "RegimenIvaFila",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\admin\\regimen\\iva\\editar\\page.tsx",
+				"type": "type",
+				"isDefault": false
+			},
+			{
+				"name": "RegimenIvaFila",
+				"module": "@/types/regimen-iva",
+				"isDefault": false
+			}
+		],
+		"SI_NO": [
+			{
+				"name": "SI_NO",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\regimen-isr.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"PERIODOS": [
+			{
+				"name": "PERIODOS",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\regimen-isr.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"LUGAR_VENTA": [
+			{
+				"name": "LUGAR_VENTA",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\regimen-isr.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"TIPO_ACTIVIDAD": [
+			{
+				"name": "TIPO_ACTIVIDAD",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\regimen-isr.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"OPCION_SUJETO_RET_IVA": [
+			{
+				"name": "OPCION_SUJETO_RET_IVA",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\regimen-iva.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"OPCION_EXENTO": [
+			{
+				"name": "OPCION_EXENTO",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\regimen-iva.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"RegimenIsrFila": [
+			{
+				"name": "RegimenIsrFila",
+				"module": "@/types/regimen-isr",
+				"isDefault": false
+			},
+			{
+				"name": "RegimenIsrFila",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\regimen-isr.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"OPCION_SUJETO_RET_ISR": [
+			{
+				"name": "OPCION_SUJETO_RET_ISR",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\regimen-isr.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"Naturaleza": [
+			{
+				"name": "Naturaleza",
+				"module": "@/types/nomenclatura",
+				"isDefault": true
+			},
+			{
+				"name": "Naturaleza",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\nomenclatura.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"Tipo": [
+			{
+				"name": "Tipo",
+				"module": "@/types/nomenclatura",
+				"isDefault": true
+			},
+			{
+				"name": "Tipo",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\nomenclatura.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"CuentaRow": [
+			{
+				"name": "CuentaRow",
+				"module": "@/types/nomenclatura",
+				"isDefault": false
+			},
+			{
+				"name": "CuentaRow",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\nomenclatura.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"RazonSocial": [
+			{
+				"name": "RazonSocial",
+				"module": "@/types/empresas",
+				"isDefault": false
+			},
+			{
+				"name": "RazonSocial",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\empresas.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"Moneda": [
+			{
+				"name": "Moneda",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\empresas.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"RegimenOption": [
+			{
+				"name": "RegimenOption",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\empresas.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"NomenclaturaOption": [
+			{
+				"name": "NomenclaturaOption",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\empresas.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"CuentaOpt": [
+			{
+				"name": "CuentaOpt",
+				"module": "@/types/empresas",
+				"isDefault": true
+			},
+			{
+				"name": "CuentaOpt",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\empresas.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"ObligacionRow": [
+			{
+				"name": "ObligacionRow",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\empresas.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"FolioLibro": [
+			{
+				"name": "FolioLibro",
+				"module": "@/types/empresas",
+				"isDefault": false
+			},
+			{
+				"name": "FolioLibro",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\empresas.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"CuentaBancariaForm": [
+			{
+				"name": "CuentaBancariaForm",
+				"module": "@/types/empresas",
+				"isDefault": false
+			},
+			{
+				"name": "CuentaBancariaForm",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\types\\empresas.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"config": [
+			{
+				"name": "config",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\middleware.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"NextResponse": [
+			{
+				"name": "NextResponse",
+				"module": "next/server",
+				"isDefault": false
+			}
+		],
+		"type { NextRequest": [
+			{
+				"name": "type { NextRequest",
+				"module": "next/server.js",
+				"isDefault": true
+			},
+			{
+				"name": "type { NextRequest",
+				"module": "next/server",
+				"isDefault": true
+			}
+		],
+		"jwtVerify": [
+			{
+				"name": "jwtVerify",
+				"module": "jose",
+				"isDefault": false
+			}
+		],
+		"PrismaClient": [
+			{
+				"name": "PrismaClient",
+				"module": "@prisma/client",
+				"isDefault": false
+			}
+		],
+		"UserRole": [
+			{
+				"name": "UserRole",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\lib\\auth.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"TokenPayload": [
+			{
+				"name": "TokenPayload",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\lib\\auth.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"Session": [
+			{
+				"name": "Session",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\lib\\auth.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"cookies": [
+			{
+				"name": "cookies",
+				"module": "next/headers",
+				"isDefault": false
+			}
+		],
+		"SignJWT": [
+			{
+				"name": "SignJWT",
+				"module": "jose",
+				"isDefault": false
+			}
+		],
+		"LockField": [
+			{
+				"name": "LockField",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\helpers\\nomenclaturaLocks.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"isCellDisabled": [
+			{
+				"name": "isCellDisabled",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\helpers\\nomenclaturaLocks.ts",
+				"type": "function",
+				"isDefault": false
+			}
+		],
+		"REGIMEN_IVA_SEED": [
+			{
+				"name": "REGIMEN_IVA_SEED",
+				"module": "@/data/regimenIva.seed",
+				"isDefault": false
+			},
+			{
+				"name": "REGIMEN_IVA_SEED",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\data\\regimenIva.seed.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"type { RegimenIvaFila": [
+			{
+				"name": "type { RegimenIvaFila",
+				"module": "@/types/regimen-iva",
+				"isDefault": true
+			}
+		],
+		"REGIMEN_ISR_SEED": [
+			{
+				"name": "REGIMEN_ISR_SEED",
+				"module": "@/data/regimenIsr.seed",
+				"isDefault": false
+			},
+			{
+				"name": "REGIMEN_ISR_SEED",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\data\\regimenIsr.seed.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"PLANTILLA": [
+			{
+				"name": "PLANTILLA",
+				"module": "@/data/nomenclaturaPlantilla",
+				"isDefault": false
+			},
+			{
+				"name": "PLANTILLA",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\data\\nomenclaturaPlantilla.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"type { CuentaRow": [
+			{
+				"name": "type { CuentaRow",
+				"module": "@/types/nomenclatura",
+				"isDefault": true
+			}
+		],
+		"RetencionesISR": [
+			{
+				"name": "RetencionesISR",
+				"module": "@/components",
+				"isDefault": false
+			},
+			{
+				"name": "RetencionesISR",
+				"module": "@/components/templates/RetencionesISR",
+				"isDefault": false
+			},
+			{
+				"name": "RetencionesISR",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\templates\\RetencionesISR.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"React": [
+			{
+				"name": "React",
+				"module": "react",
+				"isDefault": true,
+				"asDefinition": "* as React"
+			}
+		],
+		"{ useEffect": [
+			{
+				"name": "{ useEffect",
+				"module": "react",
+				"isDefault": true
+			}
+		],
+		"useState": [
+			{
+				"name": "useState",
+				"module": "react",
+				"isDefault": true
+			}
+		],
+		"useRouter": [
+			{
+				"name": "useRouter",
+				"module": "next/navigation",
+				"isDefault": false
+			}
+		],
+		"Button": [
+			{
+				"name": "Button",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\Button.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "Button",
+				"module": "@/components/atoms",
+				"isDefault": false
+			},
+			{
+				"name": "Button",
+				"module": "@/components/atoms/inputs",
+				"isDefault": false
+			},
+			{
+				"name": "Button",
+				"module": "@/components/atoms/Button",
+				"isDefault": false
+			}
+		],
+		"CalendarMonth": [
+			{
+				"name": "CalendarMonth",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\inputs\\CalendarMonth.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "CalendarMonth",
+				"module": "@/components/atoms",
+				"isDefault": false
+			},
+			{
+				"name": "CalendarMonth",
+				"module": "@/components/atoms/inputs/CalendarMonth",
+				"isDefault": false
+			}
+		],
+		"Table": [
+			{
+				"name": "Table",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\molecules\\table\\Table.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "Table",
+				"module": "@/components/atoms/inputs",
+				"isDefault": false
+			},
+			{
+				"name": "Table",
+				"module": "@/components/molecules",
+				"isDefault": false
+			},
+			{
+				"name": "Table",
+				"module": "@/components/molecules/table",
+				"isDefault": false
+			}
+		],
+		"UploadIconl": [
+			{
+				"name": "UploadIconl",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\UploadIconl.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "UploadIconl",
+				"module": "@/components/atoms/icons/UploadIconl",
+				"isDefault": false
+			}
+		],
+		"type { TableColumn": [
+			{
+				"name": "type { TableColumn",
+				"module": "react-data-table-component",
+				"isDefault": true
+			}
+		],
+		"type { IRetencionISR": [
+			{
+				"name": "type { IRetencionISR",
+				"module": "@/utils",
+				"isDefault": true
+			}
+		],
+		"RetencionesIVA": [
+			{
+				"name": "RetencionesIVA",
+				"module": "@/components/templates/Retenciones",
+				"isDefault": false
+			},
+			{
+				"name": "RetencionesIVA",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\templates\\Retenciones.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"type { IRetencionIVA": [
+			{
+				"name": "type { IRetencionIVA",
+				"module": "@/utils",
+				"isDefault": true
+			}
+		],
+		"styles": [
+			{
+				"name": "styles",
+				"module": "@/components/templates/pdf/style",
+				"isDefault": false
+			},
+			{
+				"name": "styles",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\templates\\pdf\\style.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"StyleSheet": [
+			{
+				"name": "StyleSheet",
+				"module": "@react-pdf/renderer",
+				"isDefault": false
+			}
+		],
+		"LoadingDocumentPDF": [
+			{
+				"name": "LoadingDocumentPDF",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\templates\\pdf\\LoadingDocumentPDF.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"Page": [
+			{
+				"name": "Page",
+				"module": "@react-pdf/renderer",
+				"isDefault": false
+			},
+			{
+				"name": "Page",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\.next\\types\\routes.d.ts",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"View": [
+			{
+				"name": "View",
+				"module": "@react-pdf/renderer",
+				"isDefault": false
+			}
+		],
+		"Text": [
+			{
+				"name": "Text",
+				"module": "@react-pdf/renderer",
+				"isDefault": false
+			},
+			{
+				"name": "Text",
+				"module": "@/components/atoms",
+				"isDefault": false
+			},
+			{
+				"name": "Text",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\text\\Text.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"LibroVentasPDF": [
+			{
+				"name": "LibroVentasPDF",
+				"module": "@/components/templates/pdf/LibroVentasPDF",
+				"isDefault": false
+			},
+			{
+				"name": "LibroVentasPDF",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\templates\\pdf\\LibroVentasPDF.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"dynamic": [
+			{
+				"name": "dynamic",
+				"module": "next/dynamic",
+				"isDefault": true
+			},
+			{
+				"name": "dynamic",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\api\\health\\route.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"Document": [
+			{
+				"name": "Document",
+				"module": "@react-pdf/renderer",
+				"isDefault": false
+			}
+		],
+		"moment": [
+			{
+				"name": "moment",
+				"module": "moment",
+				"isDefault": true
+			},
+			{
+				"name": "moment",
+				"module": "moment-timezone",
+				"isDefault": true
+			}
+		],
+		"v4 as uuid": [
+			{
+				"name": "v4 as uuid",
+				"module": "uuid",
+				"isDefault": false
+			}
+		],
+		"PDFLoader": [
+			{
+				"name": "PDFLoader",
+				"module": "@/components/atoms/loaders/PDFLoader",
+				"isDefault": false
+			},
+			{
+				"name": "PDFLoader",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\loaders\\PDFLoader.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"LibroMayorPDF": [
+			{
+				"name": "LibroMayorPDF",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\templates\\pdf\\LibroMayorPDF.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "LibroMayorPDF",
+				"module": "@/components/templates/pdf/LibroMayorPDF",
+				"isDefault": false
+			}
+		],
+		"useMemo": [
+			{
+				"name": "useMemo",
+				"module": "react",
+				"isDefault": true
+			}
+		],
+		"LibroDiarioPDF": [
+			{
+				"name": "LibroDiarioPDF",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\templates\\pdf\\LibroDiarioPDF.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "LibroDiarioPDF",
+				"module": "@/components/templates/pdf/LibroDiarioPDF",
+				"isDefault": false
+			}
+		],
+		"PDFViewer": [
+			{
+				"name": "PDFViewer",
+				"module": "@react-pdf/renderer",
+				"isDefault": false
+			}
+		],
+		"type { IGetAsientoContable": [
+			{
+				"name": "type { IGetAsientoContable",
+				"module": "@/utils",
+				"isDefault": true
+			}
+		],
+		"LibroComprasPDF": [
+			{
+				"name": "LibroComprasPDF",
+				"module": "@/components/templates/pdf/LibroComprasPDF",
+				"isDefault": false
+			},
+			{
+				"name": "LibroComprasPDF",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\templates\\pdf\\LibroComprasPDF.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"EmptyPage": [
+			{
+				"name": "EmptyPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\templates\\pdf\\EmptyPage.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"Libros": [
+			{
+				"name": "Libros",
+				"module": "@/components/templates/Libros",
+				"isDefault": false
+			},
+			{
+				"name": "Libros",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\templates\\Libros.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"toast": [
+			{
+				"name": "toast",
+				"module": "react-toastify",
+				"isDefault": false
+			}
+		],
+		"type { OptionType": [
+			{
+				"name": "type { OptionType",
+				"module": "@/utils/models/variety",
+				"isDefault": true
+			},
+			{
+				"name": "type { OptionType",
+				"module": "@/utils",
+				"isDefault": true
+			}
+		],
+		"CalendarRange": [
+			{
+				"name": "CalendarRange",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\inputs\\CalendarRange.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "CalendarRange",
+				"module": "@/components/atoms",
+				"isDefault": false
+			},
+			{
+				"name": "CalendarRange",
+				"module": "@/components/atoms/inputs/CalendarRange",
+				"isDefault": false
+			}
+		],
+		"Modal": [
+			{
+				"name": "Modal",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\molecules\\modal\\Modal.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "Modal",
+				"module": "@/components/molecules",
+				"isDefault": false
+			},
+			{
+				"name": "Modal",
+				"module": "@/components/molecules/modal/Modal",
+				"isDefault": false
+			}
+		],
+		"Select": [
+			{
+				"name": "Select",
+				"module": "@/components/empresas/ui",
+				"isDefault": false
+			},
+			{
+				"name": "Select",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\inputs\\Select.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "Select",
+				"module": "@/components/atoms/inputs",
+				"isDefault": false
+			},
+			{
+				"name": "Select",
+				"module": "@/components/atoms",
+				"isDefault": false
+			},
+			{
+				"name": "Select",
+				"module": "@/components/atoms/inputs/Select",
+				"isDefault": false
+			}
+		],
+		"PDFIcon": [
+			{
+				"name": "PDFIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\PDFIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "PDFIcon",
+				"module": "@/components/atoms/icons/PDFIcon",
+				"isDefault": false
+			}
+		],
+		"TitleModal": [
+			{
+				"name": "TitleModal",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\molecules\\modal\\TitleModal.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "TitleModal",
+				"module": "@/components/molecules/modal/TitleModal",
+				"isDefault": false
+			}
+		],
+		"ValueModal": [
+			{
+				"name": "ValueModal",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\molecules\\modal\\ValueModal.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "ValueModal",
+				"module": "@/components/molecules/modal/ValueModal",
+				"isDefault": false
+			}
+		],
+		"Documentos": [
+			{
+				"name": "Documentos",
+				"module": "@/components/templates/documentos",
+				"isDefault": false
+			},
+			{
+				"name": "Documentos",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\templates\\documentos.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"PlusIcon": [
+			{
+				"name": "PlusIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\PlusIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "PlusIcon",
+				"module": "@/components/atoms/icons/PlusIcon",
+				"isDefault": false
+			}
+		],
+		"EditIcon": [
+			{
+				"name": "EditIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\EditIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "EditIcon",
+				"module": "@/components/atoms/icons/EditIcon",
+				"isDefault": false
+			}
+		],
+		"AsientosContables": [
+			{
+				"name": "AsientosContables",
+				"module": "@/components/templates/AsientosContables",
+				"isDefault": false
+			},
+			{
+				"name": "AsientosContables",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\templates\\AsientosContables.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"clsx": [
+			{
+				"name": "clsx",
+				"module": "clsx",
+				"isDefault": true
+			}
+		],
+		"FilterIcon": [
+			{
+				"name": "FilterIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\FilterIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "FilterIcon",
+				"module": "@/components/atoms",
+				"isDefault": false
+			}
+		],
+		"Input": [
+			{
+				"name": "Input",
+				"module": "@/components/empresas/ui",
+				"isDefault": false
+			},
+			{
+				"name": "Input",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\inputs\\Input.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "Input",
+				"module": "@/components/atoms",
+				"isDefault": false
+			}
+		],
+		"Sidebar": [
+			{
+				"name": "Sidebar",
+				"module": "@/components/Sidebar",
+				"isDefault": true
+			},
+			{
+				"name": "Sidebar",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\Sidebar.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"RegimenIvaTable": [
+			{
+				"name": "RegimenIvaTable",
+				"module": "@/components/RegimenIvaTable",
+				"isDefault": true
+			},
+			{
+				"name": "RegimenIvaTable",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\RegimenIvaTable.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"RegimenIvaGrouped": [
+			{
+				"name": "RegimenIvaGrouped",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\RegimenIvaGrouped.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"Fragment": [
+			{
+				"name": "Fragment",
+				"module": "react",
+				"isDefault": false
+			}
+		],
+		"RegimenIsrTable": [
+			{
+				"name": "RegimenIsrTable",
+				"module": "@/components/RegimenIsrTable",
+				"isDefault": true
+			},
+			{
+				"name": "RegimenIsrTable",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\RegimenIsrTable.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"type { RegimenIsrFila": [
+			{
+				"name": "type { RegimenIsrFila",
+				"module": "@/types/regimen-isr",
+				"isDefault": true
+			}
+		],
+		"navList": [
+			{
+				"name": "navList",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\organisms\\navigation\\navList.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"CharIcon": [
+			{
+				"name": "CharIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\CharIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "CharIcon",
+				"module": "@/components/atoms/icons",
+				"isDefault": false
+			}
+		],
+		"ClientIcon": [
+			{
+				"name": "ClientIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\ClientIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "ClientIcon",
+				"module": "@/components/atoms/icons/ClientIcon",
+				"isDefault": false
+			}
+		],
+		"DashbordIcon": [
+			{
+				"name": "DashbordIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\DashbordIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "DashbordIcon",
+				"module": "@/components/atoms/icons/DashbordIcon",
+				"isDefault": false
+			}
+		],
+		"FacturaIcon": [
+			{
+				"name": "FacturaIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\FacturaIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "FacturaIcon",
+				"module": "@/components/atoms/icons/FacturaIcon",
+				"isDefault": false
+			}
+		],
+		"HomeIcon": [
+			{
+				"name": "HomeIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\HomeIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "HomeIcon",
+				"module": "@/components/atoms/icons/HomeIcon",
+				"isDefault": false
+			}
+		],
+		"ListIcon": [
+			{
+				"name": "ListIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\ListIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "ListIcon",
+				"module": "@/components/atoms/icons/ListIcon",
+				"isDefault": false
+			}
+		],
+		"PartidasIcon": [
+			{
+				"name": "PartidasIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\PartidasIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "PartidasIcon",
+				"module": "@/components/atoms/icons/PartidasIcon",
+				"isDefault": false
+			}
+		],
+		"ReportIcon": [
+			{
+				"name": "ReportIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\ReportIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "ReportIcon",
+				"module": "@/components/atoms",
+				"isDefault": false
+			},
+			{
+				"name": "ReportIcon",
+				"module": "@/components/atoms/icons/ReportIcon",
+				"isDefault": false
+			}
+		],
+		"UserIcon": [
+			{
+				"name": "UserIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\UserIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "UserIcon",
+				"module": "@/components/atoms/icons/UserIcon",
+				"isDefault": false
+			}
+		],
+		"ActionList": [
+			{
+				"name": "ActionList",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\organisms\\navigation\\ActionsList.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"LogoutIcon": [
+			{
+				"name": "LogoutIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\LogoutIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "LogoutIcon",
+				"module": "@/components/atoms/icons/LogoutIcon",
+				"isDefault": false
+			}
+		],
+		"SettingsIcon": [
+			{
+				"name": "SettingsIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\SettingsIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "SettingsIcon",
+				"module": "@/components/atoms/icons/SettingsIcon",
+				"isDefault": false
+			}
+		],
+		"NavButton": [
+			{
+				"name": "NavButton",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\navigation\\NavButton.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "NavButton",
+				"module": "@/components/atoms/",
+				"isDefault": false
+			}
+		],
+		"FacturaForm": [
+			{
+				"name": "FacturaForm",
+				"module": "@/components/organisms/forms/facturaForm",
+				"isDefault": false
+			},
+			{
+				"name": "FacturaForm",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\organisms\\forms\\facturaForm.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"ZodError": [
+			{
+				"name": "ZodError",
+				"module": "zod",
+				"isDefault": false
+			}
+		],
+		"AsientoContableForm": [
+			{
+				"name": "AsientoContableForm",
+				"module": "@/components/organisms/forms/AsientoContableForm",
+				"isDefault": false
+			},
+			{
+				"name": "AsientoContableForm",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\organisms\\forms\\AsientoContableForm.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"type ZodIssue": [
+			{
+				"name": "type ZodIssue",
+				"module": "zod",
+				"isDefault": false
+			}
+		],
+		"UploadFacturasXML": [
+			{
+				"name": "UploadFacturasXML",
+				"module": "@/components/organisms/files",
+				"isDefault": false
+			},
+			{
+				"name": "UploadFacturasXML",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\organisms\\files\\UploadFacturasXML.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"type { Dispatch": [
+			{
+				"name": "type { Dispatch",
+				"module": "react",
+				"isDefault": true
+			}
+		],
+		"SetStateAction": [
+			{
+				"name": "SetStateAction",
+				"module": "react",
+				"isDefault": true
+			}
+		],
+		"CodeDocIcon": [
+			{
+				"name": "CodeDocIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\CodeDocIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "CodeDocIcon",
+				"module": "@/components/atoms",
+				"isDefault": false
+			}
+		],
+		"useDropzone": [
+			{
+				"name": "useDropzone",
+				"module": "react-dropzone",
+				"isDefault": false
+			}
+		],
+		"XMLParser": [
+			{
+				"name": "XMLParser",
+				"module": "fast-xml-parser",
+				"isDefault": false
+			}
+		],
+		"XMLBuilder": [
+			{
+				"name": "XMLBuilder",
+				"module": "fast-xml-parser",
+				"isDefault": false
+			}
+		],
+		"UploadFacturasCSV": [
+			{
+				"name": "UploadFacturasCSV",
+				"module": "@/components/organisms/files",
+				"isDefault": false
+			},
+			{
+				"name": "UploadFacturasCSV",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\organisms\\files\\UploadFacturasCSV.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"CSVIcon": [
+			{
+				"name": "CSVIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\CSVIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "CSVIcon",
+				"module": "@/components/atoms",
+				"isDefault": false
+			}
+		],
+		"type { IUploadDocumento": [
+			{
+				"name": "type { IUploadDocumento",
+				"module": "@/utils/models/documentos",
+				"isDefault": true
+			}
+		],
+		"DragAndDrop": [
+			{
+				"name": "DragAndDrop",
+				"module": "..",
+				"isDefault": false
+			},
+			{
+				"name": "DragAndDrop",
+				"module": "@/components/organisms/files",
+				"isDefault": false
+			},
+			{
+				"name": "DragAndDrop",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\organisms\\files\\DragAndDrop.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"Rectificacion": [
+			{
+				"name": "Rectificacion",
+				"module": "@/components/organisms/especials/Rectificacion",
+				"isDefault": true
+			},
+			{
+				"name": "Rectificacion",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\organisms\\especials\\Rectificacion.tsx",
+				"type": "const",
+				"isDefault": true
+			}
+		],
+		"type { DropResult": [
+			{
+				"name": "type { DropResult",
+				"module": "@hello-pangea/dnd",
+				"isDefault": true
+			}
+		],
+		"DraggableProvided": [
+			{
+				"name": "DraggableProvided",
+				"module": "@hello-pangea/dnd",
+				"isDefault": true
+			}
+		],
+		"DragDropContext": [
+			{
+				"name": "DragDropContext",
+				"module": "@hello-pangea/dnd",
+				"isDefault": false
+			}
+		],
+		"Droppable": [
+			{
+				"name": "Droppable",
+				"module": "@hello-pangea/dnd",
+				"isDefault": false
+			}
+		],
+		"Draggable": [
+			{
+				"name": "Draggable",
+				"module": "@hello-pangea/dnd",
+				"isDefault": false
+			}
+		],
+		"LeftArrow": [
+			{
+				"name": "LeftArrow",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\LeftArrow.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "LeftArrow",
+				"module": "@/components/atoms/icons/LeftArrow",
+				"isDefault": false
+			}
+		],
+		"DocDetail": [
+			{
+				"name": "DocDetail",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\organisms\\details\\DocDetail.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"CalendarForm": [
+			{
+				"name": "CalendarForm",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\inputs\\CalendarForm.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "CalendarForm",
+				"module": "@/components/atoms",
+				"isDefault": false
+			}
+		],
+		"type { IGetDocumento": [
+			{
+				"name": "type { IGetDocumento",
+				"module": "@/utils",
+				"isDefault": true
+			}
+		],
+		"UploadRetencionesIVA": [
+			{
+				"name": "UploadRetencionesIVA",
+				"module": "@/components/organisms/cargas/UploadRetencionesIVA",
+				"isDefault": false
+			},
+			{
+				"name": "UploadRetencionesIVA",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\organisms\\cargas\\UploadRetencionesIVA.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"ContinueModal": [
+			{
+				"name": "ContinueModal",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\molecules\\modal\\ContinueModal.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "ContinueModal",
+				"module": "@/components/molecules",
+				"isDefault": false
+			}
+		],
+		"UploadRetencionesISR": [
+			{
+				"name": "UploadRetencionesISR",
+				"module": "@/components/organisms/cargas/UploadRetencionesISR",
+				"isDefault": false
+			},
+			{
+				"name": "UploadRetencionesISR",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\organisms\\cargas\\UploadRetencionesISR.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"UploadDocumentos": [
+			{
+				"name": "UploadDocumentos",
+				"module": "@/components/organisms/cargas/UploadDocumentos",
+				"isDefault": false
+			},
+			{
+				"name": "UploadDocumentos",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\organisms\\cargas\\UploadDocumentos.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"TrashIcon": [
+			{
+				"name": "TrashIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\TrashIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "TrashIcon",
+				"module": "@/components/atoms",
+				"isDefault": false
+			}
+		],
+		"SelectTable": [
+			{
+				"name": "SelectTable",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\inputs\\SelectTable.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "SelectTable",
+				"module": "@/components/atoms",
+				"isDefault": false
+			}
+		],
+		"UploadCuentas": [
+			{
+				"name": "UploadCuentas",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\organisms\\cargas\\UploadCuentas.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"Tabs": [
+			{
+				"name": "Tabs",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\molecules\\Tabs.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"{ useState": [
+			{
+				"name": "{ useState",
+				"module": "react",
+				"isDefault": true
+			}
+		],
+		"DataTable": [
+			{
+				"name": "DataTable",
+				"module": "react-data-table-component",
+				"isDefault": true
+			}
+		],
+		"Path": [
+			{
+				"name": "Path",
+				"module": "@/components/molecules/Path",
+				"isDefault": false
+			},
+			{
+				"name": "Path",
+				"module": "@/components/molecules/path",
+				"isDefault": false
+			},
+			{
+				"name": "Path",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\molecules\\Path.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"Link": [
+			{
+				"name": "Link",
+				"module": "next/link",
+				"isDefault": true
+			}
+		],
+		"RowModal": [
+			{
+				"name": "RowModal",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\molecules\\modal\\RowModal.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"CloseIcon": [
+			{
+				"name": "CloseIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\CloseIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			},
+			{
+				"name": "CloseIcon",
+				"module": "@/components/atoms",
+				"isDefault": false
+			}
+		],
+		"UsuariosSucursalesTab": [
+			{
+				"name": "UsuariosSucursalesTab",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\empresas\\UsuariosSucursalesTab.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"Option": [
+			{
+				"name": "Option",
+				"module": "@/components/empresas/ui",
+				"isDefault": false
+			},
+			{
+				"name": "Option",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\empresas\\ui.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"Field": [
+			{
+				"name": "Field",
+				"module": "@/components/empresas/ui",
+				"isDefault": false
+			},
+			{
+				"name": "Field",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\empresas\\ui.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"TabLoading": [
+			{
+				"name": "TabLoading",
+				"module": "@/components/empresas/TabLoading",
+				"isDefault": true
+			},
+			{
+				"name": "TabLoading",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\empresas\\TabLoading.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"isoToDmy": [
+			{
+				"name": "isoToDmy",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\empresas\\InfoTab.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"InfoTab": [
+			{
+				"name": "InfoTab",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\empresas\\InfoTab.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"GestionesTab": [
+			{
+				"name": "GestionesTab",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\empresas\\GestionesTab.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"EmpresaSidebar": [
+			{
+				"name": "EmpresaSidebar",
+				"module": "@/components/empresas/EmpresaSidebar",
+				"isDefault": true
+			},
+			{
+				"name": "EmpresaSidebar",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\empresas\\EmpresaSidebar.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"useSearchParams": [
+			{
+				"name": "useSearchParams",
+				"module": "next/navigation",
+				"isDefault": false
+			}
+		],
+		"useEffect": [
+			{
+				"name": "useEffect",
+				"module": "react",
+				"isDefault": false
+			}
+		],
+		"GT_DEPARTAMENTOS": [
+			{
+				"name": "GT_DEPARTAMENTOS",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\empresas\\constants.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"GT_MUNICIPIOS": [
+			{
+				"name": "GT_MUNICIPIOS",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\empresas\\constants.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"BANCOS_SUGERIDOS": [
+			{
+				"name": "BANCOS_SUGERIDOS",
+				"module": "@/components/empresas/constants",
+				"isDefault": false
+			},
+			{
+				"name": "BANCOS_SUGERIDOS",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\empresas\\constants.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"LIBROS": [
+			{
+				"name": "LIBROS",
+				"module": "@/components/empresas/constants",
+				"isDefault": false
+			},
+			{
+				"name": "LIBROS",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\empresas\\constants.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"ActividadSat": [
+			{
+				"name": "ActividadSat",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\empresas\\constants.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"ACTIVIDADES_SAT": [
+			{
+				"name": "ACTIVIDADES_SAT",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\empresas\\constants.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"actividadPorCodigo": [
+			{
+				"name": "actividadPorCodigo",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\empresas\\constants.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"BancosTab": [
+			{
+				"name": "BancosTab",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\empresas\\BancosTab.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"AfiliacionesTab": [
+			{
+				"name": "AfiliacionesTab",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\empresas\\AfiliacionesTab.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"Badge": [
+			{
+				"name": "Badge",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\text\\Badge.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"Tag": [
+			{
+				"name": "Tag",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\Tag.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"SummaryItem": [
+			{
+				"name": "SummaryItem",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\SummaryItem.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"NavItem": [
+			{
+				"name": "NavItem",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\navigation\\NavItem.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"{ ReactNode": [
+			{
+				"name": "{ ReactNode",
+				"module": "react",
+				"isDefault": true
+			}
+		],
+		"usePathname": [
+			{
+				"name": "usePathname",
+				"module": "next/navigation",
+				"isDefault": false
+			}
+		],
+		"NavDropdown": [
+			{
+				"name": "NavDropdown",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\navigation\\NavDropdown.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"ReactNode": [
+			{
+				"name": "ReactNode",
+				"module": "react",
+				"isDefault": true
+			}
+		],
+		"CustomLink": [
+			{
+				"name": "CustomLink",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\navigation\\CustomLink.tsx",
+				"isDefault": true
+			}
+		],
+		"TextArea": [
+			{
+				"name": "TextArea",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\inputs\\TextArea.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"TableInput": [
+			{
+				"name": "TableInput",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\inputs\\TableInput.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"ReactSelect": [
+			{
+				"name": "ReactSelect",
+				"module": "react-select",
+				"isDefault": true
+			}
+		],
+		"{ MenuPlacement": [
+			{
+				"name": "{ MenuPlacement",
+				"module": "react-select",
+				"isDefault": true
+			}
+		],
+		"Options": [
+			{
+				"name": "Options",
+				"module": "react-select",
+				"isDefault": true
+			}
+		],
+		"StylesConfig": [
+			{
+				"name": "StylesConfig",
+				"module": "react-select",
+				"isDefault": true
+			}
+		],
+		"CheckBox": [
+			{
+				"name": "CheckBox",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\inputs\\CheckBox.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"Spanish": [
+			{
+				"name": "Spanish",
+				"module": "flatpickr/dist/l10n/es.js",
+				"isDefault": false
+			}
+		],
+		"Flatpickr": [
+			{
+				"name": "Flatpickr",
+				"module": "react-flatpickr",
+				"isDefault": true
+			}
+		],
+		"Calendar": [
+			{
+				"name": "Calendar",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\inputs\\Calendar.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"RightArrow": [
+			{
+				"name": "RightArrow",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\RightArrow.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"RandomIcon": [
+			{
+				"name": "RandomIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\RandomIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"MinusIcon": [
+			{
+				"name": "MinusIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\MinusIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"LoaderIcon": [
+			{
+				"name": "LoaderIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\LoaderIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"Help": [
+			{
+				"name": "Help",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\Help.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"Candado": [
+			{
+				"name": "Candado",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\Candado.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"AlertIcon": [
+			{
+				"name": "AlertIcon",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\icons\\AlertIcon.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"ActionButton": [
+			{
+				"name": "ActionButton",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\components\\atoms\\ActionButton.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"Home": [
+			{
+				"name": "Home",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"LoginPage": [
+			{
+				"name": "LoginPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\login\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"metadata": [
+			{
+				"name": "metadata",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\empresas\\[id]\\asientos_contables\\crear\\page.tsx",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"RootLayout": [
+			{
+				"name": "RootLayout",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\layout.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"type { Metadata": [
+			{
+				"name": "type { Metadata",
+				"module": "next",
+				"isDefault": true
+			}
+		],
+		"Geist": [
+			{
+				"name": "Geist",
+				"module": "next/font/google",
+				"isDefault": false
+			}
+		],
+		"Geist_Mono": [
+			{
+				"name": "Geist_Mono",
+				"module": "next/font/google",
+				"isDefault": false
+			}
+		],
+		"NomenclaturaDetallesPage": [
+			{
+				"name": "NomenclaturaDetallesPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\nomenclatura\\[id]\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"useRef": [
+			{
+				"name": "useRef",
+				"module": "react",
+				"isDefault": false
+			}
+		],
+		"useParams": [
+			{
+				"name": "useParams",
+				"module": "next/navigation",
+				"isDefault": false
+			}
+		],
+		"NomenclaturaList": [
+			{
+				"name": "NomenclaturaList",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\nomenclatura\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"CrearNomenclaturaPage": [
+			{
+				"name": "CrearNomenclaturaPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\nomenclatura\\crear\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"RegimenIvaEmpresaPage": [
+			{
+				"name": "RegimenIvaEmpresaPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\empresa\\[usuario]\\regimen\\iva\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"EditarRegimenIvaEmpresaPage": [
+			{
+				"name": "EditarRegimenIvaEmpresaPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\empresa\\[usuario]\\regimen\\iva\\editar\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"RegimenIsrEmpresaPage": [
+			{
+				"name": "RegimenIsrEmpresaPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\empresa\\[usuario]\\regimen\\isr\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"EditarRegimenIsrEmpresaPage": [
+			{
+				"name": "EditarRegimenIsrEmpresaPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\empresa\\[usuario]\\regimen\\isr\\editar\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"ProfileEmpresaClient": [
+			{
+				"name": "ProfileEmpresaClient",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\empresa\\[usuario]\\perfil\\ProfileEmpresaClient.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"getSession": [
+			{
+				"name": "getSession",
+				"module": "@/lib/auth",
+				"isDefault": false
+			}
+		],
+		"notFound": [
+			{
+				"name": "notFound",
+				"module": "next/navigation",
+				"isDefault": false
+			}
+		],
+		"redirect": [
+			{
+				"name": "redirect",
+				"module": "next/navigation",
+				"isDefault": false
+			}
+		],
+		"EditarPerfilEmpresaPage": [
+			{
+				"name": "EditarPerfilEmpresaPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\empresa\\[usuario]\\perfil\\editar\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"EmpresaDashboard": [
+			{
+				"name": "EmpresaDashboard",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\empresa\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"NomenclaturaDetalleEmpresaPage": [
+			{
+				"name": "NomenclaturaDetalleEmpresaPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\empresa\\[usuario]\\nomenclatura\\[id]\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"NomenclaturaListEmpresa": [
+			{
+				"name": "NomenclaturaListEmpresa",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\empresa\\[usuario]\\nomenclatura\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"CrearNomenclaturaEmpresa": [
+			{
+				"name": "CrearNomenclaturaEmpresa",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\empresa\\[usuario]\\nomenclatura\\crear\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"RegimenIvaContadorPage": [
+			{
+				"name": "RegimenIvaContadorPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\regimen\\iva\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"EditarRegimenIvaContadorPage": [
+			{
+				"name": "EditarRegimenIvaContadorPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\regimen\\iva\\editar\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"RegimenIsrContadorPage": [
+			{
+				"name": "RegimenIsrContadorPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\regimen\\isr\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"EditarRegimenIsrContadorPage": [
+			{
+				"name": "EditarRegimenIsrContadorPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\regimen\\isr\\editar\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"ProfileClient": [
+			{
+				"name": "ProfileClient",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\perfil\\ProfileClient.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"type CSSProperties": [
+			{
+				"name": "type CSSProperties",
+				"module": "react",
+				"isDefault": false
+			}
+		],
+		"EditarPerfilContadorPage": [
+			{
+				"name": "EditarPerfilContadorPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\perfil\\editar\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"ContadorDashboard": [
+			{
+				"name": "ContadorDashboard",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"NomenclaturaDetalleContadorPage": [
+			{
+				"name": "NomenclaturaDetalleContadorPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\nomenclatura\\[id]\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"useCallback": [
+			{
+				"name": "useCallback",
+				"module": "react",
+				"isDefault": false
+			}
+		],
+		"NomenclaturaListContador": [
+			{
+				"name": "NomenclaturaListContador",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\nomenclatura\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"CrearNomenclaturaContador": [
+			{
+				"name": "CrearNomenclaturaContador",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\nomenclatura\\crear\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"EmpresaDashboardPage": [
+			{
+				"name": "EmpresaDashboardPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\empresas\\[id]\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"EmpresaDocumentoUUIDPage": [
+			{
+				"name": "EmpresaDocumentoUUIDPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\empresas\\[id]\\documentos\\[uuid]\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"EmpresaRetencionesIVAPage": [
+			{
+				"name": "EmpresaRetencionesIVAPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\empresas\\[id]\\documentos\\retenciones\\iva\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"EmpresaCargarRetencionesIVAPage": [
+			{
+				"name": "EmpresaCargarRetencionesIVAPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\empresas\\[id]\\documentos\\retenciones\\iva\\cargar\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"GestionesPage": [
+			{
+				"name": "GestionesPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\empresas\\[id]\\gestiones\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"type { FolioLibro": [
+			{
+				"name": "type { FolioLibro",
+				"module": "@/types/empresas",
+				"isDefault": true
+			}
+		],
+		"EmpresaRetencionesISRPage": [
+			{
+				"name": "EmpresaRetencionesISRPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\empresas\\[id]\\documentos\\retenciones\\isr\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"EmpresaCargarRetencionesISRPage": [
+			{
+				"name": "EmpresaCargarRetencionesISRPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\empresas\\[id]\\documentos\\retenciones\\isr\\cargar\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"EmpresaDocumentosRectificacionesPage": [
+			{
+				"name": "EmpresaDocumentosRectificacionesPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\empresas\\[id]\\documentos\\rectificaciones\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"EmpresaDocumentosPage": [
+			{
+				"name": "EmpresaDocumentosPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\empresas\\[id]\\documentos\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"EmpresaDocumentosCreatePage": [
+			{
+				"name": "EmpresaDocumentosCreatePage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\empresas\\[id]\\documentos\\create\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"EmpresaDocumentosCargaPage": [
+			{
+				"name": "EmpresaDocumentosCargaPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\empresas\\[id]\\documentos\\carga\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"ConfigurarEmpresaPage": [
+			{
+				"name": "ConfigurarEmpresaPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\empresas\\[id]\\configurar\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"BancosPage": [
+			{
+				"name": "BancosPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\empresas\\[id]\\bancos\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"type { CuentaBancariaForm": [
+			{
+				"name": "type { CuentaBancariaForm",
+				"module": "@/types/empresas",
+				"isDefault": true
+			}
+		],
+		"EmpresasPage": [
+			{
+				"name": "EmpresasPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\empresas\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"CrearEmpresaPage": [
+			{
+				"name": "CrearEmpresaPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\contador\\[usuario]\\empresas\\crear\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"EditarUsuarioPage": [
+			{
+				"name": "EditarUsuarioPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\admin\\usuarios\\[id]\\editar\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"UsuariosPage": [
+			{
+				"name": "UsuariosPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\admin\\usuarios\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"CrearUsuarioPage": [
+			{
+				"name": "CrearUsuarioPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\admin\\usuarios\\crear\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"RegimenIvaPage": [
+			{
+				"name": "RegimenIvaPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\admin\\regimen\\iva\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"EditarRegimenIvaPage": [
+			{
+				"name": "EditarRegimenIvaPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\admin\\regimen\\iva\\editar\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"RegimenIsrPage": [
+			{
+				"name": "RegimenIsrPage",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\admin\\regimen\\isr\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"AdminDashboard": [
+			{
+				"name": "AdminDashboard",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\dashboard\\admin\\page.tsx",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"runtime": [
+			{
+				"name": "runtime",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\api\\health\\route.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"Role": [
+			{
+				"name": "Role",
+				"module": "@prisma/client",
+				"isDefault": false
+			}
+		],
+		"bcrypt": [
+			{
+				"name": "bcrypt",
+				"module": "bcryptjs",
+				"isDefault": true
+			}
+		],
+		"v2 as cloudinary": [
+			{
+				"name": "v2 as cloudinary",
+				"module": "cloudinary",
+				"isDefault": false
+			}
+		],
+		"type { IUploadRetencionIVA": [
+			{
+				"name": "type { IUploadRetencionIVA",
+				"module": "@/utils",
+				"isDefault": true
+			}
+		],
+		"Decimal": [
+			{
+				"name": "Decimal",
+				"module": "@prisma/client/runtime/library",
+				"isDefault": false
+			}
+		],
+		"requireSessionAndTenant": [
+			{
+				"name": "requireSessionAndTenant",
+				"module": "@/app/api/_utils/nomenclaturaTenant",
+				"isDefault": false
+			}
+		],
+		"revalidate": [
+			{
+				"name": "revalidate",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\api\\empresas\\route.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"randomUUID": [
+			{
+				"name": "randomUUID",
+				"module": "crypto",
+				"isDefault": false
+			}
+		],
+		"path": [
+			{
+				"name": "path",
+				"module": "path",
+				"isDefault": true
+			}
+		],
+		"ExcelJS": [
+			{
+				"name": "ExcelJS",
+				"module": "exceljs",
+				"isDefault": true
+			}
+		],
+		"type { IFolioBody": [
+			{
+				"name": "type { IFolioBody",
+				"module": "@/utils",
+				"isDefault": true
+			}
+		],
+		"is_value_unique": [
+			{
+				"name": "is_value_unique",
+				"module": "@/utils/functions/validateData",
+				"isDefault": false
+			}
+		],
+		"toNumber": [
+			{
+				"name": "toNumber",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\api\\documentos\\masivo\\utils.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"getCuentasByEmpresa": [
+			{
+				"name": "getCuentasByEmpresa",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\api\\documentos\\masivo\\utils.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"partidaDebeHandler": [
+			{
+				"name": "partidaDebeHandler",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\api\\documentos\\masivo\\utils.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"partidaHaberHandler": [
+			{
+				"name": "partidaHaberHandler",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\api\\documentos\\masivo\\utils.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"partidaIvaHandler": [
+			{
+				"name": "partidaIvaHandler",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\api\\documentos\\masivo\\utils.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"partidaDescuentoHandler": [
+			{
+				"name": "partidaDescuentoHandler",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\api\\documentos\\masivo\\utils.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"updateCorrelativo": [
+			{
+				"name": "updateCorrelativo",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\src\\app\\api\\documentos\\masivo\\utils.ts",
+				"type": "const",
+				"isDefault": false
+			}
+		],
+		"type { IFolioPutBody": [
+			{
+				"name": "type { IFolioPutBody",
+				"module": "@/utils",
+				"isDefault": true
+			}
+		],
+		"TenantType": [
+			{
+				"name": "TenantType",
+				"module": "@prisma/client",
+				"isDefault": false
+			}
+		],
+		"TenantRole": [
+			{
+				"name": "TenantRole",
+				"module": "@prisma/client",
+				"isDefault": false
+			}
+		],
+		"nextConfig": [
+			{
+				"name": "nextConfig",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\next.config.ts",
+				"isDefault": true
+			}
+		],
+		"type { NextConfig": [
+			{
+				"name": "type { NextConfig",
+				"module": "next",
+				"isDefault": true
+			}
+		],
+		"type { ResolvingMetadata": [
+			{
+				"name": "type { ResolvingMetadata",
+				"module": "next/dist/lib/metadata/types/metadata-interface.js",
+				"isDefault": true
+			},
+			{
+				"name": "type { ResolvingMetadata",
+				"module": "next/types.js",
+				"isDefault": true
+			}
+		],
+		"ResolvingViewport": [
+			{
+				"name": "ResolvingViewport",
+				"module": "next/dist/lib/metadata/types/metadata-interface.js",
+				"isDefault": true
+			},
+			{
+				"name": "ResolvingViewport",
+				"module": "next/types.js",
+				"isDefault": true
+			}
+		],
+		"the": [
+			{
+				"name": "the",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\.next\\types\\validator.ts",
+				"isDefault": false
+			}
+		],
+		"ParamsOf": [
+			{
+				"name": "ParamsOf",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\.next\\types\\routes.d.ts",
+				"type": "type",
+				"isDefault": false
+			}
+		],
+		"type": [
+			{
+				"name": "type",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\.next\\types\\routes.d.ts",
+				"isDefault": false
+			}
+		],
+		"Layout": [
+			{
+				"name": "Layout",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\.next\\types\\routes.d.ts",
+				"type": "function",
+				"isDefault": true
+			}
+		],
+		"async": [
+			{
+				"name": "async",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\.next\\types\\routes.d.ts",
+				"isDefault": false
+			}
+		],
+		"PageProps": [
+			{
+				"name": "PageProps",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\.next\\types\\app\\api\\cuentas\\empresa\\route.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"LayoutProps": [
+			{
+				"name": "LayoutProps",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\.next\\types\\app\\api\\cuentas\\empresa\\route.ts",
+				"type": "interface",
+				"isDefault": false
+			}
+		],
+		"unstable_cacheLife": [
+			{
+				"name": "unstable_cacheLife",
+				"path": "c:\\Users\\Kristen\\Desktop\\Nueva carpeta\\GnioContable\\gnio-system\\.next\\types\\cache-life.d.ts",
+				"type": "function",
+				"isDefault": false
+			}
+		]
+	}
+}

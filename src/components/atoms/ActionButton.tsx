@@ -29,7 +29,8 @@ export const ActionButton = ({
                 'relative inline-block',
                 handleVariant(variant),
                 {
-                    '!bg-slate-400 !cursor-not-allowed': loading || disabled
+                    '!bg-slate-200 !text-slate-500 !shadow-none !cursor-not-allowed':
+                        loading || disabled
                 },
                 className
             )}
@@ -43,7 +44,7 @@ export const ActionButton = ({
                 {loading ? <LoadIcon /> : icon}
             </div>
             {isTooltipVisible && !loading && !disabled && (
-                <div className="absolute z-10 bg-background text-white py-1 px-2 text-sm rounded-md shadow-md bottom-10 left-1/2 transform -translate-x-1/2 min-w-24 ">
+                <div className="absolute z-10 rounded-md border border-white/10 bg-slate-950/90 px-2 py-1 text-xs font-medium text-slate-100 shadow-xl bottom-10 left-1/2 transform -translate-x-1/2 min-w-24">
                     {text}
                 </div>
             )}
@@ -53,25 +54,24 @@ export const ActionButton = ({
 
 const handleVariant = (variant: string) => {
     const configGeneral =
-        'middle none center rounded-lg p-2 text-xs shadow-md transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:opacity-50 disabled:shadow-none max-h-[40px]';
+        'inline-flex items-center justify-center rounded-xl p-2.5 text-xs font-semibold tracking-[0.02em] shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)] disabled:opacity-60 disabled:cursor-not-allowed';
 
     switch (variant) {
         case 'edit':
-            // primary “fuerte”
-            return `${configGeneral} bg-blue-600 text-white shadow-blue-500/20 hover:bg-blue-700 hover:shadow-blue-500/40`;
+            return `${configGeneral} bg-slate-900 text-white shadow-slate-900/30 hover:bg-slate-800 hover:shadow-slate-900/40 focus-visible:ring-slate-500/60`;
         case 'save':
-            return `${configGeneral} bg-green-500 text-white shadow-green-500/20 hover:shadow-green-500/40`;
+            return `${configGeneral} bg-teal-600 text-white shadow-teal-600/30 hover:bg-teal-500 hover:shadow-teal-500/40 focus-visible:ring-teal-500/60`;
         case 'delete':
-            return `${configGeneral} bg-red-500 text-white shadow-red-500/20 hover:shadow-red-500/40`;
+            return `${configGeneral} bg-rose-600 text-white shadow-rose-600/30 hover:bg-rose-500 hover:shadow-rose-500/40 focus-visible:ring-rose-500/60`;
         default:
-            return `${configGeneral} bg-blue-600 text-white shadow-blue-500/20 hover:bg-blue-700 hover:shadow-blue-500/40`;
+            return `${configGeneral} bg-slate-900 text-white shadow-slate-900/30 hover:bg-slate-800 hover:shadow-slate-900/40 focus-visible:ring-slate-500/60`;
     }
 };
 
 const LoadIcon = () => {
     return (
         <svg
-            className="animate-spin h-4 w-4 text-white"
+            className="h-4 w-4 animate-spin text-current"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"

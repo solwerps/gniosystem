@@ -33,8 +33,8 @@ export interface IDocumento {
   bebidas_no_alcoholicas: number;
   tarifa_portuaria: number;
   tipo_operacion: "venta" | "compra";
-  cuenta_debe: number | null; // Int? en Prisma
-  cuenta_haber: number | null; // Int? en Prisma
+  cuenta_debe: string | number | null; // Int? en Prisma o etiqueta formateada
+  cuenta_haber: string | number | null; // Int? en Prisma o etiqueta formateada
   tipo: string;
   empresa_id: number;
   estado: number;
@@ -81,8 +81,8 @@ export interface IFactura {
   marca_anulado: string;
   fecha_anulacion: string | null;
   tipo_operacion: 'venta' | 'compra';
-  cuenta_debe: number | null;
-  cuenta_haber: number | null;
+  cuenta_debe: string | number | null;
+  cuenta_haber: string | number | null;
   tipo: string;
   empresa_id: number;
   estado: number;
@@ -127,8 +127,8 @@ export interface IGetDocumento {
   bebidas_no_alcoholicas: number;
   tarifa_portuaria: number;
   tipo_operacion: "venta" | "compra";
-  cuenta_debe: number | null;
-  cuenta_haber: number | null;
+  cuenta_debe: string | number | null;
+  cuenta_haber: string | number | null;
   tipo: TipoFactura;
   empresa_id: number;
   estado: number;
@@ -171,8 +171,8 @@ export interface IFact {
   bebidas_no_alcoholicas: number;
   tarifa_portuaria: number;
   tipo_operacion: string;
-  cuenta_debe: number | null;
-  cuenta_haber: number | null;
+  cuenta_debe: string | number | null;
+  cuenta_haber: string | number | null;
   tipo: string;
   empresa_id: number;
   estado: number;

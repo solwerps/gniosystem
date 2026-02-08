@@ -149,7 +149,7 @@ export default function EmpresasPage() {
 
             <button
               onClick={goCargar}
-              className="inline-flex items-center gap-2 rounded-lg px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700"
+              className="inline-flex items-center gap-2 rounded-lg px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white shadow"
               title="Carga masiva por archivo"
             >
               <span className="text-lg leading-none">⭳</span>

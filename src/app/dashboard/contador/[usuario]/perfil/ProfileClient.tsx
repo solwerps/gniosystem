@@ -1,7 +1,8 @@
 // src/app/dashboard/contador/[usuario]/perfil/ProfileClient.tsx
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Plus, Trash2, Bell, CheckCircle2, Clock, AlertCircle } from "lucide-react";
 
 type TaskEstado = "PRIORIDAD" | "PENDIENTE" | "EN_TRABAJO" | "REALIZADO";
 
@@ -13,6 +14,12 @@ type Tarea = {
   fecha?: string | null; // ISO (guardamos T12:00:00Z para evitar desajustes)
   recordatorio: boolean;
   empresa?: string | null; // CONTADOR: Empresa
+};
+
+type EmpresaOpt = {
+  id: number;
+  nombre: string;
+  nit?: string | null;
 };
 
 type UserView = {
@@ -48,6 +55,43 @@ export default function ProfileClient({
   const [tab, setTab] = useState<"PERFIL" | "ESPECIFICOS">("PERFIL");
   const [rows, setRows] = useState<Tarea[]>(tareas);
   const [savingRow, setSavingRow] = useState<number | null>(null);
+  const [empresas, setEmpresas] = useState<EmpresaOpt[]>([]);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  const estadoConfig = {
+    PRIORIDAD: {
+      label: "Prioridad",
+      bg: "bg-gradient-to-r from-red-500 to-red-600",
+      hoverBg: "hover:from-red-600 hover:to-red-700",
+      icon: AlertCircle,
+      textColor: "text-white",
+      ringColor: "ring-red-400",
+    },
+    PENDIENTE: {
+      label: "Pendiente",
+      bg: "bg-gradient-to-r from-amber-500 to-amber-600",
+      hoverBg: "hover:from-amber-600 hover:to-amber-700",
+      icon: Clock,
+      textColor: "text-white",
+      ringColor: "ring-amber-400",
+    },
+    EN_TRABAJO: {
+      label: "En trabajo",
+      bg: "bg-gradient-to-r from-blue-500 to-blue-600",
+      hoverBg: "hover:from-blue-600 hover:to-blue-700",
+      icon: Clock,
+      textColor: "text-white",
+      ringColor: "ring-blue-400",
+    },
+    REALIZADO: {
+      label: "Finalizado",
+      bg: "bg-gradient-to-r from-green-500 to-green-600",
+      hoverBg: "hover:from-green-600 hover:to-green-700",
+      icon: CheckCircle2,
+      textColor: "text-white",
+      ringColor: "ring-green-400",
+    },
+  };
 
   // ---- Toasts (para notificaciones en-app) ----
   const [toasts, setToasts] = useState<{ id: string; title: string; body: string }[]>([]);
@@ -59,6 +103,37 @@ export default function ProfileClient({
   function dismissToast(id: string) {
     setToasts((t) => t.filter((x) => x.id !== id));
   }
+
+  // Evita scroll del body cuando el dropdown esta abierto
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const prevBodyOverflow = document.body.style.overflow;
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    if (openDropdown) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = prevBodyOverflow || "";
+      document.documentElement.style.overflow = prevHtmlOverflow || "";
+    }
+    return () => {
+      document.body.style.overflow = prevBodyOverflow || "";
+      document.documentElement.style.overflow = prevHtmlOverflow || "";
+    };
+  }, [openDropdown]);
+
+  // Cierra el dropdown al hacer click fuera
+  useEffect(() => {
+    if (!openDropdown) return;
+    const onDocMouseDown = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target?.closest(`[data-estado-dropdown="${openDropdown}"]`)) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener("mousedown", onDocMouseDown);
+    return () => document.removeEventListener("mousedown", onDocMouseDown);
+  }, [openDropdown]);
 
   // ---- Fila de "Nueva tarea" (totalmente editable) ----
   const emptyDraft = {
@@ -73,6 +148,49 @@ export default function ProfileClient({
 
   // refs para enfocar al crear
   const inputRefs = useRef<Record<number, HTMLInputElement | null>>({});
+
+  // ---------- Empresas del contador ----------
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch(`/api/empresas?tenant=${usuarioSlug}`, {
+          cache: "no-store",
+          credentials: "include",
+        });
+        const j = await res.json();
+        if (!alive) return;
+        setEmpresas(Array.isArray(j?.data) ? j.data : []);
+      } catch {
+        if (!alive) return;
+        setEmpresas([]);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [usuarioSlug]);
+
+  const renderEmpresaOptions = (current?: string | null) => {
+    const curr = (current ?? "").trim();
+    const hasCurr =
+      !curr ||
+      curr === "Todos" ||
+      empresas.some((e) => e.nombre === curr);
+    return (
+      <>
+        <option value="">Seleccionar empresa</option>
+        <option value="Todos">Todos</option>
+        {empresas.map((e) => (
+          <option key={e.id} value={e.nombre}>
+            {e.nombre}
+            {e.nit ? ` (${e.nit})` : ""}
+          </option>
+        ))}
+        {!hasCurr && curr && <option value={curr}>{curr}</option>}
+      </>
+    );
+  };
 
   // ---------- Utils de fecha ----------
   function isoToLocalYMD(iso?: string | null) {
@@ -123,30 +241,60 @@ export default function ProfileClient({
   }
 
   // ---------- Estilos ----------
-  function estadoColorClass(e: TaskEstado) {
-    switch (e) {
-      case "PRIORIDAD":
-        return "bg-rose-50 border-rose-300 text-rose-800";
-      case "PENDIENTE":
-        return "bg-amber-50 border-amber-300 text-amber-800";
-      case "EN_TRABAJO":
-        return "bg-sky-50 border-sky-300 text-sky-800";
-      case "REALIZADO":
-        return "bg-emerald-50 border-emerald-300 text-emerald-800";
-      default:
-        return "";
-    }
-  }
   function recordatorioColorClass(flag: boolean) {
     return flag
-      ? "bg-emerald-50 border-emerald-300 text-emerald-800"
-      : "bg-rose-50 border-rose-300 text-rose-800";
+      ? "bg-blue-50 text-blue-700 border-blue-200"
+      : "bg-slate-50 text-slate-600 border-slate-200";
   }
-  function recordatorioInlineStyle(flag: boolean): CSSProperties {
-    // Forzar color en selects (algunos navegadores ignoran el bg del select)
-    return flag
-      ? { backgroundColor: "#ecfdf5", borderColor: "#6ee7b7", color: "#065f46" }
-      : { backgroundColor: "#fff1f2", borderColor: "#fda4af", color: "#9f1239" };
+
+  const renderEstadoBadge = (
+    estado: TaskEstado,
+    taskId: string,
+    onChange: (newEstado: TaskEstado) => void
+  ) => {
+    const config = estadoConfig[estado];
+    const Icon = config.icon;
+    const isOpen = openDropdown === taskId;
+
+    return (
+      <div className={`relative ${isOpen ? "z-50" : ""}`} data-estado-dropdown={taskId}>
+        <button
+          type="button"
+          onClick={() => setOpenDropdown(isOpen ? null : taskId)}
+          className={`w-full px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center justify-center gap-2 shadow-sm ${config.bg} ${config.hoverBg} ${config.textColor} ring-2 ${config.ringColor} ring-opacity-20`}
+        >
+          <Icon className="w-4 h-4" />
+          <span>{config.label}</span>
+        </button>
+
+        {isOpen && (
+          <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-md shadow-2xl border-2 border-slate-200 overflow-hidden z-50 animate-dropdown">
+            {Object.entries(estadoConfig).map(([key, cfg]) => {
+              const OptionIcon = cfg.icon;
+              return (
+                <button
+                  type="button"
+                  key={key}
+                  onClick={() => {
+                    onChange(key as TaskEstado);
+                    setOpenDropdown(null);
+                  }}
+                  className={`w-full px-3 py-2 text-xs flex items-center gap-2 transition-colors ${
+                    key === estado ? "bg-blue-50 font-semibold" : "hover:bg-slate-50"
+                  }`}
+                >
+                  <div className={`w-6 h-6 rounded-md ${cfg.bg} flex items-center justify-center`}>
+                    <OptionIcon className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-slate-700">{cfg.label}</span>
+                    {key === estado && <CheckCircle2 className="w-4 h-4 text-blue-600 ml-auto" />}
+                  </button>
+                );
+              })}
+          </div>
+        )}
+      </div>
+    );
   }
 
   // ---------- Notificaciones ----------
@@ -384,95 +532,94 @@ export default function ProfileClient({
 
       <hr className="my-4" />
 
-      {/* LISTA DE TAREAS (todo en el mismo cuadro) */}
-      <h2 className="text-2xl font-extrabold mb-1">LISTA DE TAREAS DEL MES</h2>
-      <p className="text-slate-600 mb-4">Agrega tus pendientes y recordatorios aquí</p>
+      {/* LISTA DE TAREAS */}
+      <div className="mb-6">
+        <h2 className="text-3xl font-bold text-slate-900 mb-2">
+          LISTA DE TAREAS DEL MES
+        </h2>
+        <p className="text-slate-600">Agrega tus pendientes y recordatorios aquí</p>
+      </div>
 
-      <div className="overflow-x-auto border rounded bg-white shadow">
-        <table className="min-w-full text-sm">
-          <thead>
-            <tr className="bg-slate-800 text-white">
-              <th className="p-2 border text-center w-16">Añadir</th>
-              <th className="p-2 border text-center w-20">Borrar</th>
-              <th className="p-2 border">Tarea</th>
-              <th className="p-2 border">Estado</th>
-              <th className="p-2 border">Tipo</th>
-              <th className="p-2 border">Fecha</th>
-              <th className="p-2 border">Recordatorio</th>
-              <th className="p-2 border">Empresa</th>
-            </tr>
-          </thead>
-          <tbody>
+      <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-visible">
+        <div className="overflow-x-auto overflow-y-visible">
+          <table className="min-w-full">
+            <thead>
+              <tr className="bg-gradient-to-r from-blue-600 to-blue-700">
+                <th className="px-4 py-4 text-left text-sm font-semibold text-white w-24">Añadir</th>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-white w-24">Borrar</th>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-white min-w-[250px]">Tarea</th>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-white w-40">Estado</th>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-white w-48">Tipo</th>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-white w-40">Fecha</th>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-white w-36">Recordatorio</th>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-white min-w-[250px]">Empresa</th>
+              </tr>
+            </thead>
+            <tbody>
             {/* Fila de NUEVA TAREA */}
-            <tr>
-              <td className="p-2 border text-center">
+            <tr className="bg-blue-50 border-b-2 border-blue-200">
+              <td className="px-4 py-3">
                 <button
                   onClick={createFromDraft}
                   disabled={!draft.titulo.trim()}
-                  className={`px-2 py-1 rounded font-semibold ${
+                  className={`w-full px-4 py-2 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
                     draft.titulo.trim()
-                      ? "bg-green-700 text-white hover:bg-green-800"
-                      : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                      ? "bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800 shadow-md hover:shadow-lg"
+                      : "bg-slate-200 text-slate-400 cursor-not-allowed"
                   }`}
                   title="Añadir tarea"
                 >
-                  +
+                  <Plus className="w-4 h-4" />
                 </button>
               </td>
-              <td className="p-2 border text-center">
+              <td className="px-4 py-3">
                 <button
                   disabled
-                  className="px-2 py-1 rounded bg-gray-200 text-gray-400 cursor-not-allowed"
+                  className="w-full px-4 py-2 rounded-lg bg-slate-100 text-slate-300 cursor-not-allowed flex items-center justify-center"
                   title="Borrar"
                 >
-                  🗑
+                  <Trash2 className="w-4 h-4" />
                 </button>
               </td>
               {/* Tarea */}
-              <td className="p-2 border">
+              <td className="px-4 py-3">
                 <input
-                  className="w-full px-2 py-1 border rounded"
+                  className="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                   value={draft.titulo}
                   onChange={(e) => setDraft((d) => ({ ...d, titulo: e.target.value }))}
                   placeholder="Nueva tarea"
                 />
               </td>
               {/* Estado */}
-              <td className="p-2 border">
-                <select
-                  className={`w-full px-2 py-1 border rounded ${estadoColorClass(draft.estado)}`}
-                  value={draft.estado}
-                  onChange={(e) => setDraft((d) => ({ ...d, estado: e.target.value as TaskEstado }))}
-                >
-                  <option value="PRIORIDAD">Prioridad</option>
-                  <option value="PENDIENTE">Pendiente</option>
-                  <option value="EN_TRABAJO">En trabajo</option>
-                  <option value="REALIZADO">Finalizado</option>
-                </select>
+              <td className="px-4 py-3">
+                {renderEstadoBadge(draft.estado, "draft", (newEstado) =>
+                  setDraft((d) => ({ ...d, estado: newEstado }))
+                )}
               </td>
               {/* Tipo */}
-              <td className="p-2 border">
+              <td className="px-4 py-3">
                 <input
-                  className="w-full px-2 py-1 border rounded"
+                  className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                   value={draft.tipo}
                   onChange={(e) => setDraft((d) => ({ ...d, tipo: e.target.value }))}
-                  placeholder="Subir facturas / IVA / …"
+                  placeholder="Subir facturas / IVA / ..."
                 />
               </td>
               {/* Fecha */}
-              <td className="p-2 border">
+              <td className="px-4 py-3">
                 <input
                   type="date"
-                  className="px-2 py-1 border rounded"
+                  className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                   value={draft.fecha}
                   onChange={(e) => setDraft((d) => ({ ...d, fecha: e.target.value }))}
                 />
               </td>
               {/* Recordatorio */}
-              <td className="p-2 border">
+              <td className="px-4 py-3">
                 <select
-                  className={`w-full px-2 py-1 border rounded ${recordatorioColorClass(draft.recordatorio)}`}
-                  style={recordatorioInlineStyle(draft.recordatorio)}
+                  className={`w-full px-3 py-2 border-2 rounded-lg font-medium transition-all ${recordatorioColorClass(
+                    draft.recordatorio
+                  )}`}
                   value={draft.recordatorio ? "Si" : "No"}
                   onChange={(e) => setDraft((d) => ({ ...d, recordatorio: e.target.value === "Si" }))}
                 >
@@ -481,14 +628,13 @@ export default function ProfileClient({
                 </select>
               </td>
               {/* Empresa */}
-              <td className="p-2 border">
+              <td className="px-4 py-3">
                 <select
-                  className="w-full px-2 py-1 border rounded"
+                  className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                   value={draft.empresa}
                   onChange={(e) => setDraft((d) => ({ ...d, empresa: e.target.value }))}
                 >
-                  <option value="">Seleccionar empresa</option>
-                  <option value="Todos">Todos</option>
+                  {renderEmpresaOptions(draft.empresa)}
                 </select>
               </td>
             </tr>
@@ -497,28 +643,28 @@ export default function ProfileClient({
             {rows.map((r) => {
               const canDelete = !!(r.titulo && r.titulo.trim());
               return (
-                <tr key={r.id} className="hover:bg-gray-50">
-                  <td className="p-2 border text-center" />
-                  <td className="p-2 border text-center">
+                <tr key={r.id} className="border-b border-slate-200 hover:bg-blue-50 transition-colors">
+                  <td className="px-4 py-3" />
+                  <td className="px-4 py-3">
                     <button
                       onClick={() => canDelete && delRow(r)}
                       disabled={!canDelete}
-                      className={`px-2 py-1 rounded ${
+                      className={`w-full px-4 py-2 rounded-lg transition-all flex items-center justify-center ${
                         canDelete
-                          ? "bg-red-100 text-red-700 hover:bg-red-200"
-                          : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                          ? "bg-red-50 text-red-600 hover:bg-red-100 border-2 border-red-200"
+                          : "bg-slate-100 text-slate-300 cursor-not-allowed border-2 border-slate-200"
                       }`}
                       title="Eliminar tarea"
                     >
-                      🗑
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </td>
 
                   {/* Tarea */}
-                  <td className="p-2 border">
+                  <td className="px-4 py-3">
                     <input
                       ref={(el) => (inputRefs.current[r.id] = el)}
-                      className="w-full px-2 py-1 border rounded"
+                      className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium"
                       value={r.titulo}
                       onChange={(e) =>
                         setRows((arr) =>
@@ -526,42 +672,35 @@ export default function ProfileClient({
                         )
                       }
                       onBlur={(e) => patchRow(r.id, { titulo: e.currentTarget.value })}
-                      placeholder="Describe la tarea…"
+                      placeholder="Describe la tarea..."
                     />
                   </td>
 
                   {/* Estado */}
-                  <td className="p-2 border">
-                    <select
-                      className={`w-full px-2 py-1 border rounded ${estadoColorClass(r.estado)}`}
-                      value={r.estado}
-                      onChange={(e) => patchRow(r.id, { estado: e.target.value as TaskEstado })}
-                    >
-                      <option value="PRIORIDAD">Prioridad</option>
-                      <option value="PENDIENTE">Pendiente</option>
-                      <option value="EN_TRABAJO">En trabajo</option>
-                      <option value="REALIZADO">Finalizado</option>
-                    </select>
+                  <td className="px-4 py-3">
+                    {renderEstadoBadge(r.estado, String(r.id), (newEstado) =>
+                      patchRow(r.id, { estado: newEstado })
+                    )}
                   </td>
 
                   {/* Tipo */}
-                  <td className="p-2 border">
+                  <td className="px-4 py-3">
                     <input
-                      className="w-full px-2 py-1 border rounded"
+                      className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                       value={r.tipo ?? ""}
                       onChange={(e) =>
                         setRows((arr) => arr.map((x) => (x.id === r.id ? { ...x, tipo: e.target.value } : x)))
                       }
                       onBlur={(e) => patchRow(r.id, { tipo: e.currentTarget.value })}
-                      placeholder="Subir facturas / IVA / …"
+                      placeholder="Subir facturas / IVA / ..."
                     />
                   </td>
 
                   {/* Fecha */}
-                  <td className="p-2 border">
+                  <td className="px-4 py-3">
                     <input
                       type="date"
-                      className="px-2 py-1 border rounded"
+                      className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                       value={isoToLocalYMD(r.fecha)}
                       onChange={async (e) => {
                         const v = e.target.value ? ymdToStableISO(e.target.value) : null;
@@ -572,10 +711,11 @@ export default function ProfileClient({
                   </td>
 
                   {/* Recordatorio */}
-                  <td className="p-2 border">
+                  <td className="px-4 py-3">
                     <select
-                      className={`w-full px-2 py-1 border rounded ${recordatorioColorClass(!!r.recordatorio)}`}
-                      style={recordatorioInlineStyle(!!r.recordatorio)}
+                      className={`w-full px-3 py-2 border-2 rounded-lg font-medium transition-all ${recordatorioColorClass(
+                        !!r.recordatorio
+                      )}`}
                       value={r.recordatorio ? "Si" : "No"}
                       onChange={async (e) => {
                         const val = e.target.value === "Si";
@@ -594,14 +734,13 @@ export default function ProfileClient({
                   </td>
 
                   {/* Empresa */}
-                  <td className="p-2 border">
+                  <td className="px-4 py-3">
                     <select
-                      className="w-full px-2 py-1 border rounded"
+                      className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                       value={r.empresa ?? ""}
                       onChange={(e) => patchRow(r.id, { empresa: e.target.value })}
                     >
-                      <option value="">Seleccionar empresa</option>
-                      <option value="Todos">Todos</option>
+                      {renderEmpresaOptions(r.empresa ?? "")}
                     </select>
                   </td>
                 </tr>
@@ -610,21 +749,32 @@ export default function ProfileClient({
           </tbody>
         </table>
       </div>
+      </div>
 
-      {savingRow && <div className="mt-3 text-xs text-slate-500">Guardando cambios…</div>}
+      {savingRow && (
+        <div className="mt-3 flex items-center gap-2 text-sm text-slate-600">
+          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+          Guardando cambios...
+        </div>
+      )}
 
       {/* Toasts visuales */}
       {toasts.length > 0 && (
-        <div className="fixed right-4 bottom-4 z-50 space-y-2 w-[92vw] max-w-sm">
+        <div className="fixed right-4 bottom-4 z-50 space-y-3 w-[92vw] max-w-sm">
           {toasts.map((t) => (
-            <div key={t.id} className="rounded-xl shadow-lg bg-slate-900 text-white p-3 border border-slate-700">
+            <div
+              key={t.id}
+              className="rounded-xl shadow-2xl bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 border-2 border-blue-400 animate-slide-in"
+            >
               <div className="flex items-start gap-3">
-                <div className="text-lg">🔔</div>
+                <div className="w-10 h-10 rounded-lg bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0">
+                  <Bell className="w-5 h-5" />
+                </div>
                 <div className="flex-1">
-                  <div className="font-semibold leading-tight">{t.title}</div>
-                  <div className="text-sm whitespace-pre-line opacity-90">{t.body}</div>
-                  <div className="mt-2 text-xs opacity-70">
-                    <button className="underline" onClick={() => dismissToast(t.id)}>
+                  <div className="font-semibold leading-tight mb-1">{t.title}</div>
+                  <div className="text-sm opacity-90 whitespace-pre-line">{t.body}</div>
+                  <div className="mt-2">
+                    <button className="text-sm font-medium underline hover:no-underline" onClick={() => dismissToast(t.id)}>
                       Cerrar
                     </button>
                   </div>
@@ -634,6 +784,35 @@ export default function ProfileClient({
           ))}
         </div>
       )}
+
+      <style>{`
+        @keyframes slide-in {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+        .animate-slide-in {
+          animation: slide-in 0.3s ease-out;
+        }
+        @keyframes dropdown {
+          from {
+            transform: translateY(-10px);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+        .animate-dropdown {
+          animation: dropdown 0.2s ease-out;
+        }
+      `}</style>
     </div>
   );
 }

@@ -111,15 +111,30 @@ export const obtenerAsientosLDiario = async (
  */
 export const obtenerAsientosBalanceGeneral = async (
   empresaId: number,
-  fechaInicio: Date | null,
-  fechaFin: Date | null
+  fechaInicio?: string | Date | null,
+  fechaFin?: string | Date | null
 ) => {
-  let url = `/api/gnio/empresas/${empresaId}/libros/balance/asientos`;
-  if (fechaInicio && fechaFin) {
-    url += `?fechaInicio=${fechaInicio.toISOString()}&fechaFin=${fechaFin.toISOString()}`;
+  const params = new URLSearchParams();
+  params.set("empresa_id", String(empresaId));
+
+  if (fechaInicio) {
+    const inicio =
+      fechaInicio instanceof Date
+        ? fechaInicio.toISOString().slice(0, 10)
+        : String(fechaInicio);
+    params.set("date1", inicio);
   }
-  return await fetchService({
-    url,
+
+  if (fechaFin) {
+    const fin =
+      fechaFin instanceof Date
+        ? fechaFin.toISOString().slice(0, 10)
+        : String(fechaFin);
+    params.set("date2", fin);
+  }
+
+  return fetchService({
+    url: `/api/libros/balance/asientos?${params.toString()}`,
     method: "GET",
   });
 };
@@ -129,18 +144,37 @@ export const obtenerAsientosBalanceGeneral = async (
  */
 export const obtenerDocumentosBalanceGeneral = async (
   empresaId: number,
-  fechaInicio: Date | null,
-  fechaFin: Date | null
+  fechaInicio?: string | Date | null,
+  fechaFin?: string | Date | null
 ) => {
-  let url = `/api/gnio/empresas/${empresaId}/libros/balance/documentos`;
-  if (fechaInicio && fechaFin) {
-    url += `?fechaInicio=${fechaInicio.toISOString()}&fechaFin=${fechaFin.toISOString()}`;
+  const params = new URLSearchParams();
+  params.set("empresa_id", String(empresaId));
+
+  if (fechaInicio) {
+    const inicio =
+      fechaInicio instanceof Date
+        ? fechaInicio.toISOString().slice(0, 10)
+        : String(fechaInicio);
+    params.set("date1", inicio);
   }
-  return await fetchService({
-    url,
+
+  if (fechaFin) {
+    const fin =
+      fechaFin instanceof Date
+        ? fechaFin.toISOString().slice(0, 10)
+        : String(fechaFin);
+    params.set("date2", fin);
+  }
+
+  return fetchService({
+    url: `/api/libros/balance/documentos?${params.toString()}`,
     method: "GET",
   });
 };
+
+// Alias para compatibilidad con nombres antiguos
+export const obtenerAsientosBG = obtenerAsientosBalanceGeneral;
+export const obtenerDocumentosBG = obtenerDocumentosBalanceGeneral;
 
 /**
  * 🔹 Libro Mayor (por cuentas contables)

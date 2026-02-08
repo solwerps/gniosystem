@@ -7,6 +7,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Plus, Trash2, Bell, CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 type TaskEstado = "PRIORIDAD" | "PENDIENTE" | "EN_TRABAJO" | "REALIZADO";
@@ -46,15 +47,84 @@ export default function ProfileEmpresaClient({
   usuarioSlug,
   user,
   tareas,
+  tareasEmpresa,
 }: {
   usuarioSlug: string;
   user: UserView;
   tareas: Tarea[];
+  tareasEmpresa?: Tarea[];
 }) {
   const router = useRouter();
   const [tab, setTab] = useState<"PERFIL" | "ESPECIFICOS">("PERFIL");
   const [rows, setRows] = useState<Tarea[]>(tareas);
   const [savingRow, setSavingRow] = useState<number | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  // Evita scroll del body cuando el dropdown esta abierto
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const prevBodyOverflow = document.body.style.overflow;
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    if (openDropdown) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = prevBodyOverflow || "";
+      document.documentElement.style.overflow = prevHtmlOverflow || "";
+    }
+    return () => {
+      document.body.style.overflow = prevBodyOverflow || "";
+      document.documentElement.style.overflow = prevHtmlOverflow || "";
+    };
+  }, [openDropdown]);
+
+  // Cierra el dropdown al hacer click fuera
+  useEffect(() => {
+    if (!openDropdown) return;
+    const onDocMouseDown = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target?.closest(`[data-estado-dropdown="${openDropdown}"]`)) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener("mousedown", onDocMouseDown);
+    return () => document.removeEventListener("mousedown", onDocMouseDown);
+  }, [openDropdown]);
+
+  const estadoConfig = {
+    PRIORIDAD: {
+      label: "Prioridad",
+      bg: "bg-gradient-to-r from-red-500 to-red-600",
+      hoverBg: "hover:from-red-600 hover:to-red-700",
+      icon: AlertCircle,
+      textColor: "text-white",
+      ringColor: "ring-red-400",
+    },
+    PENDIENTE: {
+      label: "Pendiente",
+      bg: "bg-gradient-to-r from-amber-500 to-amber-600",
+      hoverBg: "hover:from-amber-600 hover:to-amber-700",
+      icon: Clock,
+      textColor: "text-white",
+      ringColor: "ring-amber-400",
+    },
+    EN_TRABAJO: {
+      label: "En trabajo",
+      bg: "bg-gradient-to-r from-blue-500 to-blue-600",
+      hoverBg: "hover:from-blue-600 hover:to-blue-700",
+      icon: Clock,
+      textColor: "text-white",
+      ringColor: "ring-blue-400",
+    },
+    REALIZADO: {
+      label: "Finalizado",
+      bg: "bg-gradient-to-r from-green-500 to-green-600",
+      hoverBg: "hover:from-green-600 hover:to-green-700",
+      icon: CheckCircle2,
+      textColor: "text-white",
+      ringColor: "ring-green-400",
+    },
+  };
 
   // ---- Toasts ----
   const [toasts, setToasts] = useState<{ id: string; title: string; body: string }[]>([]);
@@ -123,23 +193,60 @@ export default function ProfileEmpresaClient({
   }
 
   // ---------- Estilos ----------
-  function estadoColorClass(e: TaskEstado) {
-    switch (e) {
-      case "PRIORIDAD": return "bg-rose-50 border-rose-300 text-rose-800";
-      case "PENDIENTE": return "bg-amber-50 border-amber-300 text-amber-800";
-      case "EN_TRABAJO": return "bg-sky-50 border-sky-300 text-sky-800";
-      case "REALIZADO": return "bg-emerald-50 border-emerald-300 text-emerald-800";
-      default: return "";
-    }
-  }
   function recordatorioColorClass(flag: boolean) {
-    return flag ? "bg-emerald-50 border-emerald-300 text-emerald-800"
-                : "bg-rose-50 border-rose-300 text-rose-800";
-  }
-  function recordatorioInlineStyle(flag: boolean): React.CSSProperties {
     return flag
-      ? { backgroundColor: "#ecfdf5", borderColor: "#6ee7b7", color: "#065f46" }
-      : { backgroundColor: "#fff1f2", borderColor: "#fda4af", color: "#9f1239" };
+      ? "bg-blue-50 text-blue-700 border-blue-200"
+      : "bg-slate-50 text-slate-600 border-slate-200";
+  }
+
+  const renderEstadoBadge = (
+    estado: TaskEstado,
+    taskId: string,
+    onChange: (newEstado: TaskEstado) => void
+  ) => {
+    const config = estadoConfig[estado];
+    const Icon = config.icon;
+    const isOpen = openDropdown === taskId;
+
+    return (
+      <div className={`relative ${isOpen ? "z-50" : ""}`} data-estado-dropdown={taskId}>
+        <button
+          type="button"
+          onClick={() => setOpenDropdown(isOpen ? null : taskId)}
+          className={`w-full px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center justify-center gap-2 shadow-sm ${config.bg} ${config.hoverBg} ${config.textColor} ring-2 ${config.ringColor} ring-opacity-20`}
+        >
+          <Icon className="w-4 h-4" />
+          <span>{config.label}</span>
+        </button>
+
+        {isOpen && (
+          <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-md shadow-2xl border-2 border-slate-200 overflow-hidden z-50 animate-dropdown">
+            {Object.entries(estadoConfig).map(([key, cfg]) => {
+              const OptionIcon = cfg.icon;
+              return (
+                <button
+                  type="button"
+                  key={key}
+                  onClick={() => {
+                    onChange(key as TaskEstado);
+                    setOpenDropdown(null);
+                  }}
+                  className={`w-full px-3 py-2 text-xs flex items-center gap-2 transition-colors ${
+                    key === estado ? "bg-blue-50 font-semibold" : "hover:bg-slate-50"
+                  }`}
+                >
+                  <div className={`w-6 h-6 rounded-md ${cfg.bg} flex items-center justify-center`}>
+                    <OptionIcon className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-slate-700">{cfg.label}</span>
+                    {key === estado && <CheckCircle2 className="w-4 h-4 text-blue-600 ml-auto" />}
+                  </button>
+                );
+              })}
+          </div>
+        )}
+      </div>
+    );
   }
 
   // ---------- Notificaciones ----------
@@ -238,6 +345,16 @@ export default function ProfileEmpresaClient({
       if ("Notification" in window && Notification.permission === "granted") { try { new Notification("Pendientes GNIO", { body }); } catch {} }
       pushToast("Pendientes GNIO", body);
     });
+
+    // Aviso al abrir para tareas asignadas a esta empresa (desde contador)
+    const rowIds = new Set(rows.map((t) => t.id));
+    (tareasEmpresa ?? []).forEach((t) => {
+      if (rowIds.has(t.id)) return;
+      if (!t.recordatorio || !ALERT_STATES.has(t.estado)) return;
+      const body = `Tarea: ${t.titulo || "(sin título)"}\nTipo: ${t.tipo || "—"}\nEmpresa: ${t.empresa || "—"}\nEstado: ${prettyEstado(t.estado)}  ·  Fecha: ${t.fecha ? isoToLocalYMD(t.fecha) : "—"}`;
+      if ("Notification" in window && Notification.permission === "granted") { try { new Notification("Pendientes GNIO", { body }); } catch {} }
+      pushToast("Pendientes GNIO", body);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -279,51 +396,101 @@ export default function ProfileEmpresaClient({
       <hr className="my-4" />
 
       {/* LISTA DE TAREAS */}
-      <h2 className="text-2xl font-extrabold mb-1">LISTA DE TAREAS DEL MES</h2>
-      <p className="text-slate-600 mb-4">Agrega tus pendientes y recordatorios aquí</p>
+      <div className="mb-6">
+        <h2 className="text-3xl font-bold text-slate-900 mb-2">
+          LISTA DE TAREAS DEL MES
+        </h2>
+        <p className="text-slate-600">Agrega tus pendientes y recordatorios aquí</p>
+      </div>
 
-      <div className="overflow-x-auto border rounded bg-white shadow">
-        <table className="min-w-full text-sm">
-          <thead>
-            <tr className="bg-slate-800 text-white">
-              <th className="p-2 border text-center w-16">Añadir</th>
-              <th className="p-2 border text-center w-20">Borrar</th>
-              <th className="p-2 border">Tarea</th>
-              <th className="p-2 border">Estado</th>
-              <th className="p-2 border">Tipo</th>
-              <th className="p-2 border">Fecha</th>
-              <th className="p-2 border">Recordatorio</th>
-              <th className="p-2 border">Sucursal</th>
-            </tr>
-          </thead>
-          <tbody>
+      <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-visible">
+        <div className="overflow-x-auto overflow-y-visible">
+          <table className="min-w-full">
+            <thead>
+              <tr className="bg-gradient-to-r from-blue-600 to-blue-700">
+                <th className="px-4 py-4 text-left text-sm font-semibold text-white w-24">Añadir</th>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-white w-24">Borrar</th>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-white min-w-[250px]">Tarea</th>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-white w-40">Estado</th>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-white w-48">Tipo</th>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-white w-40">Fecha</th>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-white w-36">Recordatorio</th>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-white min-w-[220px]">Sucursal</th>
+              </tr>
+            </thead>
+            <tbody>
             {/* Fila NUEVA */}
-            <tr>
-              <td className="p-2 border text-center">
-                <button onClick={createFromDraft} disabled={!draft.titulo.trim()} className={`px-2 py-1 rounded font-semibold ${draft.titulo.trim() ? "bg-green-700 text-white hover:bg-green-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`} title="Añadir tarea">+</button>
+            <tr className="bg-blue-50 border-b-2 border-blue-200">
+              <td className="px-4 py-3">
+                <button
+                  onClick={createFromDraft}
+                  disabled={!draft.titulo.trim()}
+                  className={`w-full px-4 py-2 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
+                    draft.titulo.trim()
+                      ? "bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800 shadow-md hover:shadow-lg"
+                      : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                  }`}
+                  title="Añadir tarea"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
               </td>
-              <td className="p-2 border text-center">
-                <button disabled className="px-2 py-1 rounded bg-gray-200 text-gray-400 cursor-not-allowed" title="Borrar">🗑</button>
+              <td className="px-4 py-3">
+                <button
+                  disabled
+                  className="w-full px-4 py-2 rounded-lg bg-slate-100 text-slate-300 cursor-not-allowed flex items-center justify-center"
+                  title="Borrar"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </td>
-              <td className="p-2 border"><input className="w-full px-2 py-1 border rounded" value={draft.titulo} onChange={(e) => setDraft((d) => ({ ...d, titulo: e.target.value }))} placeholder="Nueva tarea" /></td>
-              <td className="p-2 border">
-                <select className={`w-full px-2 py-1 border rounded ${estadoColorClass(draft.estado)}`} value={draft.estado} onChange={(e) => setDraft((d) => ({ ...d, estado: e.target.value as TaskEstado }))}>
-                  <option value="PRIORIDAD">Prioridad</option>
-                  <option value="PENDIENTE">Pendiente</option>
-                  <option value="EN_TRABAJO">En trabajo</option>
-                  <option value="REALIZADO">Finalizado</option>
-                </select>
+              <td className="px-4 py-3">
+                <input
+                  className="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  value={draft.titulo}
+                  onChange={(e) => setDraft((d) => ({ ...d, titulo: e.target.value }))}
+                  placeholder="Nueva tarea"
+                />
               </td>
-              <td className="p-2 border"><input className="w-full px-2 py-1 border rounded" value={draft.tipo} onChange={(e) => setDraft((d) => ({ ...d, tipo: e.target.value }))} placeholder="Subir facturas / IVA / …" /></td>
-              <td className="p-2 border"><input type="date" className="px-2 py-1 border rounded" value={draft.fecha} onChange={(e) => setDraft((d) => ({ ...d, fecha: e.target.value }))} /></td>
-              <td className="p-2 border">
-                <select className={`w-full px-2 py-1 border rounded ${recordatorioColorClass(draft.recordatorio)}`} style={recordatorioInlineStyle(draft.recordatorio)} value={draft.recordatorio ? "Si" : "No"} onChange={(e) => setDraft((d) => ({ ...d, recordatorio: e.target.value === "Si" }))}>
+              <td className="px-4 py-3">
+                {renderEstadoBadge(draft.estado, "draft", (newEstado) =>
+                  setDraft((d) => ({ ...d, estado: newEstado }))
+                )}
+              </td>
+              <td className="px-4 py-3">
+                <input
+                  className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  value={draft.tipo}
+                  onChange={(e) => setDraft((d) => ({ ...d, tipo: e.target.value }))}
+                  placeholder="Subir facturas / IVA / ..."
+                />
+              </td>
+              <td className="px-4 py-3">
+                <input
+                  type="date"
+                  className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  value={draft.fecha}
+                  onChange={(e) => setDraft((d) => ({ ...d, fecha: e.target.value }))}
+                />
+              </td>
+              <td className="px-4 py-3">
+                <select
+                  className={`w-full px-3 py-2 border-2 rounded-lg font-medium transition-all ${recordatorioColorClass(
+                    draft.recordatorio
+                  )}`}
+                  value={draft.recordatorio ? "Si" : "No"}
+                  onChange={(e) => setDraft((d) => ({ ...d, recordatorio: e.target.value === "Si" }))}
+                >
                   <option value="Si">Si</option>
                   <option value="No">No</option>
                 </select>
               </td>
-              <td className="p-2 border">
-                <select className="w-full px-2 py-1 border rounded" value={draft.empresa} onChange={(e) => setDraft((d) => ({ ...d, empresa: e.target.value }))}>
+              <td className="px-4 py-3">
+                <select
+                  className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  value={draft.empresa}
+                  onChange={(e) => setDraft((d) => ({ ...d, empresa: e.target.value }))}
+                >
                   <option value="">Seleccionar sucursal</option>
                   <option value="Central">Central</option>
                   <option value="Norte">Norte</option>
@@ -336,46 +503,93 @@ export default function ProfileEmpresaClient({
             {rows.map((r) => {
               const canDelete = !!(r.titulo && r.titulo.trim());
               return (
-                <tr key={r.id} className="hover:bg-gray-50">
-                  <td className="p-2 border text-center"></td>
-                  <td className="p-2 border text-center">
-                    <button onClick={() => canDelete && delRow(r)} disabled={!canDelete} className={`px-2 py-1 rounded ${canDelete ? "bg-red-100 text-red-700 hover:bg-red-200" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`} title="Eliminar tarea">🗑</button>
+                <tr key={r.id} className="border-b border-slate-200 hover:bg-blue-50 transition-colors">
+                  <td className="px-4 py-3" />
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => canDelete && delRow(r)}
+                      disabled={!canDelete}
+                      className={`w-full px-4 py-2 rounded-lg transition-all flex items-center justify-center ${
+                        canDelete
+                          ? "bg-red-50 text-red-600 hover:bg-red-100 border-2 border-red-200"
+                          : "bg-slate-100 text-slate-300 cursor-not-allowed border-2 border-slate-200"
+                      }`}
+                      title="Eliminar tarea"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </td>
-                  <td className="p-2 border">
-                    <input ref={(el) => (inputRefs.current[r.id] = el)} className="w-full px-2 py-1 border rounded" value={r.titulo} onChange={(e) => setRows((arr) => arr.map((x) => (x.id === r.id ? { ...x, titulo: e.target.value } : x)))} onBlur={(e) => patchRow(r.id, { titulo: e.currentTarget.value })} placeholder="Describe la tarea…" />
+                  <td className="px-4 py-3">
+                    <input
+                      ref={(el) => (inputRefs.current[r.id] = el)}
+                      className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium"
+                      value={r.titulo}
+                      onChange={(e) =>
+                        setRows((arr) => arr.map((x) => (x.id === r.id ? { ...x, titulo: e.target.value } : x)))
+                      }
+                      onBlur={(e) => patchRow(r.id, { titulo: e.currentTarget.value })}
+                      placeholder="Describe la tarea..."
+                    />
                   </td>
-                  <td className="p-2 border">
-                    <select className={`w-full px-2 py-1 border rounded ${estadoColorClass(r.estado)}`} value={r.estado} onChange={(e) => patchRow(r.id, { estado: e.target.value as TaskEstado })}>
-                      <option value="PRIORIDAD">Prioridad</option>
-                      <option value="PENDIENTE">Pendiente</option>
-                      <option value="EN_TRABAJO">En trabajo</option>
-                      <option value="REALIZADO">Finalizado</option>
-                    </select>
+                  <td className="px-4 py-3">
+                    {renderEstadoBadge(r.estado, String(r.id), (newEstado) =>
+                      patchRow(r.id, { estado: newEstado })
+                    )}
                   </td>
-                  <td className="p-2 border">
-                    <input className="w-full px-2 py-1 border rounded" value={r.tipo ?? ""} onChange={(e) => setRows((arr) => arr.map((x) => (x.id === r.id ? { ...x, tipo: e.target.value } : x)))} onBlur={(e) => patchRow(r.id, { tipo: e.currentTarget.value })} placeholder="Subir facturas / IVA / …" />
+                  <td className="px-4 py-3">
+                    <input
+                      className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      value={r.tipo ?? ""}
+                      onChange={(e) =>
+                        setRows((arr) => arr.map((x) => (x.id === r.id ? { ...x, tipo: e.target.value } : x)))
+                      }
+                      onBlur={(e) => patchRow(r.id, { tipo: e.currentTarget.value })}
+                      placeholder="Subir facturas / IVA / ..."
+                    />
                   </td>
-                  <td className="p-2 border">
-                    <input type="date" className="px-2 py-1 border rounded" value={isoToLocalYMD(r.fecha)} onChange={async (e) => { const v = e.target.value ? ymdToStableISO(e.target.value) : null; await patchRow(r.id, { fecha: v }); notifyImmediate({ ...r, fecha: v } as Tarea); }} />
+                  <td className="px-4 py-3">
+                    <input
+                      type="date"
+                      className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      value={isoToLocalYMD(r.fecha)}
+                      onChange={async (e) => {
+                        const v = e.target.value ? ymdToStableISO(e.target.value) : null;
+                        await patchRow(r.id, { fecha: v });
+                        notifyImmediate({ ...r, fecha: v } as Tarea);
+                      }}
+                    />
                   </td>
-                  <td className="p-2 border">
-                    <select className={`w-full px-2 py-1 border rounded ${recordatorioColorClass(!!r.recordatorio)}`} style={recordatorioInlineStyle(!!r.recordatorio)} value={r.recordatorio ? "Si" : "No"}
+                  <td className="px-4 py-3">
+                    <select
+                      className={`w-full px-3 py-2 border-2 rounded-lg font-medium transition-all ${recordatorioColorClass(
+                        !!r.recordatorio
+                      )}`}
+                      value={r.recordatorio ? "Si" : "No"}
                       onChange={async (e) => {
                         const val = e.target.value === "Si";
                         await ensureNotifPermission();
                         // Optimistic UI
                         const prev = r.recordatorio;
                         setRows((arr) => arr.map((x) => (x.id === r.id ? { ...x, recordatorio: val } : x)));
-                        try { await patchRow(r.id, { recordatorio: val }); notifyImmediate({ ...r, recordatorio: val } as Tarea); }
-                        catch { setRows((arr) => arr.map((x) => (x.id === r.id ? { ...x, recordatorio: prev } : x))); pushToast("Error", "No se pudo actualizar el recordatorio"); }
+                        try {
+                          await patchRow(r.id, { recordatorio: val });
+                          notifyImmediate({ ...r, recordatorio: val } as Tarea);
+                        } catch {
+                          setRows((arr) => arr.map((x) => (x.id === r.id ? { ...x, recordatorio: prev } : x)));
+                          pushToast("Error", "No se pudo actualizar el recordatorio");
+                        }
                       }}
                     >
                       <option value="Si">Si</option>
                       <option value="No">No</option>
                     </select>
                   </td>
-                  <td className="p-2 border">
-                    <select className="w-full px-2 py-1 border rounded" value={r.empresa ?? ""} onChange={(e) => patchRow(r.id, { empresa: e.target.value })}>
+                  <td className="px-4 py-3">
+                    <select
+                      className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      value={r.empresa ?? ""}
+                      onChange={(e) => patchRow(r.id, { empresa: e.target.value })}
+                    >
                       <option value="">Seleccionar sucursal</option>
                       <option value="Central">Central</option>
                       <option value="Norte">Norte</option>
@@ -385,24 +599,38 @@ export default function ProfileEmpresaClient({
                 </tr>
               );
             })}
-          </tbody>
-        </table>
-      </div>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-      {savingRow && <div className="mt-3 text-xs text-slate-500">Guardando cambios…</div>}
+
+      {savingRow && (
+        <div className="mt-3 flex items-center gap-2 text-sm text-slate-600">
+          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+          Guardando cambios...
+        </div>
+      )}
 
       {/* Toasts visuales */}
       {toasts.length > 0 && (
-        <div className="fixed right-4 bottom-4 z-50 space-y-2 w-[92vw] max-w-sm">
+        <div className="fixed right-4 bottom-4 z-50 space-y-3 w-[92vw] max-w-sm">
           {toasts.map((t) => (
-            <div key={t.id} className="rounded-xl shadow-lg bg-slate-900 text-white p-3 border border-slate-700">
+            <div
+              key={t.id}
+              className="rounded-xl shadow-2xl bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 border-2 border-blue-400 animate-slide-in"
+            >
               <div className="flex items-start gap-3">
-                <div className="text-lg">🔔</div>
+                <div className="w-10 h-10 rounded-lg bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0">
+                  <Bell className="w-5 h-5" />
+                </div>
                 <div className="flex-1">
-                  <div className="font-semibold leading-tight">{t.title}</div>
-                  <div className="text-sm whitespace-pre-line opacity-90">{t.body}</div>
-                  <div className="mt-2 text-xs opacity-70">
-                    <button className="underline" onClick={() => dismissToast(t.id)}>Cerrar</button>
+                  <div className="font-semibold leading-tight mb-1">{t.title}</div>
+                  <div className="text-sm opacity-90 whitespace-pre-line">{t.body}</div>
+                  <div className="mt-2">
+                    <button className="text-sm font-medium underline hover:no-underline" onClick={() => dismissToast(t.id)}>
+                      Cerrar
+                    </button>
                   </div>
                 </div>
               </div>
@@ -410,6 +638,35 @@ export default function ProfileEmpresaClient({
           ))}
         </div>
       )}
+
+      <style>{`
+        @keyframes slide-in {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+        .animate-slide-in {
+          animation: slide-in 0.3s ease-out;
+        }
+        @keyframes dropdown {
+          from {
+            transform: translateY(-10px);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+        .animate-dropdown {
+          animation: dropdown 0.2s ease-out;
+        }
+      `}</style>
     </div>
   );
 }

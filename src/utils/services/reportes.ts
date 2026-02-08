@@ -2,8 +2,7 @@
 import { fetchService } from "../functions/fetchService";
 
 /**
- * 🔹 Obtiene los documentos del módulo de reportes (compras o ventas)
- * Multi-tenant adaptado al modelo Empresa ↔ Tenant
+ * Obtiene documentos para reportes (ventas o compras) por mes.
  */
 export const obtenerDocumentosReportes = async (
   empresaId: number,
@@ -11,7 +10,7 @@ export const obtenerDocumentosReportes = async (
   venta: boolean = false
 ) => {
   return await fetchService({
-    url: `/api/gnio/empresas/${empresaId}/reportes?fecha=${fecha}&venta=${venta}`,
+    url: `/api/reportes?empresa_id=${empresaId}&fecha=${fecha}&venta=${venta}`,
     method: "GET",
   });
 };

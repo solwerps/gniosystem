@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import type { TableColumn } from 'react-data-table-component';
+import * as XLSX from 'xlsx';
 
 import { DragAndDrop } from '@/components/organisms/files';
 import type { IUploadRetencionISR} from '@/utils';
@@ -18,16 +19,20 @@ import { ContinueModal } from '@/components/molecules';
 interface UploadRetencionesISRProps {
   empresaId: number;          // 👈 Viene del route / de la página GNIO
   empresaNombre: string;      // Solo para mostrar en el modal/textos
+  empresaNit: string;         // NIT de la empresa para validar el archivo
   continuarHref: string;      // Ruta a la que se redirige el ContinueModal
 }
 
 export const UploadRetencionesISR: React.FC<UploadRetencionesISRProps> = ({
   empresaId,
   empresaNombre,
+  empresaNit,
   continuarHref,
 }) => {
   const [retencionesFile, setRetencionesFile] = useState<File[]>([]);
   const [retencionesData, setRetencionesData] = useState<IUploadRetencionISR[]>([]);
+  const [nitRetenidoHeader, setNitRetenidoHeader] = useState('');
+  const [nitRetenidoParsed, setNitRetenidoParsed] = useState(false);
 
   // Fecha de trabajo (explícita, no global)
   const [date, setDate] = useState<Date>(new Date());
@@ -43,8 +48,56 @@ export const UploadRetencionesISR: React.FC<UploadRetencionesISRProps> = ({
   // Validación de datos cargados
   // ============================
   useEffect(() => {
+    if (retencionesFile.length === 0) {
+      setNitRetenidoHeader('');
+      setNitRetenidoParsed(false);
+      return;
+    }
+
+    const file = retencionesFile[0];
+    const reader = new FileReader();
+
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      const buffer = e.target?.result as ArrayBuffer;
+      const data = new Uint8Array(buffer);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const nitRetenido = extractNitRetenido(sheet);
+
+      setNitRetenidoHeader(nitRetenido);
+      setNitRetenidoParsed(true);
+    };
+
+    reader.readAsArrayBuffer(file);
+  }, [retencionesFile]);
+
+  useEffect(() => {
+    if (!nitRetenidoHeader || retencionesData.length === 0) return;
+
+    const needsNit = retencionesData.some(
+      (row) => !(row as any)['NIT RETENIDO'] && !(row as any)['NIT RETENIDO:']
+    );
+
+    if (!needsNit) return;
+
+    setRetencionesData((prev) =>
+      prev.map((row) =>
+        (row as any)['NIT RETENIDO'] || (row as any)['NIT RETENIDO:']
+          ? row
+          : {
+              ...row,
+              'NIT RETENIDO': nitRetenidoHeader,
+            }
+      )
+    );
+  }, [nitRetenidoHeader, retencionesData]);
+
+  useEffect(() => {
     const validateData = (data: any): data is IUploadRetencionISR => {
+      const nitRetenido = getNitRetenido(data, nitRetenidoHeader);
       return (
+        typeof nitRetenido === 'string' &&
+        nitRetenido.trim().length > 0 &&
         typeof data['NIT RETENEDOR'] === 'string' &&
         typeof data['NOMBRE RETENEDOR'] === 'string' &&
         typeof data['ESTADO CONSTANCIA'] === 'string' &&
@@ -57,15 +110,60 @@ export const UploadRetencionesISR: React.FC<UploadRetencionesISRProps> = ({
     };
 
     if (retencionesData.length > 0) {
+      const rowHasNit = retencionesData.some(
+        (row) => (row as any)['NIT RETENIDO'] || (row as any)['NIT RETENIDO:']
+      );
+
+      if (!rowHasNit && !nitRetenidoParsed) {
+        return;
+      }
+
       for (const item of retencionesData) {
         if (!validateData(item)) {
-          toast.error('Datos inválidos en los documentos de retención.');
+          toast.error(
+            'Datos inválidos en los documentos de retención. Verifica que exista la columna NIT RETENIDO o el encabezado del archivo.'
+          );
           setRetencionesData([]);
           return;
         }
       }
+
+      const empresaNitNormalizado = normalizeNit(empresaNit);
+      if (!empresaNitNormalizado) {
+        toast.error('No se encontró el NIT de la empresa.');
+        setRetencionesData([]);
+        return;
+      }
+
+      const nitNoCoincide = retencionesData.find((item) => {
+        const nitRetenido = getNitRetenido(item, nitRetenidoHeader);
+        return normalizeNit(nitRetenido) !== empresaNitNormalizado;
+      });
+
+      if (nitNoCoincide) {
+        toast.error(
+          'El NIT RETENIDO no coincide con el NIT de la empresa. Revisa el archivo.'
+        );
+        setRetencionesData([]);
+        return;
+      }
+
+      const constancias = retencionesData
+        .map((item) => normalizeConstancia(item['CONSTANCIA']))
+        .filter(Boolean);
+      const duplicadas = findDuplicates(constancias);
+
+      if (duplicadas.length > 0) {
+        toast.error(
+          `Constancia duplicada en el archivo: ${duplicadas
+            .slice(0, 5)
+            .join(', ')}`
+        );
+        setRetencionesData([]);
+        return;
+      }
     }
-  }, [retencionesData]);
+  }, [retencionesData, empresaNit, nitRetenidoHeader, nitRetenidoParsed]);
 
   // ============================
   // Confirmar antes de enviar
@@ -132,6 +230,10 @@ export const UploadRetencionesISR: React.FC<UploadRetencionesISRProps> = ({
   // Columnas de la tabla previa
   // ============================
   const columns: TableColumn<IUploadRetencionISR>[] = [
+    {
+      name: 'NIT Retenido',
+      selector: (row) => getNitRetenido(row, nitRetenidoHeader),
+    },
     {
       name: 'NIT Retenedor',
       selector: (row) => row['NIT RETENEDOR'],
@@ -274,4 +376,76 @@ const Value = ({ text }: { text: string }) => {
 
 const Row = ({ children }: { children: React.ReactNode }) => {
   return <p className="mb-2 text-center">{children}</p>;
+};
+
+const normalizeNit = (value: string) => {
+  return String(value ?? '')
+    .trim()
+    .replace(/[-\s]/g, '')
+    .toUpperCase();
+};
+
+const getNitRetenido = (
+  row: IUploadRetencionISR,
+  fallback?: string
+) => {
+  const raw =
+    (row as any)['NIT RETENIDO'] ??
+    (row as any)['NIT RETENIDO:'] ??
+    fallback ??
+    '';
+  return String(raw ?? '').trim();
+};
+
+const normalizeConstancia = (value: string) => {
+  return String(value ?? '').trim();
+};
+
+const findDuplicates = (values: string[]) => {
+  const seen = new Set<string>();
+  const duplicates = new Set<string>();
+
+  values.forEach((value) => {
+    const key = value.trim();
+    if (!key) return;
+    if (seen.has(key)) {
+      duplicates.add(key);
+    } else {
+      seen.add(key);
+    }
+  });
+
+  return Array.from(duplicates);
+};
+
+const extractNitRetenido = (sheet: XLSX.WorkSheet) => {
+  const rows = XLSX.utils.sheet_to_json(sheet, {
+    header: 1,
+    range: 0,
+    raw: false,
+  }) as Array<Array<string | number | null | undefined>>;
+
+  for (const row of rows.slice(0, 12)) {
+    if (!row) continue;
+    for (let i = 0; i < row.length; i++) {
+      const cell = row[i];
+      const cellText = String(cell ?? '').trim();
+      if (!cellText) continue;
+
+      const normalized = cellText.replace(/\s+/g, ' ').toUpperCase();
+      if (normalized.includes('NIT RETENIDO')) {
+        const next = row[i + 1];
+        const nextText = String(next ?? '').trim();
+        if (nextText) return nextText;
+
+        const parts = cellText.split(':');
+        if (parts.length > 1) {
+          const value = parts.slice(1).join(':').trim();
+          if (value) return value;
+        }
+      }
+    }
+  }
+
+  return '';
 };

@@ -27,8 +27,9 @@ export const Button = ({
                 handleVariant(variant),
                 {
                     // importante: flex correcto cuando es botón con icono
-                    'flex items-center justify-center gap-2': icon,
-                    '!bg-slate-400 !cursor-not-allowed': loading || disabled
+                    'gap-2': icon,
+                    '!bg-slate-200 !text-slate-500 !shadow-none !cursor-not-allowed':
+                        loading || disabled
                 },
                 className
             )}
@@ -42,21 +43,20 @@ export const Button = ({
 
 const handleVariant = (variant: string) => {
     const configGeneral =
-        'middle none center rounded-lg py-3 px-6 text-xs font-semibold shadow-md transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:opacity-50 disabled:shadow-none max-h-[40px]';
+        'inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold tracking-[0.02em] shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)] disabled:opacity-60 disabled:cursor-not-allowed';
 
     switch (variant) {
         case 'primary':
-            // aquí estaba “el malo”: usamos un azul fuerte fijo
-            return `${configGeneral} bg-blue-600 text-white shadow-blue-500/20 hover:bg-blue-700 hover:shadow-blue-500/40`;
+            return `${configGeneral} bg-blue-600 text-white shadow-blue-600/30 hover:bg-blue-500 hover:shadow-blue-500/40 focus-visible:ring-blue-500/60`;
         case 'secondary':
-            return `${configGeneral} bg-background text-white shadow-blue-500/20 hover:shadow-blue-500/40`;
+            return `${configGeneral} bg-slate-900 text-white shadow-slate-900/30 hover:bg-slate-800 hover:shadow-slate-900/40 focus-visible:ring-slate-500/60`;
         case 'success':
-            return `${configGeneral} bg-green-500 text-white shadow-green-500/20 hover:shadow-green-500/40`;
+            return `${configGeneral} bg-teal-600 text-white shadow-teal-600/30 hover:bg-teal-500 hover:shadow-teal-500/40 focus-visible:ring-teal-500/60`;
         case 'error':
-            return `${configGeneral} bg-red-500 text-white shadow-red-500/20 hover:shadow-red-500/40`;
+            return `${configGeneral} bg-rose-600 text-white shadow-rose-600/30 hover:bg-rose-500 hover:shadow-rose-500/40 focus-visible:ring-rose-500/60`;
         case 'outlined':
-            return 'transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset';
+            return `${configGeneral} border border-slate-300 bg-transparent text-slate-700 shadow-none hover:bg-slate-50 hover:shadow-none focus-visible:ring-slate-300/70`;
         default:
-            return `${configGeneral} bg-blue-600 text-white shadow-blue-500/20 hover:bg-blue-700 hover:shadow-blue-500/40`;
+            return `${configGeneral} bg-blue-600 text-white shadow-blue-600/30 hover:bg-blue-500 hover:shadow-blue-500/40 focus-visible:ring-blue-500/60`;
     }
 };
