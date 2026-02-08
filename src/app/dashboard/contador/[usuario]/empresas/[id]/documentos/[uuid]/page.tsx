@@ -3,7 +3,7 @@
 
 import React from "react";
 import { useParams } from "next/navigation";
-import { Path } from "@/components/molecules/path";
+import { Path } from "@/components/molecules/Path";
 import { UploadDocumentos } from "@/components/organisms/cargas/UploadDocumentos";
 import EmpresaSidebar from "@/components/empresas/EmpresaSidebar";
 
