@@ -1,7 +1,7 @@
 // src/app/api/documentos/uuid/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { is_value_unique } from "@/utils/functions/validateData";
+import { isValueUnique } from "@/utils/functions/validateData";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     }
 
     // 🔍 Verificar si el documento existe y está activo
-    const existe = !(await is_value_unique("documentos", ["uuid", "estado"], [uuid, 1]));
+    const existe = !(await isValueUnique("documento", "uuid", uuid, { estado: 1 }));
     if (!existe) {
       return NextResponse.json(
         {
