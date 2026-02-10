@@ -1,7 +1,7 @@
 // src/components/Sidebar.tsx
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { 
   LayoutDashboard, 
@@ -33,22 +33,33 @@ type ModuleItem = {
 
 export default function Sidebar({ role, usuario }: SidebarProps) {
   const router = useRouter();
+  const params = useParams();
   const [regimenOpen, setRegimenOpen] = useState(false);
+
+  // Fallback: si no se pasa `usuario` (slug) por props, intentamos inferirlo de la ruta
+  const usuarioFromRoute = useMemo(() => {
+    const value = (params as any)?.usuario as string | string[] | undefined;
+    if (typeof value === 'string') return value;
+    if (Array.isArray(value) && typeof value[0] === 'string') return value[0];
+    return undefined;
+  }, [params]);
+
+  const resolvedUsuario = usuario ?? usuarioFromRoute;
 
   // Validación temprana: CONTADOR/EMPRESA requieren 'usuario'
   const requiresSlug = role === 'CONTADOR' || role === 'EMPRESA';
-  const missingSlug = requiresSlug && !usuario;
+  const missingSlug = requiresSlug && !resolvedUsuario;
 
   const rolePath = useMemo<Role>(() => role, [role]);
 
   // base según rol (ADMIN no lleva slug; CONTADOR/EMPRESA sí)
   const base = useMemo(() => {
     if (rolePath === 'ADMIN') return '/dashboard/admin';
-    const safeUser = usuario ?? 'missing-slug';
+    const safeUser = resolvedUsuario ?? 'missing-slug';
     return rolePath === 'CONTADOR'
       ? `/dashboard/contador/${safeUser}`
       : `/dashboard/empresa/${safeUser}`;
-  }, [rolePath, usuario]);
+  }, [rolePath, resolvedUsuario]);
 
   // Cerrar sesión
   const handleLogout = async () => {
@@ -58,9 +69,9 @@ export default function Sidebar({ role, usuario }: SidebarProps) {
 
   const headerTitle =
     role === 'CONTADOR'
-      ? `Oficina Contable ${usuario ? `— ${usuario}` : ''}`
+      ? `Oficina Contable ${resolvedUsuario ? `— ${resolvedUsuario}` : ''}`
       : role === 'EMPRESA'
-      ? `SECA Empresa ${usuario ? `— ${usuario}` : ''}`
+      ? `SECA Empresa ${resolvedUsuario ? `— ${resolvedUsuario}` : ''}`
       : 'SECA (Admin)';
 
   // Menú por rol
@@ -103,9 +114,9 @@ export default function Sidebar({ role, usuario }: SidebarProps) {
           <h1 className="text-lg font-bold tracking-wide text-blue-50">
             {headerTitle.split('—')[0]}
           </h1>
-          {usuario && (
+          {resolvedUsuario && (
             <p className="text-xs font-medium text-blue-300/80 mt-0.5">
-              {usuario}
+              {resolvedUsuario}
             </p>
           )}
         </div>
