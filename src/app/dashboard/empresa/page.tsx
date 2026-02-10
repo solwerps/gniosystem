@@ -1,13 +1,13 @@
-import Sidebar from '@/components/Sidebar';
+import { redirect } from 'next/navigation';
 
-export default function EmpresaDashboard() {
-  return (
-    <div className="flex">
-      <Sidebar role="EMPRESA" />
-      <main className="flex-1 p-10 bg-gray-100 min-h-screen">
-        <h1 className="text-3xl font-bold mb-4">Sistema Contable GNIO 1.2 (Empresa)</h1>
-        <p>Bienvenido empresa. Aquí puedes gestionar tu régimen y operaciones.</p>
-      </main>
-    </div>
-  );
+import { getSession } from '@/lib/auth';
+
+export default async function EmpresaDashboard() {
+  const session = await getSession();
+
+  if (!session || session.user.role !== 'EMPRESA' || !session.user.username) {
+    redirect('/login');
+  }
+
+  redirect(`/dashboard/empresa/${session.user.username}`);
 }
