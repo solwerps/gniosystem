@@ -5,9 +5,10 @@ import { getSession } from "@/lib/auth";
 import { notFound, redirect } from "next/navigation";
 import ProfileClient from "./ProfileClient";
 
-type PageParams = { params: { usuario: string } };
+type PageParams = { params: Promise<{ usuario: string }> };
 
 export default async function PerfilContadorPage({ params }: PageParams) {
+  const { usuario } = await params;
   const session = await getSession();
   if (!session) redirect("/login");
 
@@ -39,7 +40,7 @@ export default async function PerfilContadorPage({ params }: PageParams) {
   if (!dbUser) notFound();
 
   // Si el slug no coincide con el username real → redirige al correcto
-  if (params.usuario !== dbUser.username) {
+  if (usuario !== dbUser.username) {
     return redirect(`/dashboard/contador/${dbUser.username}/perfil`);
   }
 

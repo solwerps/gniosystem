@@ -11,9 +11,10 @@ import ProfileEmpresaClient from "./ProfileEmpresaClient";
 // y sus tareas, igual a la versión de CONTADOR pero con rol EMPRESA
 // y los "datos específicos" personalizados.
 
-type PageParams = { params: { usuario: string } };
+type PageParams = { params: Promise<{ usuario: string }> };
 
 export default async function PerfilEmpresaPage({ params }: PageParams) {
+  const { usuario } = await params;
   const session = await getSession();
   if (!session) redirect("/login");
 
@@ -45,7 +46,7 @@ export default async function PerfilEmpresaPage({ params }: PageParams) {
   if (!dbUser) notFound();
 
   // Si el slug no coincide con el username real → redirige al correcto
-  if (params.usuario !== dbUser.username) {
+  if (usuario !== dbUser.username) {
     return redirect(`/dashboard/empresa/${dbUser.username}/perfil`);
   }
 
