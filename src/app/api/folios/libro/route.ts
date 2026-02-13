@@ -1,40 +1,33 @@
 // src/app/api/folios/libro/route.ts
 import { prisma } from "@/lib/prisma";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+  empresaIdFromRequest,
+} from "@/lib/accounting/context";
 import type { IFolioPutBody } from "@/utils";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
 
   try {
-    const empresa_id_param = searchParams.get("empresa_id") ?? "0";
     const libro_id_param = searchParams.get("libro_id") ?? "0";
 
-    const empresa_id = Number(empresa_id_param);
-    const libro_id = Number(libro_id_param);
+    const tenantSlug = tenantSlugFromRequest(request);
+    const empresaId = empresaIdFromRequest(request);
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
 
-    if (!empresa_id || empresa_id === 0) {
-      throw new Error("La empresa es requerida");
-    }
+    const empresa_id = auth.empresa.id;
+    const libro_id = Number(libro_id_param);
     if (!libro_id || libro_id === 0) {
       throw new Error("El id del libro es requerido");
     }
 
     // ✅ Validar que exista empresa activa (estado = 1)
-    const empresa = await prisma.empresa.findFirst({
-      where: {
-        id: empresa_id,
-        estado: 1,
-      },
-    });
-
-    if (!empresa) {
-      return Response.json({
-        status: 400,
-        data: { empresa_id },
-        message: "No existe una empresa con ese id",
-      });
-    }
-
     // ✅ Validar que exista el libro contable
     const libro = await prisma.libroContable.findUnique({
       where: {
@@ -84,6 +77,18 @@ export async function GET(request: Request) {
       message: "Folios obtenidos correctamente",
     });
   } catch (error: any) {
+    if (error instanceof AccountingError) {
+      return Response.json(
+        {
+          status: error.status,
+          code: error.code,
+          data: {},
+          message: error.message,
+        },
+        { status: error.status }
+      );
+    }
+
     console.log(error);
     return Response.json({
       status: 400,
@@ -94,9 +99,17 @@ export async function GET(request: Request) {
 }
 
 export async function PUT(request: Request) {
-  const body: IFolioPutBody = await request.json();
+  const body: IFolioPutBody & { tenant?: string; empresa_id?: number } =
+    await request.json();
 
   try {
+    const tenantSlug = String(body?.tenant ?? tenantSlugFromRequest(request) ?? "");
+    const empresaId = Number(body?.empresa_id ?? empresaIdFromRequest(request));
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
+
     if (!body.folio_id) {
       throw new Error("El id del folio es requerido");
     }
@@ -114,6 +127,16 @@ export async function PUT(request: Request) {
         data: { folio_id: body.folio_id },
         message: "No existe un folio con ese ID",
       });
+    }
+    if (folio.empresa_id !== auth.empresa.id) {
+      return Response.json(
+        {
+          status: 403,
+          data: { folio_id: body.folio_id },
+          message: "El folio no pertenece a la empresa autorizada",
+        },
+        { status: 403 }
+      );
     }
 
     // ✅ Actualizar contador y folios disponibles (misma lógica que el SQL)
@@ -137,6 +160,18 @@ export async function PUT(request: Request) {
       message: "Folios obtenidos correctamente",
     });
   } catch (error: any) {
+    if (error instanceof AccountingError) {
+      return Response.json(
+        {
+          status: error.status,
+          code: error.code,
+          data: {},
+          message: error.message,
+        },
+        { status: error.status }
+      );
+    }
+
     console.log(error);
     return Response.json({
       status: 400,

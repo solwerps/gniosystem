@@ -1,19 +1,22 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+  empresaIdFromRequest,
+} from "@/lib/accounting/context";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const empresaIdParam = searchParams.get("empresa_id");
     const fechaParam = searchParams.get("fecha");
-
-    const empresa_id = empresaIdParam ? Number(empresaIdParam) : NaN;
-    if (!empresa_id || Number.isNaN(empresa_id)) {
-      return NextResponse.json({
-        status: 400,
-        message: "empresa_id es requerido y debe ser numerico",
-      });
-    }
+    const tenantSlug = tenantSlugFromRequest(request);
+    const empresaId = empresaIdFromRequest(request);
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
 
     let fecha = fechaParam;
     if (!fecha || fecha === "null") {
@@ -40,7 +43,7 @@ export async function GET(request: Request) {
 
     const data = await prisma.ivaGeneralMensual.findFirst({
       where: {
-        empresa_id,
+        empresa_id: auth.empresa.id,
         fecha_trabajo: {
           gte: startDate,
           lt: endDate,
@@ -57,6 +60,17 @@ export async function GET(request: Request) {
       message: "Formulario IVA mensual obtenido correctamente",
     });
   } catch (error: any) {
+    if (error instanceof AccountingError) {
+      return NextResponse.json(
+        {
+          status: error.status,
+          code: error.code,
+          message: error.message,
+        },
+        { status: error.status }
+      );
+    }
+
     console.error("ERROR GET /api/formularios/ivaMensual:", error);
     return NextResponse.json({
       status: 400,
@@ -68,16 +82,14 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const empresa_id = Number(body.empresa_id ?? 0);
+    const tenantSlug = String(body?.tenant ?? tenantSlugFromRequest(request) ?? "");
+    const empresaId = Number(body?.empresa_id ?? empresaIdFromRequest(request));
     const fecha = String(body.fecha ?? "");
     const resumen = body.resumenData ?? {};
-
-    if (!empresa_id || Number.isNaN(empresa_id)) {
-      return NextResponse.json({
-        status: 400,
-        message: "empresa_id es requerido y debe ser numerico",
-      });
-    }
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
 
     if (!fecha) {
       return NextResponse.json({
@@ -86,24 +98,12 @@ export async function POST(request: Request) {
       });
     }
 
-    const empresaExists = await prisma.empresa.findUnique({
-      where: { id: empresa_id },
-      select: { id: true },
-    });
-
-    if (!empresaExists) {
-      return NextResponse.json({
-        status: 400,
-        message: "No existe una empresa con ese ID",
-      });
-    }
-
     const fechaAjustada = `${fecha.substring(0, 7)}-01`;
     const fechaTrabajo = new Date(`${fechaAjustada}T00:00:00`);
 
     const existing = await prisma.ivaGeneralMensual.findFirst({
       where: {
-        empresa_id,
+        empresa_id: auth.empresa.id,
         fecha_trabajo: fechaTrabajo,
       },
     });
@@ -125,7 +125,7 @@ export async function POST(request: Request) {
         retenciones_recibidas: Number(resumen.retenciones_recibidas ?? 0),
         retenciones_periodo_siguiente: Number(resumen.retenciones_periodo_siguiente ?? 0),
         impuesto_a_pagar: Number(resumen.impuesto_a_pagar ?? 0),
-        empresa_id,
+        empresa_id: auth.empresa.id,
         fecha_trabajo: fechaTrabajo,
       },
     });
@@ -136,6 +136,17 @@ export async function POST(request: Request) {
       message: "Registro para IVA mensual guardado correctamente",
     });
   } catch (error: any) {
+    if (error instanceof AccountingError) {
+      return NextResponse.json(
+        {
+          status: error.status,
+          code: error.code,
+          message: error.message,
+        },
+        { status: error.status }
+      );
+    }
+
     console.error("ERROR POST /api/formularios/ivaMensual:", error);
     return NextResponse.json({
       status: 400,

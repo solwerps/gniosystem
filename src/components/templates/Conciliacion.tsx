@@ -5,6 +5,7 @@ import clsx from "clsx";
 import moment from "moment";
 import * as XLSX from "xlsx";
 import { toast } from "react-toastify";
+import { useSearchParams } from "next/navigation";
 import type { TableColumn } from "react-data-table-component";
 
 import {
@@ -73,6 +74,9 @@ export const Conciliacion: React.FC<ConciliacionProps> = ({
   empresaId,
   usuario,
 }) => {
+  const search = useSearchParams();
+  const tenantSlug = search.get("tenant") || usuario;
+
   const [fetching, setFetching] = useState(true);
 
   const [step, setStep] = useState(1);
@@ -101,7 +105,7 @@ export const Conciliacion: React.FC<ConciliacionProps> = ({
   const fetchEmpresas = useCallback(async () => {
     try {
       setFetching(true);
-      const response = await obtenerEmpresas(usuario);
+      const response = await obtenerEmpresas(tenantSlug);
       const empresasData = Array.isArray(response?.data) ? response.data : [];
 
       const options: OptionType[] = empresasData.map((empresa: any) => ({
@@ -126,14 +130,15 @@ export const Conciliacion: React.FC<ConciliacionProps> = ({
     } finally {
       setFetching(false);
     }
-  }, [empresaId, usuario]);
+  }, [empresaId, tenantSlug]);
 
   const fetchCuentasBancarias = async (empresaValue: string | number) => {
     try {
       setFetching(true);
       const { status, data, message } = await obtenerCuentasBancariasByEmpresaId(
         Number(empresaValue),
-        true
+        true,
+        tenantSlug
       );
 
       if (status !== 200) {
@@ -157,7 +162,9 @@ export const Conciliacion: React.FC<ConciliacionProps> = ({
       setFetching(true);
       const { status, data, message } = await obtenerMovimientosBancarios(
         Number(cuentaBancaria.value),
-        safeDates
+        safeDates,
+        Number(empresaSelected.value || empresaId),
+        tenantSlug
       );
 
       if (status !== 200) {

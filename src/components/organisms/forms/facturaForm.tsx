@@ -17,6 +17,7 @@ import {
 
 import { crearFactura } from "@/utils/services/documentos";
 import { obtenerCuentasByEmpresa } from "@/utils/services/nomenclatura";
+import { obtenerCuentasBancariasByEmpresaId } from "@/utils/services/cuentasBancarias";
 import type { OptionType } from "@/utils/models/variety";
 import type { SelectOption } from "@/utils/models/nomenclaturas";
 import { tiposDocumento } from "@/utils/data/documentosData";
@@ -27,12 +28,14 @@ interface FacturaFormProps {
   empresaNombre: string;
   empresaNit?: string; 
   usuario: string;
+  tenantSlug: string;
 }
 
 export const FacturaForm: React.FC<FacturaFormProps> = ({
   empresaId,
   empresaNombre,
   usuario,
+  tenantSlug,
 }) => {
   const router = useRouter();
 
@@ -83,6 +86,17 @@ export const FacturaForm: React.FC<FacturaFormProps> = ({
     label: "Selecciona",
     error: "",
   });
+  const [condicionPago, setCondicionPago] = useState<OptionType>({
+    value: "CREDITO",
+    label: "Crédito",
+    error: "",
+  });
+  const [cuentasBancarias, setCuentasBancarias] = useState<OptionType[]>([]);
+  const [cuentaBancaria, setCuentaBancaria] = useState<OptionType>({
+    value: "",
+    label: "Selecciona",
+    error: "",
+  });
 
   // Selects
   const [operacion, setOperacion] = useState<OptionType>({
@@ -117,7 +131,8 @@ export const FacturaForm: React.FC<FacturaFormProps> = ({
       try {
         const { status, data, message } = await obtenerCuentasByEmpresa(
           Number(empresaId),
-          true
+          true,
+          tenantSlug
         );
         if (status === 200) {
           setCuentas(data);
@@ -132,7 +147,62 @@ export const FacturaForm: React.FC<FacturaFormProps> = ({
     };
 
     fetchCuentas();
-  }, [empresaId]);
+  }, [empresaId, tenantSlug]);
+
+  useEffect(() => {
+    const fetchBancos = async () => {
+      if (!empresaId) return;
+
+      try {
+        const { status, data } = await obtenerCuentasBancariasByEmpresaId(
+          Number(empresaId),
+          true,
+          tenantSlug
+        );
+        if (status === 200 && Array.isArray(data)) {
+          setCuentasBancarias(
+            data.map((item: any) => ({
+              value: String(item.value ?? item.id ?? ""),
+              label: String(item.label ?? `${item.numero} - ${item.banco}`),
+              error: "",
+            }))
+          );
+        } else {
+          setCuentasBancarias([]);
+        }
+      } catch (error) {
+        console.error(error);
+        setCuentasBancarias([]);
+      }
+    };
+
+    fetchBancos();
+  }, [empresaId, tenantSlug]);
+
+  useEffect(() => {
+    const loadAccountingMode = async () => {
+      if (!empresaId) return;
+      try {
+        const res = await fetch(
+          `/api/empresas/${empresaId}?tenant=${encodeURIComponent(tenantSlug)}`,
+          { cache: "no-store" }
+        );
+        const json = await res.json();
+        const mode = String(
+          json?.data?.afiliaciones?.accountingMode ?? "DEVENGO"
+        ).toUpperCase();
+        if (mode === "CAJA") {
+          setCondicionPago({ value: "CONTADO", label: "Contado", error: "" });
+        } else {
+          setCondicionPago({ value: "CREDITO", label: "Crédito", error: "" });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadAccountingMode();
+  }, [empresaId, tenantSlug]);
 
   // Cuando se selecciona tipo de operación y ya están las cuentas, sugerir DEBE/HABER
   useEffect(() => {
@@ -213,6 +283,11 @@ export const FacturaForm: React.FC<FacturaFormProps> = ({
       }
     }
 
+    if (condicionPago.value === "CONTADO" && !cuentaBancaria.value) {
+      toast.error("Para CONTADO debes seleccionar una cuenta bancaria/caja.");
+      return;
+    }
+
     setStep(2);
   };
 
@@ -224,21 +299,27 @@ export const FacturaForm: React.FC<FacturaFormProps> = ({
 // En facturaForm.tsx
 const parserData = (
   empresaId: number,
+  tenantSlug: string,
   operacion: OptionType,
   dte: OptionType,
   transaction: OptionType,
   moneda: OptionType,
+  condicionPago: OptionType,
+  cuentaBancaria: OptionType,
   data: any,
   fecha_trabajo: Date
 ) => ({
   fecha_trabajo,
   empresa_id: empresaId,           // 👈 AQUÍ se setea
+  tenant: tenantSlug,
   tipo_dte: dte.value,
   moneda: moneda.value,
   tipo_operacion: operacion.value,
   tipo: transaction.value,
   cuenta_debe: cuentaDebe.value,
   cuenta_haber: cuentaHaber.value,
+  condicion_pago: condicionPago.value || undefined,
+  cuenta_bancaria_id: cuentaBancaria.value ? Number(cuentaBancaria.value) : null,
   ...data,
   nit_emisor: data.nit_emisor || "0",
   id_receptor: data.id_receptor || "0",
@@ -253,10 +334,13 @@ const parserData = (
     try {
 const data = parserData(
   empresaId,           // 👈 viene desde props de la página
+  tenantSlug,
   operacion,
   dte,
   transaction,
   moneda,
+  condicionPago,
+  cuentaBancaria,
   formData,
   date
 );
@@ -271,7 +355,9 @@ const data = parserData(
       if (status === 200) {
         toast.success("Documento creado correctamente");
         router.push(
-          `/dashboard/contador/${usuario}/empresas/${empresaId}/documentos`
+          `/dashboard/contador/${usuario}/empresas/${empresaId}/documentos?tenant=${encodeURIComponent(
+            tenantSlug
+          )}`
         );
       } else {
         toast.error(message || "Ocurrió un error al guardar el documento.");
@@ -340,6 +426,22 @@ const data = parserData(
               className="w-full"
               label="Selecciona el tipo de Operación del documento*: "
             />
+            <Select
+              values={condicionPagoOptions}
+              selected={condicionPago}
+              setSelected={setCondicionPago}
+              className="w-full"
+              label="Condición de pago*: "
+            />
+            {condicionPago.value === "CONTADO" && (
+              <Select
+                values={cuentasBancarias}
+                selected={cuentaBancaria}
+                setSelected={setCuentaBancaria}
+                className="w-full"
+                label="Cuenta bancaria/caja*: "
+              />
+            )}
             <CalendarMonth
               label="Periodo en el que irá la factura*: "
               date={date}
@@ -742,4 +844,9 @@ const tiposDte = [
 const tiposOperacion = [
   { value: "compra", label: "Compra" },
   { value: "venta", label: "Venta" },
+];
+
+const condicionPagoOptions = [
+  { value: "CREDITO", label: "Crédito" },
+  { value: "CONTADO", label: "Contado" },
 ];

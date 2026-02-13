@@ -31,10 +31,12 @@ import { toast } from "react-toastify";
 export const IVAMensual = ({
     date,
     empresa,
+    tenantSlug,
     clearFunction,
 }: {
     date: string;
     empresa: number;
+    tenantSlug: string;
     clearFunction: () => void;
 }) => {
     // Documentos
@@ -311,10 +313,10 @@ export const IVAMensual = ({
                             data: dataIVAMensual
                         }
                     ] = await Promise.all([
-                        obtenerDocumentosReportes(empresa, date, true),
-                        obtenerDocumentosReportes(empresa, date, false),
-                        obtenerRetencionesIVA(empresa, date),
-                        getIVAMensual(empresa, date)
+                        obtenerDocumentosReportes(empresa, date, true, tenantSlug),
+                        obtenerDocumentosReportes(empresa, date, false, tenantSlug),
+                        obtenerRetencionesIVA(empresa, date, tenantSlug),
+                        getIVAMensual(empresa, date, tenantSlug)
                     ]);
                     if (
                         statusDocumentosVentas === 200 &&
@@ -343,7 +345,7 @@ export const IVAMensual = ({
             }
         };
         getData();
-    }, [date, empresa]);
+    }, [date, empresa, tenantSlug]);
 
     useEffect(() => {
         if (!loading) {
@@ -978,6 +980,9 @@ export const IVAMensual = ({
         localStorage.setItem('formulario_iva_mensual_data', JSON.stringify(datosFormulario));
         const baseUrl = `${process.env.NEXT_PUBLIC_CLIENT_URL}/pdf/reportes/iva/mensual`;
         const queryParams: Record<string, any> = { empresa, date };
+        if (tenantSlug) {
+            queryParams.tenant = tenantSlug;
+        }
 
         const queryString = new URLSearchParams(queryParams).toString();
         const url = `${baseUrl}?${queryString}`;

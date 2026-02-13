@@ -1,25 +1,24 @@
 // src/app/api/retenciones/isr/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+  empresaIdFromRequest,
+} from "@/lib/accounting/context";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
 
-    const empresaIdParam = searchParams.get("empresa_id");
     const fechaParam = searchParams.get("fecha");
-
-    // ==========================
-    // VALIDAR empresa_id
-    // ==========================
-    const empresa_id = empresaIdParam ? Number(empresaIdParam) : null;
-
-    if (!empresa_id || isNaN(empresa_id)) {
-      return NextResponse.json({
-        status: 400,
-        message: "empresa_id es requerido y debe ser numérico",
-      });
-    }
+    const tenantSlug = tenantSlugFromRequest(request);
+    const empresaId = empresaIdFromRequest(request);
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
 
     // ==========================
     // MANEJO DE FECHA (YYYY-MM)
@@ -56,7 +55,7 @@ export async function GET(request: Request) {
     // ==========================
     const retenciones = await prisma.retencionIsr.findMany({
       where: {
-        empresa_id,
+        empresa_id: auth.empresa.id,
         fecha_trabajo: {
           gte: startDate,
           lt: endDate,
@@ -73,6 +72,17 @@ export async function GET(request: Request) {
       message: "Retenciones ISR obtenidas correctamente",
     });
   } catch (error: any) {
+    if (error instanceof AccountingError) {
+      return NextResponse.json(
+        {
+          status: error.status,
+          code: error.code,
+          message: error.message,
+        },
+        { status: error.status }
+      );
+    }
+
     console.error("ERROR GET RETENCIONES ISR:", error);
 
     return NextResponse.json({

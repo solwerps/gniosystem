@@ -6,6 +6,7 @@ import type {
   NomenclaturaOption,
   ObligacionRow,
   RegimenOption,
+  AccountingMode,
 } from "@/types/empresas";
 import { useMemo, useState } from "react";
 
@@ -20,6 +21,8 @@ type Props = {
   setRegimenIsrId: (n?: number) => void;
   nomenclaturaId?: number;
   setNomenclaturaId: (n?: number) => void;
+  accountingMode?: AccountingMode;
+  setAccountingMode?: (mode: AccountingMode) => void;
 
   // 👇 las volvemos opcionales porque en configurar puede venir undefined
   obligaciones?: ObligacionRow[];
@@ -71,6 +74,8 @@ export default function AfiliacionesTab(rawProps: Props & any) {
     setRegimenIsrId,
     nomenclaturaId,
     setNomenclaturaId,
+    accountingMode = "DEVENGO",
+    setAccountingMode,
     obligaciones: rawObligaciones,
     setObligaciones: rawSetObligaciones,
     onReloadLists,
@@ -171,6 +176,24 @@ export default function AfiliacionesTab(rawProps: Props & any) {
     <div className="space-y-8">
       {/* ===== Selecciones principales: un campo por línea ===== */}
       <div className="grid grid-cols-1 gap-6">
+        {/* Modo contable */}
+        <div>
+          <label className="block text-sm text-neutral-600 mb-1">
+            Modo contable por empresa:
+          </label>
+          <Select
+            className="w-full"
+            value={accountingMode}
+            onChange={(e) => {
+              const value = e.target.value === "CAJA" ? "CAJA" : "DEVENGO";
+              if (setAccountingMode) setAccountingMode(value);
+            }}
+          >
+            <option value="DEVENGO">DEVENGO (Pro)</option>
+            <option value="CAJA">CAJA (Simple)</option>
+          </Select>
+        </div>
+
         {/* IVA por nombre común */}
         <div>
           <div className="flex items-center justify-between mb-1">

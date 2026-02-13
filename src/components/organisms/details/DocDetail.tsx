@@ -45,7 +45,11 @@ interface CampoMontoConfig {
   placeholder: string;
 }
 
-export const DocDetail: React.FC<{ uuid: string }> = ({ uuid }) => {
+export const DocDetail: React.FC<{
+  uuid: string;
+  empresaId: number;
+  tenantSlug: string;
+}> = ({ uuid, empresaId, tenantSlug }) => {
   const router = useRouter();
 
   // ===========================
@@ -130,7 +134,11 @@ export const DocDetail: React.FC<{ uuid: string }> = ({ uuid }) => {
     const getData = async () => {
       try {
         setFetching(true);
-        const { status, data, message } = await obtenerDocumentoByuuid(uuid);
+        const { status, data, message } = await obtenerDocumentoByuuid(
+          uuid,
+          empresaId,
+          tenantSlug
+        );
 
         if (status === 200) {
           setDocumento(data);
@@ -187,7 +195,11 @@ export const DocDetail: React.FC<{ uuid: string }> = ({ uuid }) => {
       documentoSchema.parse(documento);
 
       // crearFactura espera IFactura; casteamos para TS
-      const { status, message } = await crearFactura(documento as any);
+      const { status, message } = await crearFactura({
+        ...(documento as any),
+        empresa_id: empresaId,
+        tenant: tenantSlug,
+      });
 
       if (status === 200) {
         toast.success('Documento guardado correctamente.');

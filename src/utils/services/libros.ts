@@ -9,7 +9,8 @@ export const obtenerDocumentosLibrosCompras = async (
   empresaId: number,
   fecha: string | Date,
   venta: boolean = false,
-  orden: "ascendente" | "descendente" = "ascendente"
+  orden: "ascendente" | "descendente" = "ascendente",
+  tenant?: string
 ) => {
   const params = new URLSearchParams();
 
@@ -22,6 +23,7 @@ export const obtenerDocumentosLibrosCompras = async (
 
   params.set("venta", venta ? "true" : "false");
   params.set("orden", orden);
+  if (tenant) params.set("tenant", tenant);
 
   return fetchService({
     url: `/api/libros/compras?${params.toString()}`,
@@ -37,7 +39,8 @@ export const obtenerLibroVentas = async (
   empresaId: number,
   fecha: string | Date,
   venta: boolean = true,
-  orden: "ascendente" | "descendente" = "ascendente"
+  orden: "ascendente" | "descendente" = "ascendente",
+  tenant?: string
 ) => {
   const params = new URLSearchParams();
 
@@ -49,6 +52,7 @@ export const obtenerLibroVentas = async (
 
   params.set("venta", venta ? "true" : "false");
   params.set("orden", orden);
+  if (tenant) params.set("tenant", tenant);
 
   return fetchService({
     url: `/api/libros/ventas?${params.toString()}`,
@@ -62,10 +66,16 @@ export const obtenerLibroVentas = async (
 export const obtenerLibroDiario = async (
   empresaId: number,
   fecha: Date,
-  orden: string = "ascendente"
+  orden: string = "ascendente",
+  tenant?: string
 ) => {
+  const params = new URLSearchParams();
+  params.set("empresa_id", String(empresaId));
+  params.set("fecha", fecha.toISOString());
+  params.set("orden", orden);
+  if (tenant) params.set("tenant", tenant);
   return await fetchService({
-    url: `/api/libros/diario?empresa_id=${empresaId}&fecha=${fecha.toISOString()}&orden=${orden}`,
+    url: `/api/libros/diario?${params.toString()}`,
     method: "GET",
   });
 };
@@ -89,7 +99,8 @@ export const obtenerPartidasLibroDiario = async (
 export const obtenerAsientosLDiario = async (
   empresaId: number,
   fecha: string | Date,
-  orden: "ascendente" | "descendente" = "ascendente"
+  orden: "ascendente" | "descendente" = "ascendente",
+  tenant?: string
 ) => {
   const params = new URLSearchParams();
 
@@ -100,6 +111,7 @@ export const obtenerAsientosLDiario = async (
   params.set("fecha", fechaParam);
 
   params.set("orden", orden);
+  if (tenant) params.set("tenant", tenant);
 
   return fetchService({
     url: `/api/libros/diario/asientos?${params.toString()}`,
@@ -112,7 +124,8 @@ export const obtenerAsientosLDiario = async (
 export const obtenerAsientosBalanceGeneral = async (
   empresaId: number,
   fechaInicio?: string | Date | null,
-  fechaFin?: string | Date | null
+  fechaFin?: string | Date | null,
+  tenant?: string
 ) => {
   const params = new URLSearchParams();
   params.set("empresa_id", String(empresaId));
@@ -132,6 +145,7 @@ export const obtenerAsientosBalanceGeneral = async (
         : String(fechaFin);
     params.set("date2", fin);
   }
+  if (tenant) params.set("tenant", tenant);
 
   return fetchService({
     url: `/api/libros/balance/asientos?${params.toString()}`,
@@ -145,7 +159,8 @@ export const obtenerAsientosBalanceGeneral = async (
 export const obtenerDocumentosBalanceGeneral = async (
   empresaId: number,
   fechaInicio?: string | Date | null,
-  fechaFin?: string | Date | null
+  fechaFin?: string | Date | null,
+  tenant?: string
 ) => {
   const params = new URLSearchParams();
   params.set("empresa_id", String(empresaId));
@@ -165,6 +180,7 @@ export const obtenerDocumentosBalanceGeneral = async (
         : String(fechaFin);
     params.set("date2", fin);
   }
+  if (tenant) params.set("tenant", tenant);
 
   return fetchService({
     url: `/api/libros/balance/documentos?${params.toString()}`,
@@ -182,7 +198,8 @@ export const obtenerDocumentosBG = obtenerDocumentosBalanceGeneral;
 export const obtenerPartidasLibroMayor = async (
   empresaId: number,
   fecha: string | Date,
-  orden: "ascendente" | "descendente" = "ascendente"
+  orden: "ascendente" | "descendente" = "ascendente",
+  tenant?: string
 ) => {
   const params = new URLSearchParams();
 
@@ -193,6 +210,7 @@ export const obtenerPartidasLibroMayor = async (
   params.set("fecha", fechaParam);
 
   params.set("orden", orden);
+  if (tenant) params.set("tenant", tenant);
 
   return fetchService({
     url: `/api/libros/mayor?${params.toString()}`,

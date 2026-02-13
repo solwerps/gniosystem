@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+} from "@/lib/accounting/context";
 
 const parseBoolean = (value: string | null) => {
   if (!value) return false;
@@ -12,6 +17,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const empresaId = Number(searchParams.get("id"));
     const select = parseBoolean(searchParams.get("select"));
+    const tenantSlug = tenantSlugFromRequest(request);
 
     if (!empresaId || Number.isNaN(empresaId)) {
       return NextResponse.json(
@@ -24,8 +30,13 @@ export async function GET(request: Request) {
       );
     }
 
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
+
     const cuentas = await prisma.cuentaBancaria.findMany({
-      where: { empresaId },
+      where: { empresaId: auth.empresa.id },
       orderBy: [{ banco: "asc" }, { numero: "asc" }],
       select: {
         id: true,
@@ -76,7 +87,19 @@ export async function GET(request: Request) {
       },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error: any) {
+    if (error instanceof AccountingError) {
+      return NextResponse.json(
+        {
+          status: error.status,
+          code: error.code,
+          message: error.message,
+          data: [],
+        },
+        { status: error.status }
+      );
+    }
+
     console.error("GET /api/cuentasBancarias/id:", error);
     return NextResponse.json(
       {

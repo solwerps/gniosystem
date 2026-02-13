@@ -1,11 +1,23 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+  empresaIdFromRequest,
+} from "@/lib/accounting/context";
 
 const isDateOnly = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value);
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
+    const tenantSlug = tenantSlugFromRequest(request);
+    const empresaId = Number(
+      searchParams.get("empresa_id") ??
+        searchParams.get("empresaId") ??
+        empresaIdFromRequest(request)
+    );
 
     const cuentaId = Number(
       searchParams.get("cuenta_bancaria_id") ??
@@ -59,6 +71,30 @@ export async function GET(request: Request) {
       fechaFin.setHours(23, 59, 59, 999);
     }
 
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
+
+    const cuenta = await prisma.cuentaBancaria.findFirst({
+      where: {
+        id: cuentaId,
+        empresaId: auth.empresa.id,
+      },
+      select: { id: true },
+    });
+
+    if (!cuenta) {
+      return NextResponse.json(
+        {
+          status: 404,
+          data: [],
+          message: "La cuenta bancaria no pertenece a la empresa.",
+        },
+        { status: 404 }
+      );
+    }
+
     const movimientos = await prisma.movimientoCuentaBancaria.findMany({
       where: {
         cuenta_bancaria_id: cuentaId,
@@ -77,6 +113,10 @@ export async function GET(request: Request) {
         monto: true,
         referencia: true,
         estado: true,
+        estado_conciliacion: true,
+        match_id: true,
+        documento_uuid: true,
+        asiento_contable_id: true,
       },
     });
 
@@ -89,6 +129,10 @@ export async function GET(request: Request) {
       monto: movimiento.monto.toString(),
       referencia: movimiento.referencia ?? "",
       estado: movimiento.estado,
+      estado_conciliacion: movimiento.estado_conciliacion,
+      match_id: movimiento.match_id,
+      documento_uuid: movimiento.documento_uuid,
+      asiento_contable_id: movimiento.asiento_contable_id,
     }));
 
     return NextResponse.json(
@@ -99,7 +143,19 @@ export async function GET(request: Request) {
       },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error: any) {
+    if (error instanceof AccountingError) {
+      return NextResponse.json(
+        {
+          status: error.status,
+          code: error.code,
+          message: error.message,
+          data: [],
+        },
+        { status: error.status }
+      );
+    }
+
     console.error("GET /api/cuentasBancarias/movimientos:", error);
     return NextResponse.json(
       {

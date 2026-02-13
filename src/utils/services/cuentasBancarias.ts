@@ -34,10 +34,19 @@ export const crearCuentaBancaria = async (data: ICuentaBancariaForm) => {
  */
 export const obtenerCuentasBancariasPorEmpresa = async (
   empresaId: number,
-  select: boolean = false
+  select: boolean = false,
+  tenant?: string
 ) => {
+  const qs = new URLSearchParams({
+    id: String(empresaId),
+    select: String(select),
+  });
+  if (tenant) {
+    qs.append("tenant", tenant);
+  }
+
   return await fetchService({
-    url: `/api/cuentasBancarias/id?id=${empresaId}&select=${select}`,
+    url: `/api/cuentasBancarias/id?${qs.toString()}`,
     method: "GET",
   });
 };
@@ -47,10 +56,19 @@ export const obtenerCuentasBancariasPorEmpresa = async (
  */
 export const obtenerCuentasBancariasByEmpresaId = async (
   id: number,
-  select: boolean = false
+  select: boolean = false,
+  tenant?: string
 ) => {
+  const qs = new URLSearchParams({
+    id: String(id),
+    select: String(select),
+  });
+  if (tenant) {
+    qs.append("tenant", tenant);
+  }
+
   return await fetchService({
-    url: `/api/cuentasBancarias/id?id=${id}&select=${select}`,
+    url: `/api/cuentasBancarias/id?${qs.toString()}`,
     method: "GET",
   });
 };
@@ -61,13 +79,19 @@ export const obtenerCuentasBancariasByEmpresaId = async (
  */
 export const obtenerMovimientosBancarios = async (
   cuentaBancariaId: number,
-  fechas: Date[]
+  fechas: Date[],
+  empresaId: number,
+  tenant?: string
 ) => {
   const queryParams = new URLSearchParams({
     cuenta_bancaria_id: cuentaBancariaId.toString(),
     fecha_inicio: fechas[0].toISOString(),
     fecha_fin: (fechas[1] ?? fechas[0]).toISOString(),
+    empresa_id: String(empresaId),
   });
+  if (tenant) {
+    queryParams.append("tenant", tenant);
+  }
 
   return await fetchService({
     url: `/api/cuentasBancarias/movimientos?${queryParams.toString()}`,

@@ -1,5 +1,60 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getSession } from "@/lib/auth";
+
+async function requireTenantMembership(tenantSlug?: string | null) {
+  if (!tenantSlug) {
+    return {
+      ok: false as const,
+      status: 400,
+      message: "Debe enviar tenant.",
+    };
+  }
+
+  const session = await getSession();
+  if (!session?.user?.id) {
+    return {
+      ok: false as const,
+      status: 401,
+      message: "Debes iniciar sesión.",
+    };
+  }
+
+  const tenant = await prisma.tenant.findUnique({
+    where: { slug: tenantSlug },
+    select: { id: true },
+  });
+
+  if (!tenant) {
+    return {
+      ok: false as const,
+      status: 404,
+      message: "Tenant no encontrado.",
+    };
+  }
+
+  if (session.user.role !== "ADMIN") {
+    const membership = await prisma.membership.findUnique({
+      where: {
+        userId_tenantId: {
+          userId: session.user.id,
+          tenantId: tenant.id,
+        },
+      },
+      select: { userId: true },
+    });
+
+    if (!membership) {
+      return {
+        ok: false as const,
+        status: 403,
+        message: "No tienes membresía para este tenant.",
+      };
+    }
+  }
+
+  return { ok: true as const, tenant };
+}
 
 export const revalidate = 0;
 
@@ -28,8 +83,16 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const tenantSlug = searchParams.get("tenant") || undefined;
 
+  const access = await requireTenantMembership(tenantSlug);
+  if (!access.ok) {
+    return NextResponse.json(
+      { ok: false, error: access.message },
+      { status: access.status }
+    );
+  }
+
   const empresas = await prisma.empresa.findMany({
-    where: tenantSlug ? { tenantSlug } : undefined,
+    where: { tenantId: access.tenant.id },
     orderBy: { id: "desc" },
     select: {
       id: true,
@@ -77,20 +140,16 @@ export async function POST(req: Request) {
       );
     }
 
-    const tenant = await prisma.tenant.findUnique({
-      where: { slug: tenantSlug },
-      select: { id: true },
-    });
-
-    if (!tenant) {
+    const access = await requireTenantMembership(tenantSlug);
+    if (!access.ok) {
       return NextResponse.json(
-        { ok: false, error: "TENANT_NOT_FOUND" },
-        { status: 404 }
+        { ok: false, error: access.message },
+        { status: access.status }
       );
     }
 
     const patchEmpresa: any = {
-      tenantId: tenant.id,
+      tenantId: access.tenant.id,
       tenantSlug,
       nombre,
       nit,
@@ -137,6 +196,8 @@ export async function POST(req: Request) {
           regimenIvaId: afiliaciones?.regimenIvaId ?? null,
           regimenIsrId: afiliaciones?.regimenIsrId ?? null,
           nomenclaturaId,
+          accountingMode:
+            afiliaciones?.accountingMode === "CAJA" ? "CAJA" : "DEVENGO",
           obligaciones: afiliaciones?.obligaciones?.length
             ? {
                 createMany: {

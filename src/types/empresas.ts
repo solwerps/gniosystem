@@ -1,6 +1,7 @@
 // src/types/empresas.ts
 export type RazonSocial = "Individual" | "Juridico";
 export type Moneda = "GTQ" | "USD" | "MXN";
+export type AccountingMode = "CAJA" | "DEVENGO";
 
 export type RegimenOption = {
   id: number;

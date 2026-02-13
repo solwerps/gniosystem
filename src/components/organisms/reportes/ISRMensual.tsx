@@ -25,7 +25,15 @@ import clsx from "clsx";
 import { toast } from "react-toastify";
 import moment from "moment";
 
-export const ISRMensual = ({ date, empresa }: {date: string, empresa: number}) => {
+export const ISRMensual = ({
+    date,
+    empresa,
+    tenantSlug,
+}: {
+    date: string;
+    empresa: number;
+    tenantSlug: string;
+}) => {
     const [documentos, setDocumentos] = useState<IGetDocumento[]>([]);
     const [retenciones, setRetenciones] = useState<IRetencionISR[]>([]);
     const [loading, setLoading] = useState(true);
@@ -61,8 +69,8 @@ export const ISRMensual = ({ date, empresa }: {date: string, empresa: number}) =
                             data: dataRetenciones
                         }
                     ] = await Promise.all([
-                        obtenerDocumentosReportes(empresa, date, true),
-                        obtenerRetencionesISR(empresa, date)
+                        obtenerDocumentosReportes(empresa, date, true, tenantSlug),
+                        obtenerRetencionesISR(empresa, date, tenantSlug)
                     ]);
                     if (statusDocumentos === 200 && statusRetenciones === 200) {
                         setDocumentos(dataDocumentos);
@@ -80,7 +88,7 @@ export const ISRMensual = ({ date, empresa }: {date: string, empresa: number}) =
             }
         };
         getData();
-    }, [date, empresa]);
+    }, [date, empresa, tenantSlug]);
 
     useEffect(() => {
       if (documentos && documentos.length > 0) {
@@ -158,7 +166,8 @@ export const ISRMensual = ({ date, empresa }: {date: string, empresa: number}) =
             const { status, data, message } = await crearIsrOpcional(
                 empresa_id,
                 fecha,
-                resumenData
+                resumenData,
+                tenantSlug
             );
             if (status == 200) {
                 toast.success('Formulario Guardado Correctamente');

@@ -1,80 +1,104 @@
-// src/app/api/documentos/uuid/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { isValueUnique } from "@/utils/functions/validateData";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+  empresaIdFromRequest,
+} from "@/lib/accounting/context";
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-
+export async function GET(req: Request) {
   try {
-    const uuid = searchParams.get("uuid");
+    const { searchParams } = new URL(req.url);
+    const uuid = String(searchParams.get("uuid") ?? "").trim();
+    const tenantSlug = tenantSlugFromRequest(req);
+    const empresaId = empresaIdFromRequest(req);
+
     if (!uuid) {
       return NextResponse.json(
-        { status: 400, message: "Falta parámetro uuid", data: {} },
+        { status: 400, message: "Falta parámetro uuid.", data: {} },
         { status: 400 }
       );
     }
 
-    // 🔍 Verificar si el documento existe y está activo
-    const existe = !(await isValueUnique("documento", "uuid", uuid, { estado: 1 }));
-    if (!existe) {
-      return NextResponse.json(
-        {
-          status: 404,
-          data: { uuid },
-          message: "No existe un documento activo con ese UUID",
-        },
-        { status: 404 }
-      );
-    }
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
 
-    // ✅ Buscar documento con Prisma e incluir relaciones
     const documento = await prisma.documento.findFirst({
-      where: { uuid, estado: 1 },
+      where: {
+        uuid,
+        empresa_id: auth.empresa.id,
+        estado: 1,
+      },
       include: {
         empresa: {
-          select: { id: true, nombre: true, nit: true, tenant: true },
+          select: {
+            id: true,
+            nombre: true,
+            nit: true,
+            tenantSlug: true,
+          },
         },
         cuentaDebe: {
-          select: { cuenta: true, descripcion: true },
+          select: {
+            id: true,
+            cuenta: true,
+            descripcion: true,
+          },
         },
         cuentaHaber: {
-          select: { cuenta: true, descripcion: true },
+          select: {
+            id: true,
+            cuenta: true,
+            descripcion: true,
+          },
+        },
+        cuenta_bancaria: {
+          select: {
+            id: true,
+            numero: true,
+            banco: true,
+          },
         },
       },
     });
 
     if (!documento) {
       return NextResponse.json(
-        {
-          status: 404,
-          data: { uuid },
-          message: "Documento no encontrado o no pertenece al tenant actual",
-        },
+        { status: 404, message: "Documento no encontrado.", data: { uuid } },
         { status: 404 }
       );
     }
 
-    // 🧾 Formatear respuesta igual al front original
-    const data = {
-      ...documento,
-      cuenta_debe: documento.cuentaDebe
-        ? `${documento.cuentaDebe.descripcion} (${documento.cuentaDebe.cuenta})`
-        : null,
-      cuenta_haber: documento.cuentaHaber
-        ? `${documento.cuentaHaber.descripcion} (${documento.cuentaHaber.cuenta})`
-        : null,
-    };
-
-    return NextResponse.json({
-      status: 200,
-      data,
-      message: "Documento obtenido correctamente",
-    });
-  } catch (error: any) {
-    console.error("Error GET /api/documentos/uuid:", error);
     return NextResponse.json(
-      { status: 500, data: {}, message: error.message || "Error al obtener documento" },
+      {
+        status: 200,
+        message: "Documento obtenido correctamente.",
+        data: {
+          ...documento,
+          cuenta_debe_nombre: documento.cuentaDebe?.descripcion ?? null,
+          cuenta_haber_nombre: documento.cuentaHaber?.descripcion ?? null,
+        },
+      },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    if (error instanceof AccountingError) {
+      return NextResponse.json(
+        {
+          status: error.status,
+          code: error.code,
+          message: error.message,
+        },
+        { status: error.status }
+      );
+    }
+
+    console.error("GET /api/documentos/uuid", error);
+    return NextResponse.json(
+      { status: 500, message: "Error interno al obtener documento.", data: {} },
       { status: 500 }
     );
   }

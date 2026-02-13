@@ -8,7 +8,8 @@ import type { IResumenIsrOpcional } from "../models";
 export const crearIsrOpcional = async (
   empresaId: number,
   fechaTrabajo: string,
-  resumenData: IResumenIsrOpcional
+  resumenData: IResumenIsrOpcional,
+  tenant?: string
 ) => {
   return await fetchService({
     url: `/api/formularios/isrOpcional`,
@@ -17,6 +18,7 @@ export const crearIsrOpcional = async (
       empresa_id: empresaId,
       fecha: fechaTrabajo,
       resumenData,
+      tenant,
     }),
   });
 };
@@ -27,7 +29,8 @@ export const crearIsrOpcional = async (
 export const crearIvaMensual = async (
   empresaId: number,
   fechaTrabajo: string,
-  resumenData: any
+  resumenData: any,
+  tenant?: string
 ) => {
   return await fetchService({
     url: `/api/formularios/ivaMensual`,
@@ -36,6 +39,7 @@ export const crearIvaMensual = async (
       empresa_id: empresaId,
       fecha: fechaTrabajo,
       resumenData,
+      tenant,
     }),
   });
 };
@@ -48,10 +52,16 @@ export const crearIVAMensual = crearIvaMensual;
  */
 export const obtenerIvaMensual = async (
   empresaId: number,
-  fechaTrabajo: string
+  fechaTrabajo: string,
+  tenant?: string
 ) => {
+  const params = new URLSearchParams();
+  params.set("empresa_id", String(empresaId));
+  params.set("fecha", fechaTrabajo);
+  if (tenant) params.set("tenant", tenant);
+
   return await fetchService({
-    url: `/api/formularios/ivaMensual?empresa_id=${empresaId}&fecha=${fechaTrabajo}`,
+    url: `/api/formularios/ivaMensual?${params.toString()}`,
     method: "GET",
   });
 };

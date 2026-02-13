@@ -1,5 +1,11 @@
 // src/app/api/folios/route.ts
 import { prisma } from "@/lib/prisma";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+  empresaIdFromRequest,
+} from "@/lib/accounting/context";
 import type { IFolioBody } from "@/utils";
 import moment from "moment-timezone";
 
@@ -8,11 +14,27 @@ export async function GET(request: Request) {
 
   try {
     const nit = searchParams.get("nit") ?? "0";
+    const tenantSlug = tenantSlugFromRequest(request);
+    const empresaId = empresaIdFromRequest(request);
+
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
+
+    if (nit && nit !== "0" && nit !== auth.empresa.nit) {
+      return Response.json({
+        status: 403,
+        data: [],
+        message: "El NIT no pertenece a la empresa autorizada.",
+      });
+    }
 
     // ✅ Validar empresa por NIT y estado = 1
     const empresa = await prisma.empresa.findFirst({
       where: {
-        nit,
+        id: auth.empresa.id,
+        nit: auth.empresa.nit,
         estado: 1,
       },
     });
@@ -52,6 +74,18 @@ export async function GET(request: Request) {
       message: "Folios obtenidos correctamente",
     });
   } catch (error: any) {
+    if (error instanceof AccountingError) {
+      return Response.json(
+        {
+          status: error.status,
+          code: error.code,
+          data: [],
+          message: error.message,
+        },
+        { status: error.status }
+      );
+    }
+
     console.log(error);
     return Response.json({
       status: 400,
@@ -64,15 +98,31 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body: IFolioBody = await request.json();
+    const tenantSlug = String(body?.tenant ?? tenantSlugFromRequest(request) ?? "");
+    const empresaId = Number(body?.empresa_id ?? empresaIdFromRequest(request));
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
 
     if (!body.empresa_id) {
       throw new Error("La empresa es requerida");
+    }
+    if (Number(body.empresa_id) !== auth.empresa.id) {
+      return Response.json(
+        {
+          status: 403,
+          data: { empresa_id: body.empresa_id },
+          message: "La empresa indicada no coincide con la empresa autorizada",
+        },
+        { status: 403 }
+      );
     }
 
     // ✅ Validar empresa activa
     const empresa = await prisma.empresa.findFirst({
       where: {
-        id: body.empresa_id,
+        id: auth.empresa.id,
         estado: 1,
       },
     });
@@ -137,6 +187,18 @@ export async function POST(request: Request) {
       message: "Folios obtenidos correctamente",
     });
   } catch (error: any) {
+    if (error instanceof AccountingError) {
+      return Response.json(
+        {
+          status: error.status,
+          code: error.code,
+          data: {},
+          message: error.message,
+        },
+        { status: error.status }
+      );
+    }
+
     console.log(error);
     return Response.json({
       status: 400,
@@ -149,15 +211,31 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body: IFolioBody = await request.json();
+    const tenantSlug = String(body?.tenant ?? tenantSlugFromRequest(request) ?? "");
+    const empresaId = Number(body?.empresa_id ?? empresaIdFromRequest(request));
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
 
     if (!body.empresa_id) {
       throw new Error("La empresa es requerida");
+    }
+    if (Number(body.empresa_id) !== auth.empresa.id) {
+      return Response.json(
+        {
+          status: 403,
+          data: { empresa_id: body.empresa_id },
+          message: "La empresa indicada no coincide con la empresa autorizada",
+        },
+        { status: 403 }
+      );
     }
 
     // ✅ Validar empresa activa
     const empresa = await prisma.empresa.findFirst({
       where: {
-        id: body.empresa_id,
+        id: auth.empresa.id,
         estado: 1,
       },
     });
@@ -217,6 +295,18 @@ export async function PUT(request: Request) {
       message: "Folios obtenidos correctamente",
     });
   } catch (error: any) {
+    if (error instanceof AccountingError) {
+      return Response.json(
+        {
+          status: error.status,
+          code: error.code,
+          data: {},
+          message: error.message,
+        },
+        { status: error.status }
+      );
+    }
+
     console.log(error);
     return Response.json({
       status: 400,

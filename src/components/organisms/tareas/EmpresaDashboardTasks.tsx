@@ -141,7 +141,7 @@ export default function EmpresaDashboardTasks({
         </button>
 
         {isOpen && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-md shadow-2xl border border-slate-200 overflow-hidden z-50 animate-dropdown">
+          <div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-md shadow-2xl border border-slate-200 overflow-hidden z-50 animate-dropdown">
             {Object.entries(estadoConfig).map(([key, cfg]) => {
               const OptionIcon = cfg.icon;
               return (
@@ -512,7 +512,7 @@ export default function EmpresaDashboardTasks({
                     placeholder="Nueva tarea"
                   />
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 relative">
                   {renderEstadoBadge(draft.estado, "draft", (newEstado) =>
                     setDraft((d) => ({ ...d, estado: newEstado }))
                   )}
@@ -577,7 +577,7 @@ export default function EmpresaDashboardTasks({
                         placeholder="Describe la tarea..."
                       />
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 relative">
                       {renderEstadoBadge(r.estado, String(r.id), (newEstado) =>
                         patchRow(r.id, { estado: newEstado })
                       )}

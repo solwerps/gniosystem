@@ -35,6 +35,7 @@ import {
 
 // Servicios de nomenclatura / cuentas
 import { obtenerCuentasByEmpresa } from '@/utils/services/nomenclatura';
+import { obtenerCuentasBancariasByEmpresaId } from '@/utils/services/cuentasBancarias';
 
 import { Button } from '@/components/atoms';
 import { CalendarMonth } from '@/components/atoms';
@@ -52,6 +53,7 @@ interface UploadDocumentosProps {
   empresaNit: string;
   empresaNombre: string;
   usuario: string;
+  tenantSlug: string;
   cuentaDebeDefaultId?: number | string;
   cuentaHaberDefaultId?: number | string;
 }
@@ -94,6 +96,7 @@ export const UploadDocumentos: React.FC<UploadDocumentosProps> = ({
   empresaNit,
   empresaNombre,
   usuario,
+  tenantSlug,
   cuentaDebeDefaultId,
   cuentaHaberDefaultId
 }) => {
@@ -116,11 +119,23 @@ export const UploadDocumentos: React.FC<UploadDocumentosProps> = ({
     { value: 'venta', label: 'Venta' },
     { value: 'compra', label: 'Compra' }
   ];
+  const condicionPagoOptions: { value: string; label: string }[] = [
+    { value: 'CREDITO', label: 'Crédito' },
+    { value: 'CONTADO', label: 'Contado' },
+  ];
   const [tipoOperacionSelected, setTipoOperacionSelected] =
     useState<OptionType>({ value: '', label: 'Selecciona', error: '' });
+  const [condicionPagoSelected, setCondicionPagoSelected] =
+    useState<OptionType>({ value: 'CREDITO', label: 'Crédito', error: '' });
 
   // Cuentas
   const [cuentasOptions, setCuentasOptions] = useState<SelectOption[]>([]);
+  const [cuentasBancariasOptions, setCuentasBancariasOptions] = useState<OptionType[]>([]);
+  const [cuentaBancariaSelected, setCuentaBancariaSelected] = useState<OptionType>({
+    value: '',
+    label: 'Selecciona',
+    error: '',
+  });
 
   // Fecha
   const [date, setDate] = useState<Date>(() => {
@@ -149,7 +164,8 @@ export const UploadDocumentos: React.FC<UploadDocumentosProps> = ({
       try {
         const { status, data, message } = await obtenerCuentasByEmpresa(
           Number(empresaId),
-          true
+          true,
+          tenantSlug
         );
         if (status === 200) {
           setCuentasOptions(data);
@@ -164,7 +180,61 @@ export const UploadDocumentos: React.FC<UploadDocumentosProps> = ({
     };
 
     fetchCuentas();
-  }, [empresaId]);
+  }, [empresaId, tenantSlug]);
+
+  useEffect(() => {
+    const fetchBancos = async () => {
+      if (!empresaId) return;
+
+      try {
+        const { status, data } = await obtenerCuentasBancariasByEmpresaId(
+          Number(empresaId),
+          true,
+          tenantSlug
+        );
+
+        if (status === 200 && Array.isArray(data)) {
+          const options = data.map((item: any) => ({
+            value: String(item.value ?? item.id ?? ''),
+            label: String(item.label ?? `${item.numero} - ${item.banco}`),
+          }));
+          setCuentasBancariasOptions(options);
+        } else {
+          setCuentasBancariasOptions([]);
+        }
+      } catch (error) {
+        console.error(error);
+        setCuentasBancariasOptions([]);
+      }
+    };
+
+    fetchBancos();
+  }, [empresaId, tenantSlug]);
+
+  useEffect(() => {
+    const loadAccountingMode = async () => {
+      if (!empresaId) return;
+      try {
+        const res = await fetch(
+          `/api/empresas/${empresaId}?tenant=${encodeURIComponent(tenantSlug)}`,
+          { cache: 'no-store' }
+        );
+        const json = await res.json();
+        const mode = String(
+          json?.data?.afiliaciones?.accountingMode ?? 'DEVENGO'
+        ).toUpperCase();
+        if (mode === 'CAJA') {
+          setCondicionPagoSelected({ value: 'CONTADO', label: 'Contado', error: '' });
+        } else {
+          setCondicionPagoSelected({ value: 'CREDITO', label: 'Crédito', error: '' });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadAccountingMode();
+  }, [empresaId, tenantSlug]);
 
   const handleConfirm = () => {
     setModalSubmit(true);
@@ -420,11 +490,28 @@ export const UploadDocumentos: React.FC<UploadDocumentosProps> = ({
       setLoading(true);
       setErrorAlert(null);
 
+      if (
+        condicionPagoSelected.value === 'CONTADO' &&
+        !cuentaBancariaSelected.value
+      ) {
+        setErrorAlert({
+          title: 'Validación de tesorería',
+          messages: ['Para CONTADO debes seleccionar una cuenta bancaria o caja.'],
+        });
+        toast.error('Selecciona cuenta bancaria para CONTADO.');
+        return;
+      }
+
       const { status, message } = await crearDocumentos(
         documentos,
         Number(empresaId),
         String(tipoOperacionSelected.value),
-        date
+        date,
+        tenantSlug,
+        condicionPagoSelected.value === 'CONTADO' ? 'CONTADO' : 'CREDITO',
+        cuentaBancariaSelected.value
+          ? Number(cuentaBancariaSelected.value)
+          : null
       );
       if (status == 200) {
         setModalSubmit(false);
@@ -602,6 +689,16 @@ export const UploadDocumentos: React.FC<UploadDocumentosProps> = ({
       label: 'Selecciona',
       error: ''
     });
+    setCondicionPagoSelected({
+      value: 'CREDITO',
+      label: 'Crédito',
+      error: '',
+    });
+    setCuentaBancariaSelected({
+      value: '',
+      label: 'Selecciona',
+      error: '',
+    });
     setDate(new Date());
     setModalSubmit(false);
     setContinueModal(false);
@@ -616,6 +713,16 @@ export const UploadDocumentos: React.FC<UploadDocumentosProps> = ({
     setDocumentosBackupXML([]);
     setDocumentosXML([]);
     setDocumentos([]);
+    setCondicionPagoSelected({
+      value: 'CREDITO',
+      label: 'Crédito',
+      error: '',
+    });
+    setCuentaBancariaSelected({
+      value: '',
+      label: 'Selecciona',
+      error: '',
+    });
     setModalSubmit(false);
     setContinueModal(false);
     setErrorAlert(null);
@@ -1040,7 +1147,7 @@ export const UploadDocumentos: React.FC<UploadDocumentosProps> = ({
           </div>
         )}
 
-        <div className="flex gap-10">
+        <div className="flex flex-wrap gap-6">
           <div className="flex flex-col w-full">
             <span className="mb-1 text-sm font-medium text-gray-700">
               Selecciona el tipo de Operación de los documentos:
@@ -1054,6 +1161,34 @@ export const UploadDocumentos: React.FC<UploadDocumentosProps> = ({
               loading={false}
             />
           </div>
+          <div className="flex flex-col w-full">
+            <span className="mb-1 text-sm font-medium text-gray-700">
+              Condición de pago:
+            </span>
+            <SelectTable
+              values={condicionPagoOptions}
+              value={condicionPagoSelected.value}
+              onChange={(newValue: OptionType | null) =>
+                newValue && setCondicionPagoSelected(newValue)
+              }
+              loading={false}
+            />
+          </div>
+          {condicionPagoSelected.value === 'CONTADO' && (
+            <div className="flex flex-col w-full">
+              <span className="mb-1 text-sm font-medium text-gray-700">
+                Cuenta bancaria / caja:
+              </span>
+              <SelectTable
+                values={cuentasBancariasOptions}
+                value={cuentaBancariaSelected.value}
+                onChange={(newValue: OptionType | null) =>
+                  newValue && setCuentaBancariaSelected(newValue)
+                }
+                loading={fetching}
+              />
+            </div>
+          )}
           <CalendarMonth
             label="Selecciona la fecha: "
             date={date}
@@ -1158,6 +1293,10 @@ export const UploadDocumentos: React.FC<UploadDocumentosProps> = ({
             <Value text={tipoOperacionSelected.label} />
           </Row>
           <Row>
+            <Title text={'Condición de pago:'} />
+            <Value text={condicionPagoSelected.label} />
+          </Row>
+          <Row>
             <Title text={'Empresa:'} />
             <Value text={empresaNombre} />
           </Row>
@@ -1192,7 +1331,9 @@ export const UploadDocumentos: React.FC<UploadDocumentosProps> = ({
         isOpen={continueModal}
         setIsOpen={setContinueModal}
         text="¿Desea continuar subiendo Documentos?"
-        href={`/dashboard/contador/${usuario}/empresas/${empresaId}/documentos`}
+        href={`/dashboard/contador/${usuario}/empresas/${empresaId}/documentos?tenant=${encodeURIComponent(
+          tenantSlug
+        )}`}
         continueAction={continueUpload}
       />
     </>

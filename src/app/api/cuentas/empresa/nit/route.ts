@@ -1,5 +1,11 @@
 // src/app/api/cuentas/empresa/nit/route.ts
 import { prisma } from "@/lib/prisma";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+  empresaIdFromRequest,
+} from "@/lib/accounting/context";
 import type { Cuenta } from "@/utils/models/nomenclaturas";
 
 export async function GET(request: Request) {
@@ -9,6 +15,8 @@ export async function GET(request: Request) {
     // 🔹 Mismos parámetros que el endpoint antiguo
     const nitParam = searchParams.get("nit") || "";
     const select = searchParams.get("select") === "true";
+    const tenantSlug = tenantSlugFromRequest(request);
+    const empresaId = empresaIdFromRequest(request);
 
     if (!nitParam.trim()) {
       return Response.json(
@@ -21,10 +29,29 @@ export async function GET(request: Request) {
       );
     }
 
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
+
+    if (nitParam.trim() !== auth.empresa.nit) {
+      return Response.json(
+        {
+          status: 403,
+          data: [],
+          message: "El NIT no pertenece a la empresa autorizada.",
+        },
+        { status: 403 }
+      );
+    }
+
     // 1️⃣ Buscar la empresa por NIT (GNIO) + afiliaciones para obtener la nomenclatura
     const empresa = await prisma.empresa.findFirst({
       where: {
+        id: auth.empresa.id,
+        tenantId: auth.tenant.id,
         nit: nitParam,
+        estado: 1,
       },
       include: {
         afiliaciones: true, // aquí viene nomenclaturaId
@@ -106,6 +133,18 @@ export async function GET(request: Request) {
       { status: 200 }
     );
   } catch (error: any) {
+    if (error instanceof AccountingError) {
+      return Response.json(
+        {
+          status: error.status,
+          code: error.code,
+          data: [],
+          message: error.message,
+        },
+        { status: error.status }
+      );
+    }
+
     console.error("Error en GET /api/cuentas/empresa/nit:", error);
     return Response.json(
       {

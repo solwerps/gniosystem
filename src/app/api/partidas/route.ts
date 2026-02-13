@@ -1,6 +1,12 @@
 // src/app/api/partidas/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+  empresaIdFromRequest,
+} from "@/lib/accounting/context";
 
 export const revalidate = 0;
 
@@ -27,84 +33,6 @@ function format_ymd(d: Date | null | undefined) {
   return d ? d.toISOString().slice(0, 10) : null;
 }
 
-function get_cookie(req: Request, name: string): string | null {
-  const cookie = req.headers.get("cookie") || "";
-  const parts = cookie.split(";").map((p) => p.trim());
-  for (const part of parts) {
-    if (part.startsWith(name + "=")) return decodeURIComponent(part.slice(name.length + 1));
-  }
-  return null;
-}
-
-async function resolve_tenant_id(req: Request): Promise<{ tenant_id: number; tenant_slug: string }> {
-  const { searchParams } = new URL(req.url);
-  const tenant_slug = searchParams.get("tenant") || "";
-
-  if (!tenant_slug) throw new Error("TENANT_REQUIRED");
-
-  const tenant = await prisma.tenant.findUnique({
-    where: { slug: tenant_slug },
-    select: { id: true },
-  });
-
-  if (!tenant) throw new Error("TENANT_NOT_FOUND");
-
-  return { tenant_id: tenant.id, tenant_slug };
-}
-
-async function resolve_empresa_id(req: Request, tenant_id: number): Promise<number> {
-  const { searchParams } = new URL(req.url);
-
-  // 0) querystring (GNIO: permitir override explícito, igual que Conta Cox)
-  const qs_empresa = searchParams.get("empresa_id");
-  const qs_empresa_id = Number(qs_empresa || 0);
-  if (qs_empresa_id && !Number.isNaN(qs_empresa_id)) {
-    const empresa = await prisma.empresa.findFirst({
-      where: { id: qs_empresa_id, tenantId: tenant_id, estado: 1 },
-      select: { id: true },
-    });
-    if (!empresa) throw new Error("EMPRESA_NOT_FOUND_FOR_TENANT");
-    return empresa.id;
-  }
-
-  // 1) header
-  const header_empresa = req.headers.get("x-empresa-id");
-  const header_empresa_id = Number(header_empresa || 0);
-
-  if (header_empresa_id && !Number.isNaN(header_empresa_id)) {
-    const empresa = await prisma.empresa.findFirst({
-      where: { id: header_empresa_id, tenantId: tenant_id, estado: 1 },
-      select: { id: true },
-    });
-    if (!empresa) throw new Error("EMPRESA_NOT_FOUND_FOR_TENANT");
-    return empresa.id;
-  }
-
-  // 2) cookie
-  const cookie_empresa = get_cookie(req, "empresa_id");
-  const cookie_empresa_id = Number(cookie_empresa || 0);
-
-  if (cookie_empresa_id && !Number.isNaN(cookie_empresa_id)) {
-    const empresa = await prisma.empresa.findFirst({
-      where: { id: cookie_empresa_id, tenantId: tenant_id, estado: 1 },
-      select: { id: true },
-    });
-    if (!empresa) throw new Error("EMPRESA_NOT_FOUND_FOR_TENANT");
-    return empresa.id;
-  }
-
-  // 3) si solo existe una empresa activa en el tenant, usarla
-  const empresas = await prisma.empresa.findMany({
-    where: { tenantId: tenant_id, estado: 1 },
-    select: { id: true },
-    orderBy: { id: "asc" },
-    take: 2,
-  });
-
-  if (empresas.length === 1) return empresas[0].id;
-  if (empresas.length === 0) throw new Error("NO_ACTIVE_EMPRESA_IN_TENANT");
-  throw new Error("EMPRESA_CONTEXT_REQUIRED");
-}
 
 // -----------------------------
 // GET /api/partidas?tenant=slug&dates=YYYY-MM-DD,YYYY-MM-DD&poliza_id=1&correlativo=10
@@ -118,8 +46,13 @@ export async function GET(req: Request) {
     const poliza_id_param = searchParams.get("poliza_id");
     const correlativo_param = searchParams.get("correlativo");
 
-    const { tenant_id } = await resolve_tenant_id(req);
-    const empresa_id = await resolve_empresa_id(req, tenant_id);
+    const tenantSlug = tenantSlugFromRequest(req);
+    const empresaId = empresaIdFromRequest(req);
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
+    const empresa_id = auth.empresa.id;
 
     const where: any = {
       empresa_id,
@@ -230,6 +163,18 @@ export async function GET(req: Request) {
       message: "Partidas obtenidas correctamente",
     });
   } catch (err) {
+    if (err instanceof AccountingError) {
+      return NextResponse.json(
+        {
+          status: err.status,
+          code: err.code,
+          data: {},
+          message: err.message,
+        },
+        { status: err.status }
+      );
+    }
+
     console.log(err);
     return NextResponse.json(
       { status: 400, data: {}, message: to_error_message(err) || "Ocurrió un error al obtener las partidas" },

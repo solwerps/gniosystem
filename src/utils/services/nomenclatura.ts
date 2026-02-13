@@ -36,12 +36,20 @@ export const obtenerCuentasByEmpresa = async (
 
 export const obtenerCuentasByNit = async (
   nit: number | string,
-  select: boolean = false
+  select: boolean = false,
+  tenant?: string,
+  empresaId?: number
 ) => {
   // 🔹 Endpoint GNIO: /api/cuentas/empresa/nit
   // Busca Empresa por NIT → Afiliaciones.nomenclaturaId → NomenclaturaCuenta
+  const qs = new URLSearchParams();
+  qs.append("nit", String(nit));
+  qs.append("select", String(select));
+  if (tenant) qs.append("tenant", tenant);
+  if (empresaId) qs.append("empresa_id", String(empresaId));
+
   return await fetchService({
-    url: `/api/cuentas/empresa/nit?nit=${nit}&select=${select}`,
+    url: `/api/cuentas/empresa/nit?${qs.toString()}`,
     method: "GET",
   });
 };

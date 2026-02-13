@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 import EmpresaSidebar from "@/components/empresas/EmpresaSidebar";
 import { Path } from "@/components/molecules/Path";
@@ -9,8 +9,10 @@ import { Reportes } from "@/components/templates/Reportes";
 
 export default function EmpresaReportesPage() {
   const params = useParams();
+  const search = useSearchParams();
   const usuario = params?.usuario as string;
   const empresaId = Number(params?.id);
+  const tenantSlug = search.get("tenant") || usuario;
 
   const invalidEmpresaId = !empresaId || Number.isNaN(empresaId);
 
@@ -36,7 +38,11 @@ export default function EmpresaReportesPage() {
               href: `/dashboard/contador/${usuario}/empresas/${empresaId}/reportes`,
             }}
           />
-          <Reportes empresa_id={empresaId} usuario={String(usuario)} />
+          <Reportes
+            empresa_id={empresaId}
+            usuario={String(usuario)}
+            tenantSlug={tenantSlug}
+          />
         </div>
       </main>
     </div>

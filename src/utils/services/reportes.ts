@@ -7,10 +7,17 @@ import { fetchService } from "../functions/fetchService";
 export const obtenerDocumentosReportes = async (
   empresaId: number,
   fecha: string,
-  venta: boolean = false
+  venta: boolean = false,
+  tenant?: string
 ) => {
+  const params = new URLSearchParams();
+  params.set("empresa_id", String(empresaId));
+  params.set("fecha", fecha);
+  params.set("venta", venta ? "true" : "false");
+  if (tenant) params.set("tenant", tenant);
+
   return await fetchService({
-    url: `/api/reportes?empresa_id=${empresaId}&fecha=${fecha}&venta=${venta}`,
+    url: `/api/reportes?${params.toString()}`,
     method: "GET",
   });
 };

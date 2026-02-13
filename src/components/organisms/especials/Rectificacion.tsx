@@ -73,11 +73,13 @@ const getCuentaLabelFromOptions = (
 interface RectificacionProps {
   empresaId: number;
   empresaNombre: string;
+  tenantSlug: string;
 }
 
 export const Rectificacion: React.FC<RectificacionProps> = ({
   empresaId,
   empresaNombre,
+  tenantSlug,
 }) => {
   // Columns
   const [leftItems, setLeftItems] = useState<IFactura[]>([]);
@@ -274,8 +276,8 @@ export const Rectificacion: React.FC<RectificacionProps> = ({
           message: messageCuentas,
         },
       ] = await Promise.all([
-        obtenerDocumentos(empresaId, fecha, tipo),
-        obtenerCuentasByEmpresa(empresaId, true),
+        obtenerDocumentos(empresaId, fecha, tipo, tenantSlug),
+        obtenerCuentasByEmpresa(empresaId, true, tenantSlug),
       ]);
 
       if (statusDocs === 200 && statusCuentas === 200) {
@@ -361,6 +363,7 @@ export const Rectificacion: React.FC<RectificacionProps> = ({
       const payload = {
         facturas: rightItems,        // la API usa identificador_unico de cada factura
         empresa_id: empresaId,
+        tenant: tenantSlug,
         fecha_trabajo: date,         // la API normaliza el mes y solo toca fecha_trabajo
         cuenta_debe: debe,
         cuenta_haber: haber,

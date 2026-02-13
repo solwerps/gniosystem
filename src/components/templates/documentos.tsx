@@ -24,16 +24,20 @@ import { toast } from "react-toastify";
 type DocumentosProps = {
   empresa_id: number;
   usuario: string;
+  tenantSlug: string;
 };
 
 export const Documentos: React.FC<DocumentosProps> = ({
   empresa_id,
   usuario,
+  tenantSlug,
 }) => {
   const router = useRouter();
 
   const [documentos, setDocumentos] = useState<IFactura[]>([]);
   const [loading, setLoading] = useState(false);
+  const [posting, setPosting] = useState(false);
+  const [reloadTick, setReloadTick] = useState(0);
 
   const tiposOperacion = [
     { value: "compra", label: "Compra" },
@@ -47,6 +51,11 @@ export const Documentos: React.FC<DocumentosProps> = ({
   const [date, setDate] = useState<Date>(new Date());
 
   const basePath = `/dashboard/contador/${usuario}/empresas/${empresa_id}/documentos`;
+  const tenantQs = tenantSlug ? `?tenant=${encodeURIComponent(tenantSlug)}` : "";
+
+  const pushWithTenant = (path: string) => {
+    router.push(`${path}${tenantQs}`);
+  };
 
   // 🔥 FIX REAL: USAR moment(date).format("YYYY-MM") para evitar UTC
   useEffect(() => {
@@ -64,7 +73,12 @@ export const Documentos: React.FC<DocumentosProps> = ({
       const fecha = moment(date).format("YYYY-MM");
 
       try {
-        const resp: any = await obtenerDocumentos(empresa_id, fecha, tipo);
+        const resp: any = await obtenerDocumentos(
+          empresa_id,
+          fecha,
+          tipo,
+          tenantSlug
+        );
 
         let docs: IFactura[] = [];
 
@@ -88,7 +102,7 @@ export const Documentos: React.FC<DocumentosProps> = ({
     };
 
     fetchDocumentos();
-  }, [empresa_id, date, tipoOperacionSelected.value]);
+  }, [empresa_id, date, tipoOperacionSelected.value, tenantSlug, reloadTick]);
 
   const conditionalRowStyles = [
     {
@@ -248,6 +262,20 @@ export const Documentos: React.FC<DocumentosProps> = ({
       minWidth: "120px",
     },
     {
+      name: "Condición de Pago",
+      selector: (row) =>
+        String((row as any).condicion_pago ?? "").toUpperCase() || "N/D",
+      minWidth: "140px",
+    },
+    {
+      name: "Asiento",
+      selector: (row) =>
+        (row as any).asiento_contable_id
+          ? `#${(row as any).asiento_contable_id}`
+          : "Pendiente",
+      minWidth: "120px",
+    },
+    {
       name: "Estado",
       selector: (row) => row.factura_estado.toString(),
       minWidth: "120px",
@@ -310,7 +338,59 @@ export const Documentos: React.FC<DocumentosProps> = ({
       toast.error("Error al obtener el documento");
       return;
     }
-    router.push(`${basePath}/${doc.uuid}`);
+    pushWithTenant(`${basePath}/${doc.uuid}`);
+  };
+
+  const handlePostPendientes = async () => {
+    const pendientes = documentos
+      .filter((doc: any) => !doc?.asiento_contable_id)
+      .map((doc) => doc.uuid)
+      .filter(Boolean);
+
+    if (!pendientes.length) {
+      toast.info("No hay documentos pendientes por contabilizar.");
+      return;
+    }
+
+    try {
+      setPosting(true);
+      const res = await fetch("/api/contabilidad/documentos/postear", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tenant: tenantSlug,
+          empresa_id,
+          documentos_uuid: pendientes,
+        }),
+      });
+      const json = await res.json();
+
+      if (!res.ok && res.status !== 207) {
+        toast.error(json?.message || "Error al contabilizar documentos.");
+        return;
+      }
+
+      const ok = Array.isArray(json?.data?.ok) ? json.data.ok.length : 0;
+      const errors = Array.isArray(json?.data?.errors)
+        ? json.data.errors.length
+        : 0;
+
+      if (ok) {
+        toast.success(`${ok} documento(s) contabilizados.`);
+      }
+      if (errors) {
+        toast.warning(`${errors} documento(s) no se pudieron contabilizar.`);
+      }
+
+      setReloadTick((prev) => prev + 1);
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error?.message || "Error al contabilizar documentos.");
+    } finally {
+      setPosting(false);
+    }
   };
 
   return (
@@ -345,17 +425,57 @@ export const Documentos: React.FC<DocumentosProps> = ({
             <UploadIconl className="rotate-180" />
             Descargar Facturas
           </Button>
-          <Button icon onClick={() => router.push(`${basePath}/carga`)}>
+          <Button icon onClick={handlePostPendientes} loading={posting}>
+            <UploadIconl />
+            Contabilizar Pendientes
+          </Button>
+          <Button icon onClick={() => pushWithTenant(`${basePath}/carga`)}>
             <UploadIconl />
             Cargar Facturas
           </Button>
-          <Button icon onClick={() => router.push(`${basePath}/create`)}>
+          <Button icon onClick={() => pushWithTenant(`${basePath}/create`)}>
             <PlusIcon />
             Agregar Factura
           </Button>
-          <Button icon onClick={() => router.push(`${basePath}/rectificaciones`)}>
+          <Button
+            icon
+            onClick={() => pushWithTenant(`${basePath}/rectificaciones`)}
+          >
             <EditIcon />
             Rectificación de Facturas
+          </Button>
+          <Button
+            icon
+            onClick={() =>
+              pushWithTenant(
+                `/dashboard/contador/${usuario}/empresas/${empresa_id}/contabilidad/pendientes`
+              )
+            }
+          >
+            <EditIcon />
+            Pendientes CxC/CxP
+          </Button>
+          <Button
+            icon
+            onClick={() =>
+              pushWithTenant(
+                `/dashboard/contador/${usuario}/empresas/${empresa_id}/tesoreria`
+              )
+            }
+          >
+            <EditIcon />
+            Pagos y Cobros
+          </Button>
+          <Button
+            icon
+            onClick={() =>
+              pushWithTenant(
+                `/dashboard/contador/${usuario}/empresas/${empresa_id}/contabilidad/cierre`
+              )
+            }
+          >
+            <EditIcon />
+            Cierre Mensual
           </Button>
         </div>
       </div>

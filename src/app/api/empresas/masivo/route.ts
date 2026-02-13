@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getSession } from "@/lib/auth";
 
 export const revalidate = 0;
 
@@ -27,6 +28,60 @@ function normalizeRazonSocial(value?: string | null) {
   return null;
 }
 
+async function requireTenantMembership(tenantSlug?: string | null) {
+  if (!tenantSlug) {
+    return {
+      ok: false as const,
+      status: 400,
+      message: "Debe enviar tenant.",
+    };
+  }
+
+  const session = await getSession();
+  if (!session?.user?.id) {
+    return {
+      ok: false as const,
+      status: 401,
+      message: "Debes iniciar sesión.",
+    };
+  }
+
+  const tenant = await prisma.tenant.findUnique({
+    where: { slug: tenantSlug },
+    select: { id: true },
+  });
+
+  if (!tenant) {
+    return {
+      ok: false as const,
+      status: 404,
+      message: "Tenant no encontrado.",
+    };
+  }
+
+  if (session.user.role !== "ADMIN") {
+    const membership = await prisma.membership.findUnique({
+      where: {
+        userId_tenantId: {
+          userId: session.user.id,
+          tenantId: tenant.id,
+        },
+      },
+      select: { userId: true },
+    });
+
+    if (!membership) {
+      return {
+        ok: false as const,
+        status: 403,
+        message: "No tienes membresía para este tenant.",
+      };
+    }
+  }
+
+  return { ok: true as const, tenant };
+}
+
 export async function POST(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -44,13 +99,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "EMPTY_PAYLOAD" }, { status: 400 });
     }
 
-    const tenant = await prisma.tenant.findUnique({
-      where: { slug: tenantSlug },
-      select: { id: true },
-    });
-
-    if (!tenant) {
-      return NextResponse.json({ ok: false, error: "TENANT_NOT_FOUND" }, { status: 404 });
+    const access = await requireTenantMembership(tenantSlug);
+    if (!access.ok) {
+      return NextResponse.json(
+        { ok: false, error: access.message },
+        { status: access.status }
+      );
     }
 
     const errors: Array<{ index: number; error: string }> = [];
@@ -70,7 +124,7 @@ export async function POST(req: Request) {
 
       await prisma.empresa.create({
         data: {
-          tenantId: tenant.id,
+          tenantId: access.tenant.id,
           tenantSlug,
           nombre,
           nit,

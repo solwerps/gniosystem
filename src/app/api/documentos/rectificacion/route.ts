@@ -1,240 +1,379 @@
-// src/app/api/documentos/rectificacion/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+  empresaIdFromRequest,
+} from "@/lib/accounting/context";
+import { assertPeriodOpen } from "@/lib/accounting/periods";
 
-/* ============================================================
-   FUNCIÓN — NORMALIZAR MES (OPCIONAL)
-   ============================================================ */
-function normalizarFechaMes(fechaInput: any): Date {
+function normalizarFechaMes(fechaInput: unknown): Date {
   if (!fechaInput) {
-    throw new Error("Formato de fecha inválido recibido.");
+    throw new AccountingError("BAD_DATE", 400, "Formato de fecha inválido.");
   }
 
   let year: number | null = null;
   let month: number | null = null;
 
-  // Caso: viene Date válido
-  if (fechaInput instanceof Date && !isNaN(fechaInput.getTime())) {
+  if (fechaInput instanceof Date && !Number.isNaN(fechaInput.getTime())) {
     year = fechaInput.getUTCFullYear();
     month = fechaInput.getUTCMonth() + 1;
   }
 
-  // Caso: "YYYY-MM"
   if (typeof fechaInput === "string" && /^\d{4}-\d{2}$/.test(fechaInput)) {
     const [y, m] = fechaInput.split("-");
     year = Number(y);
     month = Number(m);
   }
 
-  // Caso: "YYYY-MM-DD"
   if (typeof fechaInput === "string" && /^\d{4}-\d{2}-\d{2}/.test(fechaInput)) {
     const d = new Date(fechaInput);
-    if (!isNaN(d.getTime())) {
-      year = d.getUTCFullYear();
-      month = d.getUTCMonth() + 1;
-    }
-  }
-
-  // Caso: cualquier otra fecha
-  if (year === null || month === null) {
-    const d = new Date(fechaInput);
-    if (!isNaN(d.getTime())) {
+    if (!Number.isNaN(d.getTime())) {
       year = d.getUTCFullYear();
       month = d.getUTCMonth() + 1;
     }
   }
 
   if (year === null || month === null) {
-    throw new Error("Formato de fecha inválido recibido.");
+    const d = new Date(String(fechaInput));
+    if (!Number.isNaN(d.getTime())) {
+      year = d.getUTCFullYear();
+      month = d.getUTCMonth() + 1;
+    }
   }
 
-  // Generamos fecha UTC (primer día del mes)
-  return new Date(Date.UTC(year, month - 1, 1, 12, 0, 0));
+  if (year === null || month === null || month < 1 || month > 12) {
+    throw new AccountingError("BAD_DATE", 400, "Formato de fecha inválido.");
+  }
+
+  return new Date(Date.UTC(year, month - 1, 1));
 }
 
-/* ============================================================
-   PUT: RECTIFICACIÓN ESTILO CONTA COX
-   - Solo toca fecha_trabajo (NO fecha_emision)
-   - Actualiza cuentas y estados
-   ============================================================ */
+const toNullableInt = (value: unknown) => {
+  if (value === null || value === undefined || value === "") return null;
+  const n = Number(value);
+  if (!n || Number.isNaN(n)) {
+    throw new AccountingError("BAD_ACCOUNT", 400, "Cuenta inválida.");
+  }
+  return Math.trunc(n);
+};
+
 export async function PUT(request: Request) {
   try {
-    const body = await request.json();
-    const {
-      facturas,
-      empresa_id,
-      fecha_trabajo,
-      cuenta_debe,
-      cuenta_haber,
-      cuenta_debe2,
-      cuenta_haber2,
-      deleted,
-    } = body;
+    const body = await request.json().catch(() => ({} as any));
 
-    if (!empresa_id) throw new Error("empresa_id faltante.");
-    if (!Array.isArray(facturas) || facturas.length === 0) {
-      throw new Error("Debe enviar facturas.");
-    }
+    const tenantSlug = String(body?.tenant ?? tenantSlugFromRequest(request) ?? "");
+    const empresaId = Number(body?.empresa_id ?? empresaIdFromRequest(request));
 
-    const empresaId = Number(empresa_id);
-    if (!empresaId || Number.isNaN(empresaId)) {
-      throw new Error("empresa_id inválido.");
-    }
-
-    // Fecha NUEVA (opcional) → SOLO para fecha_trabajo / asientos / movimientos
-    let fechaNueva: Date | null = null;
-    if (fecha_trabajo) {
-      fechaNueva = normalizarFechaMes(fecha_trabajo);
-    }
-
-    // Identificadores únicos de las facturas
-    const ids: string[] = facturas
-      .map((f: any) => f.identificador_unico)
-      .filter(Boolean);
-
-    if (!ids.length) {
-      throw new Error("Facturas sin identificador_unico.");
-    }
-
-    /* ============================================================
-       DOCUMENTOS
-       ============================================================ */
-    const dataDoc: any = {};
-
-    // 👉 SOLO fecha_trabajo (NO tocamos fecha_emision)
-    if (fechaNueva) {
-      dataDoc.fecha_trabajo = fechaNueva;
-    }
-
-    if (typeof deleted === "boolean") {
-      dataDoc.estado = deleted ? 0 : 1;
-      if (deleted) {
-        // Si quieres replicar el comentario de Conta Cox
-        dataDoc.comentario = "Doc eliminado desde rectificación";
-      }
-    }
-
-    if (cuenta_debe) dataDoc.cuenta_debe = Number(cuenta_debe);
-    if (cuenta_haber) dataDoc.cuenta_haber = Number(cuenta_haber);
-    if (cuenta_debe2) dataDoc.cuenta_debe2 = Number(cuenta_debe2);
-    if (cuenta_haber2) dataDoc.cuenta_haber2 = Number(cuenta_haber2);
-
-    if (Object.keys(dataDoc).length === 0) {
-      throw new Error("No se proporcionaron campos a actualizar en documentos.");
-    }
-
-    await prisma.documento.updateMany({
-      where: {
-        empresa_id: empresaId,
-        identificador_unico: { in: ids },
-      },
-      data: dataDoc,
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
     });
 
-    /* ============================================================
-       PARTIDAS
-       ============================================================ */
-    const partidas = await prisma.partida.findMany({
-      where: { empresa_id: empresaId, referencia: { in: ids } },
-    });
-
-    for (const p of partidas) {
-      let nuevaCuentaId = p.cuenta_id;
-
-      const debe = Number(p.monto_debe);
-      const haber = Number(p.monto_haber);
-
-      // Lógica similar a GNIO original: reasignar según debe/haber
-      if (debe > 0) {
-        // prioridad: cuenta_debe2 > cuenta_debe
-        if (cuenta_debe2) nuevaCuentaId = Number(cuenta_debe2);
-        else if (cuenta_debe) nuevaCuentaId = Number(cuenta_debe);
-      }
-
-      if (haber > 0) {
-        // prioridad: cuenta_haber2 > cuenta_haber
-        if (cuenta_haber2) nuevaCuentaId = Number(cuenta_haber2);
-        else if (cuenta_haber) nuevaCuentaId = Number(cuenta_haber);
-      }
-
-      if (nuevaCuentaId !== p.cuenta_id) {
-        await prisma.partida.update({
-          where: { uuid: p.uuid },
-          data: { cuenta_id: nuevaCuentaId },
-        });
-      }
+    const facturas = Array.isArray(body?.facturas) ? body.facturas : [];
+    if (!facturas.length) {
+      throw new AccountingError("FACTURAS_REQUIRED", 400, "Debe enviar facturas.");
     }
 
-    /* ============================================================
-       ASIENTOS CONTABLES
-       - Igual que Conta Cox:
-         * si hay fecha → actualiza fecha
-         * si deleted → pone estado = 0
-       ============================================================ */
-    const asientos = await prisma.asientoContable.findMany({
-      where: { empresa_id: empresaId, referencia: { in: ids } },
-    });
+    const identificadores = Array.from(
+      new Set(
+        facturas
+          .map((f: any) => String(f?.identificador_unico ?? "").trim())
+          .filter(Boolean)
+      )
+    );
 
-    for (const a of asientos) {
-      const dataAsiento: any = {};
+    const uuids = Array.from(
+      new Set(
+        facturas
+          .map((f: any) => String(f?.uuid ?? "").trim())
+          .filter(Boolean)
+      )
+    );
+
+    if (!identificadores.length && !uuids.length) {
+      throw new AccountingError(
+        "DOCUMENT_KEYS_REQUIRED",
+        400,
+        "Cada factura debe incluir identificador_unico o uuid."
+      );
+    }
+
+    const fechaNueva = body?.fecha_trabajo
+      ? normalizarFechaMes(body.fecha_trabajo)
+      : null;
+    const deleted =
+      typeof body?.deleted === "boolean" ? Boolean(body.deleted) : undefined;
+
+    const cuentaDebe = toNullableInt(body?.cuenta_debe);
+    const cuentaHaber = toNullableInt(body?.cuenta_haber);
+    const cuentaDebe2 = toNullableInt(body?.cuenta_debe2);
+    const cuentaHaber2 = toNullableInt(body?.cuenta_haber2);
+
+    if (
+      !fechaNueva &&
+      deleted === undefined &&
+      cuentaDebe === null &&
+      cuentaHaber === null &&
+      cuentaDebe2 === null &&
+      cuentaHaber2 === null
+    ) {
+      throw new AccountingError(
+        "NO_CHANGES",
+        400,
+        "No se enviaron cambios para rectificar."
+      );
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+      const where: any = {
+        empresa_id: auth.empresa.id,
+      };
+
+      const or: any[] = [];
+      if (identificadores.length) {
+        or.push({ identificador_unico: { in: identificadores } });
+      }
+      if (uuids.length) {
+        or.push({ uuid: { in: uuids } });
+      }
+      if (!or.length) {
+        throw new AccountingError(
+          "DOCUMENT_KEYS_REQUIRED",
+          400,
+          "No se recibieron claves de documentos válidas."
+        );
+      }
+      where.OR = or;
+
+      const docs = await tx.documento.findMany({
+        where,
+        select: {
+          uuid: true,
+          identificador_unico: true,
+          fecha_trabajo: true,
+        },
+      });
+
+      if (!docs.length) {
+        throw new AccountingError(
+          "DOCUMENTS_NOT_FOUND",
+          404,
+          "No se encontraron documentos para rectificar en la empresa."
+        );
+      }
+
+      if (identificadores.length) {
+        const found = new Set(docs.map((d) => d.identificador_unico));
+        const missing = identificadores.filter((x) => !found.has(x));
+        if (missing.length) {
+          throw new AccountingError(
+            "DOCUMENTS_NOT_FOUND",
+            404,
+            `No se encontraron ${missing.length} documentos por identificador_unico.`
+          );
+        }
+      }
+
+      if (uuids.length) {
+        const found = new Set(docs.map((d) => d.uuid));
+        const missing = uuids.filter((x) => !found.has(x));
+        if (missing.length) {
+          throw new AccountingError(
+            "DOCUMENTS_NOT_FOUND",
+            404,
+            `No se encontraron ${missing.length} documentos por uuid.`
+          );
+        }
+      }
+
+      for (const doc of docs) {
+        await assertPeriodOpen(tx as any, auth.empresa.id, doc.fecha_trabajo);
+      }
 
       if (fechaNueva) {
-        dataAsiento.fecha = fechaNueva;
+        await assertPeriodOpen(tx as any, auth.empresa.id, fechaNueva);
       }
 
-      if (typeof deleted === "boolean") {
-        dataAsiento.estado = deleted ? 0 : 1;
-      }
+      const targetIdentificadores = docs.map((d) => d.identificador_unico);
+      const targetUuids = docs.map((d) => d.uuid);
 
-      if (Object.keys(dataAsiento).length > 0) {
-        await prisma.asientoContable.update({
-          where: { id: a.id },
-          data: dataAsiento,
-        });
-      }
-    }
-
-    /* ============================================================
-       MOVIMIENTOS BANCARIOS
-       - Misma idea que asientos:
-         * fecha solo si mandas fecha
-         * estado solo si deleted
-       ============================================================ */
-    const movs = await prisma.movimientoCuentaBancaria.findMany({
-      where: { referencia: { in: ids } },
-    });
-
-    for (const m of movs) {
-      const dataMov: any = {};
-
+      const dataDoc: any = {};
       if (fechaNueva) {
-        dataMov.fecha = fechaNueva;
+        dataDoc.fecha_trabajo = fechaNueva;
+      }
+      if (deleted !== undefined) {
+        dataDoc.estado = deleted ? 0 : 1;
+        dataDoc.comentario = deleted
+          ? "Doc eliminado desde rectificación"
+          : null;
+      }
+      if (cuentaDebe !== null) {
+        dataDoc.cuenta_debe = cuentaDebe;
+      }
+      if (cuentaHaber !== null) {
+        dataDoc.cuenta_haber = cuentaHaber;
       }
 
-      if (typeof deleted === "boolean") {
-        dataMov.estado = deleted ? 0 : 1;
-      }
-
-      if (Object.keys(dataMov).length > 0) {
-        await prisma.movimientoCuentaBancaria.update({
-          where: { id: m.id },
-          data: dataMov,
+      if (Object.keys(dataDoc).length) {
+        await tx.documento.updateMany({
+          where: {
+            empresa_id: auth.empresa.id,
+            identificador_unico: { in: targetIdentificadores },
+          },
+          data: dataDoc,
         });
       }
-    }
+
+      let partidasUpdated = 0;
+      const partidas = await tx.partida.findMany({
+        where: {
+          empresa_id: auth.empresa.id,
+          referencia: { in: targetIdentificadores },
+        },
+      });
+
+      for (const partida of partidas) {
+        let nuevaCuentaId = partida.cuenta_id;
+        const debe = Number(partida.monto_debe);
+        const haber = Number(partida.monto_haber);
+
+        if (debe > 0) {
+          if (cuentaDebe2 !== null) {
+            nuevaCuentaId = cuentaDebe2;
+          } else if (cuentaDebe !== null) {
+            nuevaCuentaId = cuentaDebe;
+          }
+        }
+
+        if (haber > 0) {
+          if (cuentaHaber2 !== null) {
+            nuevaCuentaId = cuentaHaber2;
+          } else if (cuentaHaber !== null) {
+            nuevaCuentaId = cuentaHaber;
+          }
+        }
+
+        if (nuevaCuentaId !== partida.cuenta_id) {
+          await tx.partida.update({
+            where: { uuid: partida.uuid },
+            data: { cuenta_id: nuevaCuentaId },
+          });
+          partidasUpdated += 1;
+        }
+      }
+
+      let asientosUpdated = 0;
+      const asientos = await tx.asientoContable.findMany({
+        where: {
+          empresa_id: auth.empresa.id,
+          referencia: { in: targetIdentificadores },
+        },
+      });
+
+      for (const asiento of asientos) {
+        const dataAsiento: any = {};
+        if (fechaNueva) {
+          dataAsiento.fecha = fechaNueva;
+        }
+        if (deleted !== undefined) {
+          dataAsiento.estado = deleted ? 0 : 1;
+        }
+        if (Object.keys(dataAsiento).length) {
+          await tx.asientoContable.update({
+            where: { id: asiento.id },
+            data: dataAsiento,
+          });
+          asientosUpdated += 1;
+        }
+      }
+
+      let movimientosUpdated = 0;
+      const movs = await tx.movimientoCuentaBancaria.findMany({
+        where: {
+          OR: [
+            { referencia: { in: targetIdentificadores } },
+            { documento_uuid: { in: targetUuids } },
+          ],
+        },
+      });
+
+      for (const mov of movs) {
+        const dataMov: any = {};
+        if (fechaNueva) {
+          dataMov.fecha = fechaNueva;
+        }
+        if (deleted !== undefined) {
+          dataMov.estado = deleted ? 0 : 1;
+        }
+        if (Object.keys(dataMov).length) {
+          await tx.movimientoCuentaBancaria.update({
+            where: { id: mov.id },
+            data: dataMov,
+          });
+          movimientosUpdated += 1;
+        }
+      }
+
+      await tx.bitacora.create({
+        data: {
+          usuario_id: auth.session.user.id,
+          tipo_accion: "RECTIFICACION_DOCUMENTOS",
+          descripcion_accion: `${targetIdentificadores.length} documentos rectificados`,
+          tabla_afectada: "documentos",
+          registro_afectado_id: auth.empresa.id,
+          detalles_modificacion: JSON.stringify({
+            empresa_id: auth.empresa.id,
+            documentos: targetIdentificadores,
+            fecha_trabajo: fechaNueva?.toISOString() ?? null,
+            deleted,
+            cuenta_debe: cuentaDebe,
+            cuenta_haber: cuentaHaber,
+            cuenta_debe2: cuentaDebe2,
+            cuenta_haber2: cuentaHaber2,
+            partidas_updated: partidasUpdated,
+            asientos_updated: asientosUpdated,
+            movimientos_updated: movimientosUpdated,
+          }),
+        },
+      });
+
+      return {
+        docs: targetIdentificadores.length,
+        partidasUpdated,
+        asientosUpdated,
+        movimientosUpdated,
+      };
+    });
 
     return NextResponse.json(
       {
         status: 200,
-        message: "Rectificación realizada correctamente (estilo Conta Cox).",
+        message: "Rectificación realizada correctamente.",
+        data: result,
       },
       { status: 200 }
     );
-  } catch (err: any) {
-    console.error("❌ ERROR RECTIFICACIÓN GNIO:", err);
+  } catch (error: any) {
+    if (error instanceof AccountingError) {
+      return NextResponse.json(
+        {
+          status: error.status,
+          code: error.code,
+          message: error.message,
+        },
+        { status: error.status }
+      );
+    }
+
+    console.error("PUT /api/documentos/rectificacion", error);
     return NextResponse.json(
-      { status: 400, message: err.message || "Error al rectificar documentos." },
-      { status: 400 }
+      {
+        status: 500,
+        message: error?.message || "Error al rectificar documentos.",
+      },
+      { status: 500 }
     );
   }
 }

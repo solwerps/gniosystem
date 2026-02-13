@@ -1,5 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+  empresaIdFromRequest,
+} from "@/lib/accounting/context";
+import { assertPeriodOpen } from "@/lib/accounting/periods";
 import type { IUploadRetencionIVA } from "@/utils";
 import { Decimal } from "@prisma/client/runtime/library";
 
@@ -14,18 +21,20 @@ export async function POST(req: Request) {
       date: string | Date;
     } = await req.json();
 
-    const { retenciones, empresa_id, date } = body;
+    const tenantSlug = String(body?.tenant ?? tenantSlugFromRequest(req) ?? "");
+    const empresaId = Number(body?.empresa_id ?? empresaIdFromRequest(req));
+
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
+
+    const { retenciones, date } = body;
+    const empresa_id = auth.empresa.id;
 
     // ===============================
     // VALIDACIONES
     // ===============================
-    if (!empresa_id) {
-      return NextResponse.json({
-        status: 400,
-        message: "empresa_id es requerido",
-      });
-    }
-
     if (!retenciones || retenciones.length === 0) {
       return NextResponse.json({
         status: 400,
@@ -160,6 +169,8 @@ export async function POST(req: Request) {
     // TRANSACCIÓN PRINCIPAL
     // ===============================
     await prisma.$transaction(async (tx) => {
+      await assertPeriodOpen(tx, empresa_id, fechaTrabajo);
+
       // ======================================================
       // 1) INSERTAR RETENCIONES IVA MASIVAMENTE
       // ======================================================
@@ -276,6 +287,17 @@ export async function POST(req: Request) {
       message: "Retenciones IVA creadas correctamente",
     });
   } catch (error: any) {
+    if (error instanceof AccountingError) {
+      return NextResponse.json(
+        {
+          status: error.status,
+          code: error.code,
+          message: error.message,
+        },
+        { status: error.status }
+      );
+    }
+
     console.error("ERROR RETENCIONES IVA:", error);
     return NextResponse.json({
       status: 400,

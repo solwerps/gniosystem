@@ -1,6 +1,12 @@
 // src/app/api/libros/balance/asientos/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+  empresaIdFromRequest,
+} from "@/lib/accounting/context";
 
 const parseDateParam = (value: string | null) => {
   if (!value) return null;
@@ -41,19 +47,12 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
 
-    const empresaIdParam = searchParams.get("empresa_id") ?? "";
-    const empresaId = Number(empresaIdParam);
-
-    if (!empresaId || Number.isNaN(empresaId)) {
-      return NextResponse.json(
-        {
-          status: 400,
-          data: [],
-          message: "Parámetro 'empresa_id' inválido o ausente.",
-        },
-        { status: 400 }
-      );
-    }
+    const tenantSlug = tenantSlugFromRequest(request);
+    const empresaId = empresaIdFromRequest(request);
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
 
     const date1Param = searchParams.get("date1");
     const date2Param = searchParams.get("date2");
@@ -100,7 +99,7 @@ export async function GET(request: Request) {
     }
 
     const where: any = {
-      empresa_id: empresaId,
+      empresa_id: auth.empresa.id,
       estado: 1,
     };
 
@@ -160,7 +159,7 @@ export async function GET(request: Request) {
     });
 
     console.log("[/api/libros/balance/asientos]", {
-      empresaId,
+      empresaId: auth.empresa.id,
       date1Param,
       date2Param,
       startDate,
@@ -178,6 +177,18 @@ export async function GET(request: Request) {
       { status: 200 }
     );
   } catch (error) {
+    if (error instanceof AccountingError) {
+      return NextResponse.json(
+        {
+          status: error.status,
+          code: error.code,
+          message: error.message,
+          data: [],
+        },
+        { status: error.status }
+      );
+    }
+
     console.error("Error en /api/libros/balance/asientos:", error);
     return NextResponse.json(
       {

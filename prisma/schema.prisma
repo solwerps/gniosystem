@@ -67,6 +67,16 @@ enum TaskEstado {
   REALIZADO
 }
 
+enum AccountingMode {
+  CAJA
+  DEVENGO
+}
+
+enum CondicionPago {
+  CONTADO
+  CREDITO
+}
+
 // Empresa
 enum RazonSocial {
   Individual
@@ -106,6 +116,7 @@ model User {
 
   // 🔙 Bitácora Conta Cox
   bitacora_registros Bitacora[]
+  cierres_mensuales  CierreMensual[] @relation("UserClosedPeriods")
 }
 
 model Tenant {
@@ -357,6 +368,11 @@ model Empresa {
   asientos_contables        AsientoContable[]
   partidas                  Partida[]
   folios_sat                Folio[]
+  clientes                  Cliente[]
+  proveedores               Proveedor[]
+  cobros                    Cobro[]
+  pagos                     Pago[]
+  cierres_mensuales         CierreMensual[]
 
   @@index([tenantId])
   @@index([tenantSlug, nit], name: "idx_empresa_tenant_nit")
@@ -375,6 +391,7 @@ model Afiliaciones {
   regimenIva     RegimenIvaFila? @relation("Afiliaciones_RegimenIva", fields: [regimenIvaId], references: [id])
   regimenIsr     RegimenIsrFila? @relation("Afiliaciones_RegimenIsr", fields: [regimenIsrId], references: [id])
   nomenclatura   Nomenclatura?   @relation("Afiliaciones_Nomenclatura", fields: [nomenclaturaId], references: [id])
+  accountingMode AccountingMode  @default(DEVENGO)
 
   obligaciones   Obligacion[]
 
@@ -426,9 +443,118 @@ model CuentaBancaria {
 
   // 🔙 Movimientos Conta Cox (snake_case en la tabla)
   movimientos_cuentas_bancarias MovimientoCuentaBancaria[]
+  documentos                    Documento[]
+  cobros                        Cobro[]
+  pagos                         Pago[]
 
   @@index([empresaId])
   @@index([cuentaContableId])
+}
+
+model Cliente {
+  id         Int      @id @default(autoincrement())
+  empresa_id Int
+  nit        String?
+  nombre     String
+  estado     Int      @default(1)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  empresa     Empresa                   @relation(fields: [empresa_id], references: [id])
+  cobros      Cobro[]
+  documentos  Documento[]
+
+  @@map("clientes")
+  @@index([empresa_id])
+}
+
+model Proveedor {
+  id         Int      @id @default(autoincrement())
+  empresa_id Int
+  nit        String?
+  nombre     String
+  estado     Int      @default(1)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  empresa     Empresa                  @relation(fields: [empresa_id], references: [id])
+  pagos       Pago[]
+  documentos  Documento[]
+
+  @@map("proveedores")
+  @@index([empresa_id])
+}
+
+model Cobro {
+  id                 Int      @id @default(autoincrement())
+  empresa_id         Int
+  cuenta_bancaria_id Int?
+  cliente_id         Int?
+  fecha              DateTime @db.Date
+  monto              Decimal  @db.Decimal(20, 2)
+  referencia         String?
+  estado             Int      @default(1)
+  asiento_contable_id Int?
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
+
+  empresa         Empresa         @relation(fields: [empresa_id], references: [id])
+  cuenta_bancaria CuentaBancaria? @relation(fields: [cuenta_bancaria_id], references: [id])
+  cliente         Cliente?        @relation(fields: [cliente_id], references: [id])
+  asiento_contable AsientoContable? @relation(fields: [asiento_contable_id], references: [id])
+
+  aplicaciones AplicacionPagoDocumento[]
+
+  @@map("cobros")
+  @@index([empresa_id])
+  @@index([cuenta_bancaria_id])
+  @@index([cliente_id])
+  @@index([asiento_contable_id])
+}
+
+model Pago {
+  id                 Int      @id @default(autoincrement())
+  empresa_id         Int
+  cuenta_bancaria_id Int?
+  proveedor_id       Int?
+  fecha              DateTime @db.Date
+  monto              Decimal  @db.Decimal(20, 2)
+  referencia         String?
+  estado             Int      @default(1)
+  asiento_contable_id Int?
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
+
+  empresa          Empresa         @relation(fields: [empresa_id], references: [id])
+  cuenta_bancaria  CuentaBancaria? @relation(fields: [cuenta_bancaria_id], references: [id])
+  proveedor        Proveedor?      @relation(fields: [proveedor_id], references: [id])
+  asiento_contable AsientoContable? @relation(fields: [asiento_contable_id], references: [id])
+
+  aplicaciones AplicacionPagoDocumento[]
+
+  @@map("pagos")
+  @@index([empresa_id])
+  @@index([cuenta_bancaria_id])
+  @@index([proveedor_id])
+  @@index([asiento_contable_id])
+}
+
+model AplicacionPagoDocumento {
+  id             Int      @id @default(autoincrement())
+  pago_id        Int?
+  cobro_id       Int?
+  documento_uuid String   @db.Char(36)
+  monto_aplicado Decimal  @db.Decimal(20, 2)
+  created_at     DateTime @default(now())
+
+  pago      Pago?     @relation(fields: [pago_id], references: [id])
+  cobro     Cobro?    @relation(fields: [cobro_id], references: [id])
+  documento Documento @relation(fields: [documento_uuid], references: [uuid])
+
+  @@map("aplicacion_pagos_documentos")
+  @@index([pago_id])
+  @@index([cobro_id])
+  @@index([documento_uuid])
 }
 
 /* =========================================================
@@ -440,6 +566,11 @@ model CuentaBancaria {
 enum TipoMovimientoBancario {
   debito
   credito
+}
+
+enum EstadoConciliacion {
+  PENDIENTE
+  CONCILIADO
 }
 
 /* --- establecimientos --- */
@@ -469,17 +600,26 @@ model Establecimiento {
 model MovimientoCuentaBancaria {
   id                 Int                    @id @default(autoincrement())
   cuenta_bancaria_id Int
+  asiento_contable_id Int?
+  documento_uuid     String?                @db.Char(36)
   fecha              DateTime               @db.Date
   descripcion        String?
   tipo_movimiento    TipoMovimientoBancario
   monto              Decimal                @db.Decimal(15, 2)
   referencia         String?
   estado             Int                    @default(1)
+  estado_conciliacion EstadoConciliacion    @default(PENDIENTE)
+  match_id           String?
 
-  cuenta_bancaria CuentaBancaria @relation(fields: [cuenta_bancaria_id], references: [id])
+  cuenta_bancaria  CuentaBancaria  @relation(fields: [cuenta_bancaria_id], references: [id])
+  asiento_contable AsientoContable? @relation(fields: [asiento_contable_id], references: [id])
+  documento        Documento?      @relation(fields: [documento_uuid], references: [uuid])
 
   @@map("movimientos_cuentas_bancarias")
   @@index([cuenta_bancaria_id])
+  @@index([asiento_contable_id])
+  @@index([documento_uuid])
+  @@index([estado_conciliacion])
 }
 
 /* --- documentos --- */
@@ -526,6 +666,12 @@ model Documento {
   // 🔗 Aquí usamos Int y lo conectamos a NomenclaturaCuenta.id
   cuenta_debe                 Int?
   cuenta_haber                Int?
+  condicion_pago              CondicionPago?
+  cuenta_bancaria_id          Int?
+  asiento_contable_id         Int?
+  cliente_id                  Int?
+  proveedor_id                Int?
+  tercero_ref                 Json?
   tipo                        String?
 
   empresa_id                  Int
@@ -536,6 +682,13 @@ model Documento {
   establecimiento_receptor Establecimiento?    @relation(fields: [establecimiento_receptor_id], references: [id])
   cuentaDebe               NomenclaturaCuenta? @relation("DocumentoCuentaDebe", fields: [cuenta_debe], references: [id])
   cuentaHaber              NomenclaturaCuenta? @relation("DocumentoCuentaHaber", fields: [cuenta_haber], references: [id])
+  cuenta_bancaria          CuentaBancaria?     @relation(fields: [cuenta_bancaria_id], references: [id])
+  asiento_contable         AsientoContable?    @relation(fields: [asiento_contable_id], references: [id])
+  cliente                  Cliente?            @relation(fields: [cliente_id], references: [id])
+  proveedor                Proveedor?         @relation(fields: [proveedor_id], references: [id])
+
+  movimientos_bancarios    MovimientoCuentaBancaria[]
+  aplicaciones_pago        AplicacionPagoDocumento[]
 
   @@map("documentos")
   @@index([empresa_id], name: "empresa_id_idx")
@@ -543,6 +696,10 @@ model Documento {
   @@index([establecimiento_receptor_id], name: "establecimiento_receptor_idx")
   @@index([cuenta_debe], name: "cuenta_debe_idx")
   @@index([cuenta_haber], name: "cuenta_haber_idx")
+  @@index([cuenta_bancaria_id], name: "cuenta_bancaria_idx")
+  @@index([asiento_contable_id], name: "asiento_contable_idx")
+  @@index([cliente_id], name: "cliente_idx")
+  @@index([proveedor_id], name: "proveedor_idx")
 }
 
 /* --- retenciones_iva --- */
@@ -663,7 +820,11 @@ model AsientoContable {
   tipo_poliza TipoPoliza @relation(fields: [tipo_poliza_id], references: [id])
   empresa     Empresa    @relation(fields: [empresa_id], references: [id])
 
-  partidas Partida[]
+  partidas             Partida[]
+  documentos           Documento[]
+  movimientos_bancarios MovimientoCuentaBancaria[]
+  cobros               Cobro[]
+  pagos                Pago[]
 
   @@map("asientos_contables")
   @@index([empresa_id])
@@ -709,6 +870,26 @@ model Bitacora {
   @@index([usuario_id])
 }
 
+model CierreMensual {
+  id         Int      @id @default(autoincrement())
+  empresa_id Int
+  year       Int
+  month      Int
+  is_closed  Boolean  @default(false)
+  closed_at  DateTime?
+  closed_by  Int?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  empresa       Empresa @relation(fields: [empresa_id], references: [id])
+  closedByUser  User?   @relation("UserClosedPeriods", fields: [closed_by], references: [id])
+
+  @@map("cierres_mensuales")
+  @@unique([empresa_id, year, month], name: "ux_cierres_empresa_year_month")
+  @@index([empresa_id])
+  @@index([closed_by])
+}
+
 /* --- libros_contables --- */
 
 model LibroContable {
@@ -737,4 +918,3 @@ model Folio {
   @@index([empresa_id])
   @@index([libro_contable_id])
 }
-

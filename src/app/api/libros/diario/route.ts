@@ -1,24 +1,26 @@
 // src/app/api/libros/diario/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+  empresaIdFromRequest,
+} from "@/lib/accounting/context";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
 
-    const empresaIdParam = searchParams.get("empresa_id") ?? "";
-    const empresaId = Number(empresaIdParam);
-
     const fechaParam = searchParams.get("fecha") ?? "";
     const ordenParam = (searchParams.get("orden") ?? "ascendente").toLowerCase();
     const orden: "asc" | "desc" = ordenParam.startsWith("desc") ? "desc" : "asc";
-
-    if (!empresaId || Number.isNaN(empresaId)) {
-      return NextResponse.json(
-        { status: 400, data: [], message: "Parámetro 'empresa_id' inválido o ausente." },
-        { status: 400 }
-      );
-    }
+    const tenantSlug = tenantSlugFromRequest(request);
+    const empresaId = empresaIdFromRequest(request);
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
 
     if (!fechaParam) {
       return NextResponse.json(
@@ -61,7 +63,7 @@ export async function GET(request: Request) {
 
     const documentos = await prisma.documento.findMany({
       where: {
-        empresa_id: empresaId,
+        empresa_id: auth.empresa.id,
         estado: 1,
         marca_anulado: "No",
         fecha_trabajo: {
@@ -79,6 +81,18 @@ export async function GET(request: Request) {
       { status: 200 }
     );
   } catch (error) {
+    if (error instanceof AccountingError) {
+      return NextResponse.json(
+        {
+          status: error.status,
+          code: error.code,
+          message: error.message,
+          data: [],
+        },
+        { status: error.status }
+      );
+    }
+
     console.error("Error en /api/libros/diario:", error);
     return NextResponse.json(
       { status: 500, data: [], message: "Error interno al obtener documentos." },

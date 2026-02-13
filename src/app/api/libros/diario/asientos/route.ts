@@ -1,13 +1,16 @@
 // src/app/api/libros/diario/asientos/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+  empresaIdFromRequest,
+} from "@/lib/accounting/context";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-
-    const empresaIdParam = searchParams.get("empresa_id") ?? "";
-    const empresaId = Number(empresaIdParam);
 
     const fechaParam = searchParams.get("fecha") ?? "";
 
@@ -15,16 +18,12 @@ export async function GET(request: Request) {
     const ordenParam = (searchParams.get("orden") ?? "ascendente").toLowerCase();
     const orden: "asc" | "desc" = ordenParam.startsWith("desc") ? "desc" : "asc";
 
-    if (!empresaId || Number.isNaN(empresaId)) {
-      return NextResponse.json(
-        {
-          status: 400,
-          data: [],
-          message: "Parámetro 'empresa_id' inválido o ausente.",
-        },
-        { status: 400 }
-      );
-    }
+    const tenantSlug = tenantSlugFromRequest(request);
+    const empresaId = empresaIdFromRequest(request);
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
 
     if (!fechaParam) {
       return NextResponse.json(
@@ -78,7 +77,7 @@ export async function GET(request: Request) {
 
     const asientos = await prisma.asientoContable.findMany({
       where: {
-        empresa_id: empresaId,
+        empresa_id: auth.empresa.id,
         estado: 1,
         fecha: {
           gte: inicioMes,
@@ -180,7 +179,7 @@ export async function GET(request: Request) {
       fechas.length > 0 ? new Date(Math.max(...fechas.map((f) => f.getTime()))) : null;
 
     console.log("[/api/libros/diario/asientos GNIO]", {
-      empresaId,
+      empresaId: auth.empresa.id,
       year,
       monthIndex,
       inicioMes,
@@ -200,6 +199,18 @@ export async function GET(request: Request) {
       { status: 200 }
     );
   } catch (error) {
+    if (error instanceof AccountingError) {
+      return NextResponse.json(
+        {
+          status: error.status,
+          code: error.code,
+          message: error.message,
+          data: [],
+        },
+        { status: error.status }
+      );
+    }
+
     console.error("Error en /api/libros/diario/asientos GNIO:", error);
     return NextResponse.json(
       {

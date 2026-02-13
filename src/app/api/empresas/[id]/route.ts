@@ -1,6 +1,11 @@
 // /src/app/api/empresas/[id]/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+} from "@/lib/accounting/context";
 
 // ====================================================================
 // CONSTANTS
@@ -43,6 +48,13 @@ function parseDMY(d?: string | Date | null): Date | null {
   return dt;
 }
 
+function normalizeAccountingMode(value: unknown): "CAJA" | "DEVENGO" | undefined {
+  if (value === null || value === undefined || value === "") return undefined;
+  const mode = String(value).trim().toUpperCase();
+  if (mode === "CAJA" || mode === "DEVENGO") return mode;
+  return undefined;
+}
+
 // ====================================================================
 // API HANDLERS
 // ====================================================================
@@ -60,13 +72,16 @@ export async function GET(
       return NextResponse.json({ ok: false, error: "BAD_ID" }, { status: 400 });
     }
 
-    const { searchParams } = new URL(req.url);
-    const tenantSlug = searchParams.get("tenant") || undefined;
+    const tenantSlug = tenantSlugFromRequest(req) || undefined;
+
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
 
     const e = await prisma.empresa.findFirst({
       where: {
-        id: empresaId,
-        ...(tenantSlug ? { tenantSlug } : {}),
+        id: auth.empresa.id,
       },
       include: {
         afiliaciones: {
@@ -111,6 +126,7 @@ export async function GET(
             regimenIvaId: e.afiliaciones.regimenIvaId ?? undefined,
             regimenIsrId: e.afiliaciones.regimenIsrId ?? undefined,
             nomenclaturaId: e.afiliaciones.nomenclaturaId ?? undefined,
+            accountingMode: e.afiliaciones.accountingMode,
             obligaciones: (e.afiliaciones.obligaciones || []).map((o) => ({
               id: String(o.id),
               impuesto: o.impuesto || "Otro",
@@ -125,6 +141,7 @@ export async function GET(
             regimenIvaId: undefined,
             regimenIsrId: undefined,
             nomenclaturaId: undefined,
+            accountingMode: "DEVENGO",
             obligaciones: [],
           },
 
@@ -158,7 +175,14 @@ export async function GET(
     };
 
     return NextResponse.json({ ok: true, data });
-  } catch (err) {
+  } catch (err: any) {
+    if (err instanceof AccountingError) {
+      return NextResponse.json(
+        { ok: false, error: err.code, message: err.message },
+        { status: err.status }
+      );
+    }
+
     console.error("GET empresa error:", err);
     return NextResponse.json(
       { ok: false, error: "SERVER_ERROR" },
@@ -184,7 +208,7 @@ export async function PUT(
     }
 
     const { searchParams } = new URL(req.url);
-    const tenantFromQuery = searchParams.get("tenant");
+    const tenantFromQuery = searchParams.get("tenant") || tenantSlugFromRequest(req);
     const body = await req.json().catch(() => ({}));
 
     const {
@@ -201,6 +225,11 @@ export async function PUT(
     } = body || {};
 
     const tenantSlug = tenantFromQuery || tenantFromBody;
+
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
 
     // Validación básica de campos requeridos
     if (!nombre || !nit || !sectorEconomico || !razonSocial) {
@@ -232,7 +261,7 @@ export async function PUT(
 
     // Datos base para la actualización de Empresa
     const patchEmpresa: any = {
-      tenantSlug: tenantSlug || exists.tenantSlug,
+      tenantSlug: auth.tenant.slug,
       nombre,
       nit,
       sectorEconomico,
@@ -261,6 +290,10 @@ export async function PUT(
       // 2. Afiliaciones y Obligaciones
       // =====================================================
       let afiliId = exists.afiliacionesId;
+      const accountingMode =
+        normalizeAccountingMode(afiliaciones?.accountingMode) ??
+        exists.afiliaciones?.accountingMode ??
+        "DEVENGO";
 
       // Helper interno: recibe un id que puede ser PK global o localId
       // y devuelve siempre el id GLOBAL de la nomenclatura (o null).
@@ -305,6 +338,7 @@ export async function PUT(
               regimenIvaId: afiliaciones.regimenIvaId || null,
               regimenIsrId: afiliaciones.regimenIsrId || null,
               nomenclaturaId: nomId,
+              accountingMode,
             },
           });
           afiliId = createdA.id;
@@ -321,6 +355,7 @@ export async function PUT(
             regimenIvaId: afiliaciones.regimenIvaId || null,
             regimenIsrId: afiliaciones.regimenIsrId || null,
             nomenclaturaId: nomId,
+            accountingMode,
           },
         });
       }
@@ -431,7 +466,14 @@ export async function PUT(
     });
 
     return NextResponse.json({ ok: true, id: updated.id });
-  } catch (err) {
+  } catch (err: any) {
+    if (err instanceof AccountingError) {
+      return NextResponse.json(
+        { ok: false, error: err.code, message: err.message },
+        { status: err.status }
+      );
+    }
+
     console.error("PUT empresa error:", err);
     return NextResponse.json(
       { ok: false, error: "SERVER_ERROR" },

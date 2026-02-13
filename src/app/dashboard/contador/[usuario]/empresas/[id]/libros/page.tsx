@@ -8,11 +8,18 @@ type PageProps = {
     usuario: string;
     id: string; // viene como string desde la URL
   }>;
+  searchParams?: Promise<{
+    tenant?: string;
+    [key: string]: string | string[] | undefined;
+  }>;
 };
 
-export default async function LibrosPage({ params }: PageProps) {
+export default async function LibrosPage({ params, searchParams }: PageProps) {
   // 👇 AQUÍ se "espera" params, como pide Next
   const { usuario, id } = await params;
+  const sp = (await searchParams) ?? {};
+  const tenantFromQuery = typeof sp.tenant === "string" ? sp.tenant : "";
+  const tenantSlug = tenantFromQuery || usuario;
 
   const empresa_id = Number(id);
 
@@ -33,7 +40,7 @@ export default async function LibrosPage({ params }: PageProps) {
 
       {/* Contenido principal: Libros (template) */}
       <div className="flex-1 flex flex-col gap-4">
-        <Libros empresa_id={empresa_id} usuario={usuario} />
+        <Libros empresa_id={empresa_id} usuario={usuario} tenantSlug={tenantSlug} />
       </div>
     </div>
   );

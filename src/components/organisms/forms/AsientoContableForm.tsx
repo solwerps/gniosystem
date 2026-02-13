@@ -137,7 +137,11 @@ export const AsientoContableForm = ({ empresaId, tenant: tenantProp }: Props) =>
 
       setFetching(true);
       try {
-        const { status, message, data } = await obtenerPolizas(tenant, true);
+        const { status, message, data } = await obtenerPolizas(
+          tenant,
+          true,
+          empresaId
+        );
 
         if (status === 200) {
           setPolizas((data ?? []) as SelectOption[]);

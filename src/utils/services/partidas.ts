@@ -9,12 +9,16 @@ import type { IAsientoContableForm } from "../models";
  */
 export const obtenerPolizas = async (
   tenant: string,
-  select: boolean = true
+  select: boolean = true,
+  empresaId?: number
 ) => {
+  const params = new URLSearchParams();
+  params.set("tenant", tenant);
+  params.set("select", String(select));
+  if (empresaId) params.set("empresa_id", String(empresaId));
+
   return await fetchService({
-    url: `/api/partidas/polizas?tenant=${encodeURIComponent(
-      tenant
-    )}&select=${select}`,
+    url: `/api/partidas/polizas?${params.toString()}`,
     method: "GET",
   });
 };
@@ -38,9 +42,7 @@ export const obtenerAsientosContables = async (
   let url = `/api/partidas?tenant=${encodeURIComponent(tenant)}`;
   const params = new URLSearchParams();
 
-  if (empresa_id && empresa_id !== 0) {
-    params.append("empresa_id", empresa_id.toString());
-  }
+  params.append("empresa_id", empresa_id.toString());
 
   // 👇 CORRECCIÓN: enviar fechas como YYYY-MM-DD
   if (dates && dates.length > 0) {
@@ -78,6 +80,7 @@ export const obtenerAsientosContables = async (
  */
 export const crearAsientoContable = async (
   tenant: string,
+  empresa_id: number,
   data: IAsientoContableForm
 ) => {
   return await fetchService({
@@ -85,6 +88,10 @@ export const crearAsientoContable = async (
       tenant
     )}`,
     method: "POST",
-    body: JSON.stringify(data),
+    body: JSON.stringify({
+      ...data,
+      empresa_id,
+      tenant,
+    }),
   });
 };

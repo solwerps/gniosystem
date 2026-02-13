@@ -19,9 +19,10 @@ import { ValueModal } from "@/components/molecules/modal/ValueModal";
 type LibrosProps = {
   empresa_id: number;
   usuario: string;
+  tenantSlug: string;
 };
 
-export const Libros: React.FC<LibrosProps> = ({ empresa_id }) => {
+export const Libros: React.FC<LibrosProps> = ({ empresa_id, tenantSlug }) => {
   // Fecha
   const [date, setDate] = useState<Date>(new Date());
   const [dates, setDates] = useState<Date[]>([]);
@@ -165,7 +166,8 @@ export const Libros: React.FC<LibrosProps> = ({ empresa_id }) => {
       setLoading(true);
       const { status, data, message } = await obtenerFolioByLibro(
         libroId,
-        empresa_id
+        empresa_id,
+        tenantSlug
       );
 
       if (status === 200) {
@@ -192,7 +194,9 @@ export const Libros: React.FC<LibrosProps> = ({ empresa_id }) => {
       setLoading(true);
       const { status, message } = await updateContadorFolios(
         folioInfo.folio_id,
-        foliosUsed
+        foliosUsed,
+        tenantSlug,
+        empresa_id
       );
       if (status === 200) {
         toast.success("Conteo de folios actualizado correctamente");
@@ -243,6 +247,9 @@ export const Libros: React.FC<LibrosProps> = ({ empresa_id }) => {
     const queryParams: Record<string, string> = {
       empresa: empresaFormated,
     };
+    if (tenantSlug) {
+      queryParams.tenant = tenantSlug;
+    }
 
     if (libroConfig?.fecha) {
       queryParams.date = dateFormated;

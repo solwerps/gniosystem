@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 import { Path } from "@/components/molecules/Path";
 import EmpresaSidebar from "@/components/empresas/EmpresaSidebar";
@@ -18,8 +18,10 @@ interface EmpresaData {
 
 export default function EmpresaDocumentosCargaPage() {
   const params = useParams();
+  const search = useSearchParams();
   const usuario = params?.usuario as string;
   const empresaId = Number(params?.id);
+  const tenantSlug = search.get("tenant") || String(usuario);
 
   // 👇 calculamos la validez, pero sin hacer return todavía
   const invalidEmpresaId = !empresaId || Number.isNaN(empresaId);
@@ -42,7 +44,9 @@ export default function EmpresaDocumentosCargaPage() {
 
         // 🔴 AQUÍ CAMBIA: ya NO desestructuramos status/data/message directo
         const resp: any = await fetchService({
-          url: `/api/empresas/${empresaId}`,
+          url: `/api/empresas/${empresaId}?tenant=${encodeURIComponent(
+            tenantSlug
+          )}`,
           method: "GET",
         });
 
@@ -86,7 +90,7 @@ export default function EmpresaDocumentosCargaPage() {
     };
 
     loadEmpresa();
-  }, [empresaId, invalidEmpresaId]);
+  }, [empresaId, invalidEmpresaId, tenantSlug]);
 
   // 🔹 ahora sí, returns condicionales
 
@@ -134,12 +138,16 @@ export default function EmpresaDocumentosCargaPage() {
           <Path
             parent={{
               text: "Documentos",
-              href: `/dashboard/contador/${usuario}/empresas/${empresaId}/documentos`,
+              href: `/dashboard/contador/${usuario}/empresas/${empresaId}/documentos?tenant=${encodeURIComponent(
+                tenantSlug
+              )}`,
             }}
             hijos={[
               {
                 text: "Carga masiva de documentos",
-                href: `/dashboard/contador/${usuario}/empresas/${empresaId}/documentos/carga`,
+                href: `/dashboard/contador/${usuario}/empresas/${empresaId}/documentos/carga?tenant=${encodeURIComponent(
+                  tenantSlug
+                )}`,
               },
             ]}
           />
@@ -149,6 +157,7 @@ export default function EmpresaDocumentosCargaPage() {
             empresaNit={empresa.nit}
             empresaNombre={empresa.nombre}
             usuario={usuario}
+            tenantSlug={tenantSlug}
           />
         </div>
       </main>

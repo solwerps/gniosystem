@@ -2,6 +2,13 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { randomUUID } from "crypto";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+  empresaIdFromRequest,
+} from "@/lib/accounting/context";
+import { assertPeriodOpen } from "@/lib/accounting/periods";
 
 export const revalidate = 0;
 
@@ -24,67 +31,6 @@ function parse_fecha_trabajo(fecha_trabajo: string): Date {
   return new Date(`${ymd}T00:00:00.000Z`);
 }
 
-function get_cookie(req: Request, name: string): string | null {
-  const cookie = req.headers.get("cookie") || "";
-  const parts = cookie.split(";").map((p) => p.trim());
-  for (const part of parts) {
-    if (part.startsWith(name + "=")) return decodeURIComponent(part.slice(name.length + 1));
-  }
-  return null;
-}
-
-async function resolve_tenant_id(req: Request): Promise<{ tenant_id: number; tenant_slug: string }> {
-  const { searchParams } = new URL(req.url);
-  const tenant_slug = searchParams.get("tenant") || "";
-
-  if (!tenant_slug) throw new Error("TENANT_REQUIRED");
-
-  const tenant = await prisma.tenant.findUnique({
-    where: { slug: tenant_slug },
-    select: { id: true },
-  });
-
-  if (!tenant) throw new Error("TENANT_NOT_FOUND");
-
-  return { tenant_id: tenant.id, tenant_slug };
-}
-
-async function resolve_empresa_id(req: Request, tenant_id: number): Promise<number> {
-  const header_empresa = req.headers.get("x-empresa-id");
-  const header_empresa_id = Number(header_empresa || 0);
-
-  if (header_empresa_id && !Number.isNaN(header_empresa_id)) {
-    const empresa = await prisma.empresa.findFirst({
-      where: { id: header_empresa_id, tenantId: tenant_id, estado: 1 },
-      select: { id: true },
-    });
-    if (!empresa) throw new Error("EMPRESA_NOT_FOUND_FOR_TENANT");
-    return empresa.id;
-  }
-
-  const cookie_empresa = get_cookie(req, "empresa_id");
-  const cookie_empresa_id = Number(cookie_empresa || 0);
-
-  if (cookie_empresa_id && !Number.isNaN(cookie_empresa_id)) {
-    const empresa = await prisma.empresa.findFirst({
-      where: { id: cookie_empresa_id, tenantId: tenant_id, estado: 1 },
-      select: { id: true },
-    });
-    if (!empresa) throw new Error("EMPRESA_NOT_FOUND_FOR_TENANT");
-    return empresa.id;
-  }
-
-  const empresas = await prisma.empresa.findMany({
-    where: { tenantId: tenant_id, estado: 1 },
-    select: { id: true },
-    orderBy: { id: "asc" },
-    take: 2,
-  });
-
-  if (empresas.length === 1) return empresas[0].id;
-  if (empresas.length === 0) throw new Error("NO_ACTIVE_EMPRESA_IN_TENANT");
-  throw new Error("EMPRESA_CONTEXT_REQUIRED");
-}
 
 const handle_poliza_desc = (poliza_id: number, correlativo: number) => {
   switch (poliza_id) {
@@ -129,7 +75,17 @@ type asiento_contable_form = {
 // POST /api/partidas/asiento_contable?tenant=slug
 export async function POST(req: Request) {
   try {
-    const body = (await req.json().catch(() => ({}))) as asiento_contable_form;
+    const body = (await req.json().catch(() => ({}))) as asiento_contable_form & {
+      tenant?: string;
+      empresa_id?: number;
+    };
+
+    const tenantSlug = String(body?.tenant ?? tenantSlugFromRequest(req) ?? "");
+    const empresaId = Number(body?.empresa_id ?? empresaIdFromRequest(req));
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
 
     if (!body?.poliza_id) {
       return NextResponse.json({ status: 400, data: {}, message: "La poliza es requerida" }, { status: 400 });
@@ -143,8 +99,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ status: 400, data: {}, message: "Las partidas son requeridas" }, { status: 400 });
     }
 
-    const { tenant_id } = await resolve_tenant_id(req);
-    const empresa_id = await resolve_empresa_id(req, tenant_id);
+    const empresa_id = auth.empresa.id;
 
     // validar empresa + obtener nomenclatura afiliada
     const empresa = await prisma.empresa.findFirst({
@@ -188,6 +143,8 @@ export async function POST(req: Request) {
     const fecha = parse_fecha_trabajo(body.fecha_trabajo);
 
     await prisma.$transaction(async (tx) => {
+      await assertPeriodOpen(tx, empresa_id, fecha);
+
       // correlativo = max(correlativo) + 1 dentro de la empresa
       const agg = await tx.asientoContable.aggregate({
         where: { empresa_id },
@@ -233,6 +190,18 @@ export async function POST(req: Request) {
       message: "Asiento contable creado correctamente",
     });
   } catch (err) {
+    if (err instanceof AccountingError) {
+      return NextResponse.json(
+        {
+          status: err.status,
+          code: err.code,
+          data: {},
+          message: err.message,
+        },
+        { status: err.status }
+      );
+    }
+
     console.log(err);
     return NextResponse.json(
       { status: 400, data: {}, message: to_error_message(err) },

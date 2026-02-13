@@ -83,6 +83,8 @@ export interface IFactura {
   tipo_operacion: 'venta' | 'compra';
   cuenta_debe: string | number | null;
   cuenta_haber: string | number | null;
+  condicion_pago?: "CONTADO" | "CREDITO" | null;
+  cuenta_bancaria_id?: number | null;
   tipo: string;
   empresa_id: number;
   estado: number;
@@ -129,6 +131,8 @@ export interface IGetDocumento {
   tipo_operacion: "venta" | "compra";
   cuenta_debe: string | number | null;
   cuenta_haber: string | number | null;
+  condicion_pago?: "CONTADO" | "CREDITO" | null;
+  cuenta_bancaria_id?: number | null;
   tipo: TipoFactura;
   empresa_id: number;
   estado: number;
@@ -363,6 +367,8 @@ export interface IDocUpload {
   // Contabilidad
   cuenta_debe?: number | null;
   cuenta_haber?: number | null;
+  condicion_pago?: "CONTADO" | "CREDITO";
+  cuenta_bancaria_id?: number | null;
 
   // 🔹 Campos añadidos para compatibilidad GNIO
   identificador_unico?: string;

@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+} from "@/lib/accounting/context";
 
 const norm = (v: any) =>
   (v ?? "")
@@ -51,7 +56,7 @@ const FIELDS: FlagKey[] = [
 ];
 
 export async function GET(
-  _req: Request,
+  req: Request,
   ctx: { params: Promise<{ id: string }> }
 ) {
   const { id } = await ctx.params;
@@ -62,8 +67,14 @@ export async function GET(
   }
 
   try {
+    const tenantSlug = tenantSlugFromRequest(req);
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
+
     const empresa = await prisma.empresa.findUnique({
-      where: { id: empresaId },
+      where: { id: auth.empresa.id },
       include: {
         afiliaciones: {
           include: {
@@ -155,7 +166,14 @@ export async function GET(
         },
       },
     });
-  } catch (err) {
+  } catch (err: any) {
+    if (err instanceof AccountingError) {
+      return NextResponse.json(
+        { ok: false, error: err.code, message: err.message },
+        { status: err.status }
+      );
+    }
+
     console.error("ENTORNO error:", err);
     return NextResponse.json({
       ok: true,

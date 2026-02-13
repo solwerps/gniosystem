@@ -10,6 +10,7 @@ import { IVAMensual, ISRMensual } from "@/components/organisms/reportes";
 type ReportesProps = {
   empresa_id: number;
   usuario: string;
+  tenantSlug: string;
 };
 
 type EntornoData = {
@@ -30,7 +31,7 @@ const normalize = (value: string) =>
     .trim()
     .toLowerCase();
 
-export const Reportes: React.FC<ReportesProps> = ({ empresa_id, usuario }) => {
+export const Reportes: React.FC<ReportesProps> = ({ empresa_id, usuario, tenantSlug }) => {
   const [date, setDate] = useState<Date>(new Date());
 
   const [reporteSelected, setReporteSelected] = useState<OptionType>({
@@ -52,7 +53,7 @@ export const Reportes: React.FC<ReportesProps> = ({ empresa_id, usuario }) => {
       try {
         setEntornoLoading(true);
         const res = await fetch(
-          `/api/empresas/${empresa_id}/entorno?tenant=${usuario}`,
+          `/api/empresas/${empresa_id}/entorno?tenant=${tenantSlug || usuario}`,
           { cache: "no-store" }
         );
         const payload = await res.json();
@@ -68,7 +69,7 @@ export const Reportes: React.FC<ReportesProps> = ({ empresa_id, usuario }) => {
     return () => {
       alive = false;
     };
-  }, [empresa_id, usuario]);
+  }, [empresa_id, tenantSlug, usuario]);
 
   const reportes = useMemo(() => {
     const options: { value: number; label: string }[] = [];
@@ -133,7 +134,8 @@ export const Reportes: React.FC<ReportesProps> = ({ empresa_id, usuario }) => {
     const componente = renderizarComponente(
       date.toISOString().slice(0, 7),
       empresa_id,
-      Number(reporteSelected.value)
+      Number(reporteSelected.value),
+      tenantSlug || usuario
     );
     setReporte(componente);
   };
@@ -147,14 +149,24 @@ export const Reportes: React.FC<ReportesProps> = ({ empresa_id, usuario }) => {
     });
   };
 
-  const renderizarComponente = (fecha: string, empresa: number, reporteId: number) => {
+  const renderizarComponente = (
+    fecha: string,
+    empresa: number,
+    reporteId: number,
+    tenant: string
+  ) => {
     switch (reporteId) {
       case 1:
         return (
-          <IVAMensual date={fecha} empresa={empresa} clearFunction={clearReporte} />
+          <IVAMensual
+            date={fecha}
+            empresa={empresa}
+            tenantSlug={tenant}
+            clearFunction={clearReporte}
+          />
         );
       case 2:
-        return <ISRMensual date={fecha} empresa={empresa} />;
+        return <ISRMensual date={fecha} empresa={empresa} tenantSlug={tenant} />;
       default:
         return <EmptyReport message="Selecciona un reporte" />;
     }

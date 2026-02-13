@@ -1,21 +1,25 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+  empresaIdFromRequest,
+} from "@/lib/accounting/context";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
 
-    const empresaIdParam = searchParams.get("empresa_id");
     const fechaParam = searchParams.get("fecha");
     const ventaParam = searchParams.get("venta");
 
-    const empresa_id = empresaIdParam ? Number(empresaIdParam) : NaN;
-    if (!empresa_id || Number.isNaN(empresa_id)) {
-      return NextResponse.json({
-        status: 400,
-        message: "empresa_id es requerido y debe ser numerico",
-      });
-    }
+    const tenantSlug = tenantSlugFromRequest(request);
+    const empresaId = empresaIdFromRequest(request);
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
 
     let fecha = fechaParam;
     if (!fecha || fecha === "null") {
@@ -52,7 +56,7 @@ export async function GET(request: Request) {
 
     const documentos = await prisma.documento.findMany({
       where: {
-        empresa_id,
+        empresa_id: auth.empresa.id,
         estado: 1,
         tipo_operacion,
         fecha_trabajo: {
@@ -85,6 +89,17 @@ export async function GET(request: Request) {
       message: "Documentos obtenidos correctamente",
     });
   } catch (error: any) {
+    if (error instanceof AccountingError) {
+      return NextResponse.json(
+        {
+          status: error.status,
+          code: error.code,
+          message: error.message,
+        },
+        { status: error.status }
+      );
+    }
+
     console.error("ERROR GET /api/reportes:", error);
     return NextResponse.json({
       status: 400,

@@ -18,6 +18,7 @@ import type {
   ObligacionRow,
   RazonSocial,
   RegimenOption,
+  AccountingMode,
 } from "@/types/empresas";
 
 // ==== Secciones (code-splitting) ====
@@ -64,6 +65,8 @@ export default function ConfigurarEmpresaPage() {
   const [regimenIvaId, setRegimenIvaId] = useState<number | undefined>();
   const [regimenIsrId, setRegimenIsrId] = useState<number | undefined>();
   const [nomenclaturaId, setNomenclaturaId] = useState<number | undefined>();
+  const [accountingMode, setAccountingMode] =
+    useState<AccountingMode>("DEVENGO");
   const [obligaciones, setObligaciones] = useState<ObligacionRow[]>([
     { id: crypto.randomUUID(), impuesto: "IVA" },
     { id: crypto.randomUUID(), impuesto: "ISR" },
@@ -235,6 +238,7 @@ export default function ConfigurarEmpresaPage() {
         setRegimenIvaId(afi.regimenIvaId ?? undefined);
         setRegimenIsrId(afi.regimenIsrId ?? undefined);
         setNomenclaturaId(afi.nomenclaturaId ?? undefined);
+        setAccountingMode((afi.accountingMode as AccountingMode) || "DEVENGO");
 
         if (Array.isArray(afi.obligaciones) && afi.obligaciones.length > 0) {
           setObligaciones(
@@ -285,6 +289,7 @@ export default function ConfigurarEmpresaPage() {
         regimenIsrId,
         obligaciones,
         nomenclaturaId,
+        accountingMode,
       },
       // Ya no enviamos gestiones ni cuentas bancarias desde aquí
       info:
@@ -440,6 +445,8 @@ export default function ConfigurarEmpresaPage() {
                   setRegimenIsrId={setRegimenIsrId}
                   nomenclaturaId={nomenclaturaId}
                   setNomenclaturaId={setNomenclaturaId}
+                  accountingMode={accountingMode}
+                  setAccountingMode={setAccountingMode}
                   obligaciones={obligaciones}
                   setObligaciones={setObligaciones}
                   onReloadLists={reloadLists}

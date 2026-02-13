@@ -3,7 +3,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 import { Path } from "@/components/molecules/Path";
 import EmpresaSidebar from "@/components/empresas/EmpresaSidebar";
@@ -21,8 +21,10 @@ interface EmpresaData {
 
 export default function EmpresaDocumentosRectificacionesPage() {
   const params = useParams();
+  const search = useSearchParams();
   const usuario = params?.usuario as string;
   const empresaId = Number(params?.id);
+  const tenantSlug = search.get("tenant") || String(usuario);
 
   const invalidEmpresaId = !empresaId || Number.isNaN(empresaId);
 
@@ -42,7 +44,9 @@ export default function EmpresaDocumentosRectificacionesPage() {
         setLoading(true);
 
         const resp: any = await fetchService({
-          url: `/api/empresas/${empresaId}`,
+          url: `/api/empresas/${empresaId}?tenant=${encodeURIComponent(
+            tenantSlug
+          )}`,
           method: "GET",
         });
 
@@ -79,7 +83,7 @@ export default function EmpresaDocumentosRectificacionesPage() {
     };
 
     loadEmpresa();
-  }, [empresaId, invalidEmpresaId]);
+  }, [empresaId, invalidEmpresaId, tenantSlug]);
 
   // ======================
   // Returns condicionales
@@ -133,12 +137,16 @@ export default function EmpresaDocumentosRectificacionesPage() {
           <Path
             parent={{
               text: "Documentos",
-              href: `/dashboard/contador/${usuario}/empresas/${empresa.id}/documentos`,
+              href: `/dashboard/contador/${usuario}/empresas/${empresa.id}/documentos?tenant=${encodeURIComponent(
+                tenantSlug
+              )}`,
             }}
             hijos={[
               {
                 text: "Rectificaciones de documentos",
-                href: `/dashboard/contador/${usuario}/empresas/${empresa.id}/documentos/rectificaciones`,
+                href: `/dashboard/contador/${usuario}/empresas/${empresa.id}/documentos/rectificaciones?tenant=${encodeURIComponent(
+                  tenantSlug
+                )}`,
               },
             ]}
           />
@@ -150,6 +158,7 @@ export default function EmpresaDocumentosRectificacionesPage() {
           <Rectificacion
             empresaId={empresa.id}
             empresaNombre={empresa.nombre}
+            tenantSlug={tenantSlug}
           />
         </div>
       </main>

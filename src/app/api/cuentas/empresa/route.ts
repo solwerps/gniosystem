@@ -1,6 +1,11 @@
 // src/app/api/cuentas/empresa/route.ts
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import type { Cuenta } from "@/utils/models/nomenclaturas";
+import {
+  AccountingError,
+  requireAccountingAccess,
+  tenantSlugFromRequest,
+} from "@/lib/accounting/context";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -9,6 +14,7 @@ export async function GET(request: Request) {
     // 🔹 Igual que el endpoint viejo: empresa_id y select
     const empresaParam = searchParams.get("empresa_id") ?? "0";
     const select = searchParams.get("select") === "true";
+    const tenantSlug = tenantSlugFromRequest(request);
 
     const empresaId = Number(empresaParam);
 
@@ -23,9 +29,14 @@ export async function GET(request: Request) {
       );
     }
 
+    const auth = await requireAccountingAccess({
+      tenantSlug,
+      empresaId,
+    });
+
     // 1️⃣ Buscar la empresa GNIO y su afiliación (para obtener la nomenclatura)
     const empresa = await prisma.empresa.findUnique({
-      where: { id: empresaId },
+      where: { id: auth.empresa.id },
       include: {
         afiliaciones: true, // aquí viene nomenclaturaId
       },
@@ -106,6 +117,18 @@ export async function GET(request: Request) {
       { status: 200 }
     );
   } catch (error: any) {
+    if (error instanceof AccountingError) {
+      return Response.json(
+        {
+          status: error.status,
+          data: [],
+          code: error.code,
+          message: error.message,
+        },
+        { status: error.status }
+      );
+    }
+
     console.error("Error en GET /api/cuentas/empresa:", error);
     return Response.json(
       {
