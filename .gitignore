@@ -18,3 +18,13 @@ coverage/
 
 # Prisma
 prisma/.env
+
+# builds / cache
+tsconfig.tsbuildinfo
+.next/
+node_modules/
+
+# temp
+.tmp_*
+*.rar
+*.zip
