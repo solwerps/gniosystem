@@ -1,7 +1,7 @@
 // src/app/dashboard/contador/[usuario]/perfil/ProfileClient.tsx
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Plus, Trash2, Bell, CheckCircle2, Clock, AlertCircle } from "lucide-react";
 
 type TaskEstado = "PRIORIDAD" | "PENDIENTE" | "EN_TRABAJO" | "REALIZADO";
@@ -57,6 +57,14 @@ export default function ProfileClient({
   const [savingRow, setSavingRow] = useState<number | null>(null);
   const [empresas, setEmpresas] = useState<EmpresaOpt[]>([]);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const dropdownButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const dropdownPanelRef = useRef<HTMLDivElement | null>(null);
+  const [dropdownStyle, setDropdownStyle] = useState<{
+    top: number;
+    left: number;
+    width: number;
+    transformOrigin?: string;
+  } | null>(null);
 
   const estadoConfig = {
     PRIORIDAD: {
@@ -133,6 +141,53 @@ export default function ProfileClient({
     };
     document.addEventListener("mousedown", onDocMouseDown);
     return () => document.removeEventListener("mousedown", onDocMouseDown);
+  }, [openDropdown]);
+
+  useLayoutEffect(() => {
+    if (!openDropdown) {
+      setDropdownStyle(null);
+      return;
+    }
+
+    const margin = 8;
+    let rafId = 0;
+
+    const computePosition = () => {
+      const button = dropdownButtonRefs.current[openDropdown];
+      if (!button) return;
+      const rect = button.getBoundingClientRect();
+      const panel = dropdownPanelRef.current;
+      const width = rect.width;
+
+      let left = rect.left;
+      const maxLeft = Math.max(margin, window.innerWidth - width - margin);
+      left = Math.min(Math.max(margin, left), maxLeft);
+
+      let top = rect.bottom + margin;
+      let transformOrigin = "top";
+      const panelHeight = panel?.offsetHeight ?? 0;
+      if (panelHeight && top + panelHeight > window.innerHeight - margin) {
+        top = rect.top - margin - panelHeight;
+        transformOrigin = "bottom";
+        if (top < margin) top = margin;
+      }
+
+      setDropdownStyle({ top, left, width, transformOrigin });
+    };
+
+    const schedule = () => {
+      if (rafId) window.cancelAnimationFrame(rafId);
+      rafId = window.requestAnimationFrame(computePosition);
+    };
+
+    schedule();
+    window.addEventListener("scroll", schedule, true);
+    window.addEventListener("resize", schedule);
+    return () => {
+      if (rafId) window.cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", schedule, true);
+      window.removeEventListener("resize", schedule);
+    };
   }, [openDropdown]);
 
   // ---- Fila de "Nueva tarea" (totalmente editable) ----
@@ -260,6 +315,9 @@ export default function ProfileClient({
       <div className={`relative ${isOpen ? "z-50" : ""}`} data-estado-dropdown={taskId}>
         <button
           type="button"
+          ref={(el) => {
+            dropdownButtonRefs.current[taskId] = el;
+          }}
           onClick={() => setOpenDropdown(isOpen ? null : taskId)}
           className={`w-full px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center justify-center gap-2 shadow-sm ${config.bg} ${config.hoverBg} ${config.textColor} ring-2 ${config.ringColor} ring-opacity-20`}
         >
@@ -268,7 +326,11 @@ export default function ProfileClient({
         </button>
 
         {isOpen && (
-          <div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-md shadow-2xl border-2 border-slate-200 overflow-hidden z-50 animate-dropdown">
+          <div
+            ref={dropdownPanelRef}
+            style={dropdownStyle ?? undefined}
+            className="fixed bg-white rounded-md shadow-2xl border-2 border-slate-200 overflow-hidden z-50 animate-dropdown"
+          >
             {Object.entries(estadoConfig).map(([key, cfg]) => {
               const OptionIcon = cfg.icon;
               return (
