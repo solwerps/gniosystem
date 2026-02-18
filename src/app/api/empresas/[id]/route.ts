@@ -17,6 +17,18 @@ export const revalidate = 0;
 // HELPER FUNCTIONS
 // ====================================================================
 
+const isSchemaMismatchError = (err: any) => {
+  const code = err?.code;
+  if (code === "P2021" || code === "P2022") return true;
+  const message = String(err?.message ?? "");
+  return (
+    /Unknown column/i.test(message) ||
+    /column .* does not exist/i.test(message) ||
+    /Unknown table/i.test(message) ||
+    /doesn't exist/i.test(message)
+  );
+};
+
 /**
  * Helper: dd/mm/aaaa -> Date | null
  * Parsea una cadena de fecha en formato día/mes/año a un objeto Date.
@@ -72,6 +84,11 @@ export async function GET(
       return NextResponse.json({ ok: false, error: "BAD_ID" }, { status: 400 });
     }
 
+    const { searchParams } = new URL(req.url);
+    const compact =
+      searchParams.get("compact") === "1" ||
+      searchParams.get("compact") === "true";
+
     const tenantSlug = tenantSlugFromRequest(req) || undefined;
 
     const auth = await requireAccountingAccess({
@@ -79,28 +96,73 @@ export async function GET(
       empresaId,
     });
 
-    const e = await prisma.empresa.findFirst({
-      where: {
-        id: auth.empresa.id,
-      },
-      include: {
-        afiliaciones: {
-          include: {
-            obligaciones: true,
+    if (compact) {
+      return NextResponse.json({
+        ok: true,
+        data: {
+          id: auth.empresa.id,
+          tenant: auth.tenant.slug,
+          nombre: auth.empresa.nombre,
+          nit: auth.empresa.nit,
+        },
+      });
+    }
+
+    let e: any = null;
+
+    try {
+      e = await prisma.empresa.findFirst({
+        where: {
+          id: auth.empresa.id,
+        },
+        include: {
+          afiliaciones: {
+            include: {
+              obligaciones: true,
+            },
+          },
+          gestiones: {
+            include: {
+              folios: true,
+            },
+          },
+          cuentasBancarias: {
+            include: {
+              cuentaContable: true,
+            },
           },
         },
-        gestiones: {
-          include: {
-            folios: true,
+      });
+    } catch (err) {
+      if (isSchemaMismatchError(err)) {
+        return NextResponse.json({
+          ok: true,
+          data: {
+            id: auth.empresa.id,
+            tenant: auth.tenant.slug,
+            nombre: auth.empresa.nombre,
+            nit: auth.empresa.nit,
+            sectorEconomico: "",
+            razonSocial: "Individual",
+            avatarUrl: null,
+            infoIndividual: undefined,
+            infoJuridico: undefined,
+            afiliaciones: {
+              regimenIvaId: undefined,
+              regimenIsrId: undefined,
+              nomenclaturaId: undefined,
+              accountingMode: "DEVENGO",
+              obligaciones: [],
+            },
+            gestiones: { folios: [], correlativos: [] },
+            cuentasBancarias: [],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
           },
-        },
-        cuentasBancarias: {
-          include: {
-            cuentaContable: true,
-          },
-        },
-      },
-    });
+        });
+      }
+      throw err;
+    }
 
     if (!e) {
       return NextResponse.json(
@@ -112,7 +174,7 @@ export async function GET(
     // Mapeo de la respuesta para el cliente
     const data = {
       id: e.id,
-      tenant: e.tenantSlug, // 👈 devolvemos el slug como antes
+      tenant: e.tenantSlug ?? auth.tenant.slug, // 👈 fallback si el campo no existe
       nombre: e.nombre,
       nit: e.nit,
       sectorEconomico: e.sectorEconomico,

@@ -6,7 +6,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `nomenclatura` ADD COLUMN `localId` INTEGER NOT NULL;
+ALTER TABLE `Nomenclatura` ADD COLUMN `localId` INTEGER NOT NULL;
 
 -- CreateTable
 CREATE TABLE `RegimenIsrFila` (

@@ -11,7 +11,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `user` DROP PRIMARY KEY,
+ALTER TABLE `User` DROP PRIMARY KEY,
     DROP COLUMN `password`,
     ADD COLUMN `email` VARCHAR(191) NOT NULL,
     ADD COLUMN `passwordHash` VARCHAR(191) NOT NULL,

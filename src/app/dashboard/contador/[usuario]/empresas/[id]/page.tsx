@@ -37,7 +37,7 @@ export default function EmpresaDashboardPage() {
         setLoading(true);
 
         const resp: any = await fetchService({
-          url: `/api/empresas/${empresaId}`,
+          url: `/api/empresas/${empresaId}?compact=1`,
           method: "GET",
         });
 

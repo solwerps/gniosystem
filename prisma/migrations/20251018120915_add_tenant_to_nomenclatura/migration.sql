@@ -8,10 +8,10 @@
 
 */
 -- AlterTable
-ALTER TABLE `nomenclatura` ADD COLUMN `ownerUserId` INTEGER NULL;
+ALTER TABLE `Nomenclatura` ADD COLUMN `ownerUserId` INTEGER NULL;
 
 -- AlterTable
-ALTER TABLE `nomenclaturacuenta` ALTER COLUMN `orden` DROP DEFAULT,
+ALTER TABLE `NomenclaturaCuenta` ALTER COLUMN `orden` DROP DEFAULT,
     MODIFY `debeHaber` VARCHAR(191) NOT NULL,
     MODIFY `principalDetalle` VARCHAR(191) NOT NULL,
     MODIFY `tipo` VARCHAR(191) NOT NULL,

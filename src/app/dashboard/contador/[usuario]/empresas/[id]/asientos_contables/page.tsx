@@ -34,20 +34,18 @@ export default async function AsientosContablesPage({ params, searchParams }: Pa
   if (!empresaId || Number.isNaN(empresaId)) notFound();
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-1">
-        <Text variant="title">Asientos contables</Text>
-        <Text variant="subtitle">Buscador de asientos</Text>
+    <div className="flex flex-col md:flex-row gap-4">
+      <div className="md:w-64 lg:w-72 flex-shrink-0">
+        <EmpresaSidebar empresaId={empresaId} forceUsuario={String(usuario)} />
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="md:w-64 lg:w-72 flex-shrink-0">
-          <EmpresaSidebar empresaId={empresaId} forceUsuario={String(usuario)} />
+      <div className="flex-1 flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <Text variant="title">Asientos contables</Text>
+          <Text variant="subtitle">Buscador de asientos</Text>
         </div>
 
-        <div className="flex-1">
-          <AsientosContables empresaId={empresaId} tenant={tenant} />
-        </div>
+        <AsientosContables empresaId={empresaId} tenant={tenant} />
       </div>
     </div>
   );

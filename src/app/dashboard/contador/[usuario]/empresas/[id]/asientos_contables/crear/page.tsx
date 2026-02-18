@@ -30,20 +30,18 @@ export default async function AsientosContablesCrearPage({ params, searchParams 
   if (!empresaId || Number.isNaN(empresaId)) notFound();
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-1">
-        <Text variant="title">Asientos contables</Text>
-        <Text variant="subtitle">Agregar asiento contable</Text>
+    <div className="flex flex-col md:flex-row gap-4">
+      <div className="md:w-64 lg:w-72 flex-shrink-0">
+        <EmpresaSidebar empresaId={empresaId} forceUsuario={String(usuario)} />
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="md:w-64 lg:w-72 flex-shrink-0">
-          <EmpresaSidebar empresaId={empresaId} forceUsuario={String(usuario)} />
+      <div className="flex-1 flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <Text variant="title">Asientos contables</Text>
+          <Text variant="subtitle">Agregar asiento contable</Text>
         </div>
 
-        <div className="flex-1">
-          <AsientoContableForm empresaId={empresaId} tenant={tenant} />
-        </div>
+        <AsientoContableForm empresaId={empresaId} tenant={tenant} />
       </div>
     </div>
   );

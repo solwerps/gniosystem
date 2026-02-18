@@ -5,4 +5,4 @@
 
 */
 -- AlterTable
-ALTER TABLE `regimenivafila` DROP COLUMN `regimenSistema`;
+ALTER TABLE `RegimenIvaFila` DROP COLUMN `regimenSistema`;

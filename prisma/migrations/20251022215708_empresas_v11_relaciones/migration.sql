@@ -23,4 +23,4 @@ ALTER TABLE `Afiliaciones` ADD CONSTRAINT `Afiliaciones_nomenclaturaId_fkey` FOR
 ALTER TABLE `CuentaBancaria` ADD CONSTRAINT `CuentaBancaria_cuentaContableId_fkey` FOREIGN KEY (`cuentaContableId`) REFERENCES `NomenclaturaCuenta`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- RenameIndex
-ALTER TABLE `cuentabancaria` RENAME INDEX `CuentaBancaria_empresaId_fkey` TO `CuentaBancaria_empresaId_idx`;
+ALTER TABLE `CuentaBancaria` RENAME INDEX `CuentaBancaria_empresaId_fkey` TO `CuentaBancaria_empresaId_idx`;

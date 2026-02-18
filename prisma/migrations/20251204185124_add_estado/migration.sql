@@ -6,7 +6,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `empresa` ADD COLUMN `estado` INTEGER NOT NULL,
+ALTER TABLE `Empresa` ADD COLUMN `estado` INTEGER NOT NULL,
     ADD COLUMN `tenantId` INTEGER NOT NULL;
 
 -- CreateTable

@@ -7,7 +7,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `user` DROP PRIMARY KEY,
+ALTER TABLE `User` DROP PRIMARY KEY,
     DROP COLUMN `updatedAt`,
     ADD COLUMN `address` VARCHAR(191) NULL,
     ADD COLUMN `appointmentDate` DATETIME(3) NULL,

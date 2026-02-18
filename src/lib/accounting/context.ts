@@ -58,6 +58,79 @@ export const empresaIdFromRequest = (req: Request) => {
   );
 };
 
+type EmpresaAccessRow = {
+  id: number;
+  tenantId: number;
+  nombre: string;
+  nit: string;
+  afiliacionesId: number | null;
+};
+
+const isSchemaMismatchError = (err: any) => {
+  const code = err?.code;
+  if (code === "P2021" || code === "P2022") return true;
+  const message = String(err?.message ?? "");
+  return (
+    /Unknown column/i.test(message) ||
+    /column .* does not exist/i.test(message) ||
+    /Unknown table/i.test(message) ||
+    /doesn't exist/i.test(message)
+  );
+};
+
+async function findEmpresaForTenant(input: {
+  empresaId: number;
+  tenant: { id: number; slug: string };
+}): Promise<EmpresaAccessRow | null> {
+  const { empresaId, tenant } = input;
+
+  try {
+    const modern = await prisma.empresa.findFirst({
+      where: {
+        id: empresaId,
+        tenantId: tenant.id,
+        estado: 1,
+      },
+      select: {
+        id: true,
+        tenantId: true,
+        nombre: true,
+        nit: true,
+        afiliacionesId: true,
+      },
+    });
+
+    if (modern) return modern;
+  } catch (err) {
+    if (!isSchemaMismatchError(err)) throw err;
+  }
+
+  try {
+    const legacy = await prisma.empresa.findFirst({
+      where: {
+        id: empresaId,
+        tenantSlug: tenant.slug,
+      },
+      select: {
+        id: true,
+        nombre: true,
+        nit: true,
+        afiliacionesId: true,
+      },
+    });
+
+    if (!legacy) return null;
+
+    return {
+      ...legacy,
+      tenantId: tenant.id,
+    };
+  } catch (err) {
+    if (isSchemaMismatchError(err)) return null;
+    throw err;
+  }
+}
+
 type RequireAccessInput = {
   tenantSlug?: string | null;
   empresaId?: string | number | null;
@@ -122,19 +195,9 @@ export async function requireAccountingAccess(
     }
   }
 
-  const empresa = await prisma.empresa.findFirst({
-    where: {
-      id: empresaId,
-      tenantId: tenant.id,
-      estado: 1,
-    },
-    select: {
-      id: true,
-      tenantId: true,
-      nombre: true,
-      nit: true,
-      afiliacionesId: true,
-    },
+  const empresa = await findEmpresaForTenant({
+    empresaId,
+    tenant,
   });
 
   if (!empresa) {
@@ -215,19 +278,9 @@ export async function assertUserAccountingAccess(
     }
   }
 
-  const empresa = await prisma.empresa.findFirst({
-    where: {
-      id: empresaId,
-      tenantId: tenant.id,
-      estado: 1,
-    },
-    select: {
-      id: true,
-      tenantId: true,
-      nombre: true,
-      nit: true,
-      afiliacionesId: true,
-    },
+  const empresa = await findEmpresaForTenant({
+    empresaId,
+    tenant,
   });
 
   if (!empresa) {

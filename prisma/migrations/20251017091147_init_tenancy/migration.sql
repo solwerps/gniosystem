@@ -5,7 +5,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `nomenclatura` ADD COLUMN `tenantId` INTEGER NOT NULL;
+ALTER TABLE `Nomenclatura` ADD COLUMN `tenantId` INTEGER NOT NULL;
 
 -- CreateTable
 CREATE TABLE `Tenant` (

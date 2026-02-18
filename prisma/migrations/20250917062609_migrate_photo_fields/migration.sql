@@ -5,6 +5,6 @@
 
 */
 -- AlterTable
-ALTER TABLE `user` DROP COLUMN `photo`,
+ALTER TABLE `User` DROP COLUMN `photo`,
     ADD COLUMN `photoPublicId` VARCHAR(191) NULL,
     ADD COLUMN `photoUrl` VARCHAR(191) NULL;
